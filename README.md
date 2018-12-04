@@ -20,6 +20,7 @@ Este projeto é uma aplicação web desenvolvida ao longo do 1º semestre do 2º
 - [Vuex](https://vuex.vuejs.org/).
 - [Bootstrap-vue](https://bootstrap-vue.js.org/).
 - [Owl Caroulsel 2](https://owlcarousel2.github.io/OwlCarousel2/).
+- [Sweet Alert 2](https://sweetalert2.github.io/).
 
 
 ## Instalação do projeto
