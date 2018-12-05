@@ -25,7 +25,7 @@ Este projeto é uma aplicação web desenvolvida ao longo do 1º semestre do 2º
 ## Instalação do projeto
 #### Clonagem do repositório:
 ```
-git clone https://github.com/gustavo-vasconcelos/madATLAS.git
+git clone https://github.com/gustavo-vasconcelos/ATLAS.git
 ```
 
 #### Instalação dos módulos (node):
