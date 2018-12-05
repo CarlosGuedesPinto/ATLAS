@@ -25,6 +25,21 @@ Para fazer os mockups da aplicação foi utilizado o software [Adobe Xd](https:/
 - [Owl Caroulsel 2](https://owlcarousel2.github.io/OwlCarousel2/).
 - [Sweet Alert 2](https://sweetalert2.github.io/).
 
+### Organização da pasta:
+O ATLAS tem a organização padrão de um projeto de Vue CLI 3, onde todo o código que foi alterado encontra-se na pasta ```src```.
+```
+public ———|
+          |———— index.html (principal ficheiro HTML)
+          |———— favicon.ico (favicon do ATLAS)
+   
+   src ———|
+          |———— assets
+          |———— components (componentes Vue)
+          |———— views (views que são carregadas em cada rota)
+          |———— main.js (principal ficheiro Vue)
+          |———— router.js (rotas feitas com o Vue Router)
+          |———— store.js (gestão de estado feita com o Vuex)
+```
 
 ## Instalação do projeto
 Certifique-se que tem instalado:
