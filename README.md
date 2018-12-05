@@ -1,6 +1,10 @@
 # <p align="center"><img src="https://i.imgur.com/xe3haJA.png" alt="Vue logo"></p>
 Este projeto é uma aplicação web desenvolvida ao longo do 1º semestre do 2º ano do curso de [Tecnologias e Sistemas de Informação para a Web](https://www.esmad.ipp.pt/cursos/licenciatura/400001419), na [ESMAD](https://www.esmad.ipp.pt/), para a unidade curricular de Programação Web I. A aplicação tem em foco a [Unidade de Apoio de Comunicação e Imagem da ESMAD](https://www.esmad.ipp.pt/esmad/unidades_apoio/comunicacao_desenvolvimento/cimagem), que é responsável por propor, manter e difundir a imagem institucional.
 
+### Mockups
+Para fazer os mockups da aplicação foi utilizado o software [Adobe Xd](https://www.adobe.com/pt/products/xd.html), que permite fazer rascunhos com alguma interação, simulando o próprio ATLAS.
+- [Link para os mockups (armazenado na Adobe Cloud).](https://xd.adobe.com/view/655104f7-6885-4aa0-5154-1b50af8e35bd-1360/)
+
 ### Funcionalidades principais:
  - Autenticação com 3 diferentes perfis (aluno, proponente de eventos, administrador).
  - Publicação de notícias institucionais.

@@ -1,10 +1,11 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link :to="{name: 'home'}">Home</router-link> |
-      <router-link :to="{name: 'news'}">Notícias</router-link> |
+      <router-link :to="{name: 'home'}">Início</router-link> |
       <router-link :to="{name: 'events'}">Eventos</router-link> |
-      <router-link :to="{name: 'forum'}">Fórum</router-link>
+      <router-link :to="{name: 'news'}">Notícias</router-link> |
+      <router-link :to="{name: 'forum'}">Fórum</router-link> |
+      <router-link :to="{name: 'about'}">Sobre</router-link>
     </div>
     <router-view/>
   </div>
