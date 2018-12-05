@@ -3,7 +3,7 @@ Este projeto é uma aplicação web desenvolvida ao longo do 1º semestre do 2º
 
 ### Mockups
 Para fazer os mockups da aplicação foi utilizado o software [Adobe Xd](https://www.adobe.com/pt/products/xd.html), que permite fazer rascunhos com alguma interação, simulando o próprio ATLAS.
-- [Link para os mockups (armazenado na Adobe Cloud).](https://xd.adobe.com/view/655104f7-6885-4aa0-5154-1b50af8e35bd-1360/)
+- [Link para os mockups (armazenado na Adobe Cloud)](https://xd.adobe.com/view/655104f7-6885-4aa0-5154-1b50af8e35bd-1360/).
 
 ### Funcionalidades principais:
  - Autenticação com 3 diferentes perfis (aluno, proponente de eventos, administrador).
@@ -27,6 +27,10 @@ Para fazer os mockups da aplicação foi utilizado o software [Adobe Xd](https:/
 
 
 ## Instalação do projeto
+Certifique-se que tem instalado:
+- Sistema de controlo de versões [git](https://git-scm.com/).
+- [Node.js](https://nodejs.org/en/).
+
 #### Clonagem do repositório:
 ```
 git clone https://github.com/gustavo-vasconcelos/ATLAS.git
