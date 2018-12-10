@@ -1,34 +1,59 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link :to="{name: 'home'}">Início</router-link> |
-      <router-link :to="{name: 'events'}">Eventos</router-link> |
-      <router-link :to="{name: 'news'}">Notícias</router-link> |
-      <router-link :to="{name: 'forum'}">Fórum</router-link> |
-      <router-link :to="{name: 'about'}">Sobre</router-link>
-    </div>
-    <router-view/>
-  </div>
+	<div id="app">
+		<Navbar></Navbar>
+		<div id="main-container" class="container mt-4">
+			<router-view/>
+		</div>
+		<AtlasFooter></AtlasFooter>
+	</div>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+import Navbar from "@/components/Navbar.vue"
+import AtlasFooter from "@/components/AtlasFooter.vue"
+export default {
+	components: {
+		Navbar,
+		AtlasFooter
+	}
 }
+</script>
+
+
+<style lang="scss">
+@import "@/assets/styles/scss/custom-bootstrap.scss";
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+#app {
+	font-family: Exo, sans-serif;
+	background-color: #f1f1f1;
+}
+
+#main-container {
+	height: 1000px;
+}
+
+.router-link:hover {
+	text-decoration: none;
+}
+
+/*
 #nav {
-  padding: 30px;
+	padding: 30px;
 }
 
 #nav a {
-  font-weight: bold;
-  color: #2c3e50;
+	font-weight: 600;
+	color: #2c3e50;
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+	color: #42b983;
 }
+*/
+/*
+a.router-link-exact-active {
+	color: #008FC1 !important;
+}
+*/
 </style>
