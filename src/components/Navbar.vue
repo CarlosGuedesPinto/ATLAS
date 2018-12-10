@@ -1,6 +1,6 @@
 <template>
 	<div id="nav-container">
-		<b-navbar toggleable="md" type="dark" variant="atlas1">
+		<b-navbar toggleable="sm" type="dark" variant="atlas1" fixed="top">
 			<div class="container">
 				<router-link :to="{name: 'home'}" class="navbar-brand">
 					<img src="@/assets/img/logo.png" alt="ATLAS" height="50">
@@ -59,7 +59,11 @@ export default {
 
 <style scoped>
 #nav-container {
-	box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.75);
+    margin-bottom: 74px;
+}
+.navbar-brand:hover {
+    transform: scale(1.05);
 }
 .nav-link {
 	font-size: 1.05rem;

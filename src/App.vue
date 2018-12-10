@@ -30,30 +30,6 @@ export default {
 }
 
 #main-container {
-	height: 1000px;
+	height: 2000px;
 }
-
-.router-link:hover {
-	text-decoration: none;
-}
-
-/*
-#nav {
-	padding: 30px;
-}
-
-#nav a {
-	font-weight: 600;
-	color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-	color: #42b983;
-}
-*/
-/*
-a.router-link-exact-active {
-	color: #008FC1 !important;
-}
-*/
 </style>
