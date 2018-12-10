@@ -60,7 +60,7 @@ export default {
 <style scoped>
 #nav-container {
     box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.75);
-    margin-bottom: 74px;
+    height: 75px;
 }
 .navbar-brand:hover {
     transform: scale(1.05);
