@@ -30,25 +30,15 @@ export default {
 		verifyCredentials() {
 			let user = this.getUserByUsername(this.username)
 			if (user && user.password === this.password) {
-                console.log("logged")
+                this.$store.dispatch("userLoggedIn", user.id)
+				this.$router.push({ name: "home" })
 			} else {
 				console.log("no!")
 			}
-		},
-		showMessage() {
-			const toast = Swal.mixin({})
-
-			toast({})
 		}
 	},
 	computed: {
-		...mapGetters({
-			getUserByUsername: "userByUsername"
-		})
+		...mapGetters(["getUserByUsername"])
 	}
 }
-
-
-
-
 </script>

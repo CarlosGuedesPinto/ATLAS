@@ -30,7 +30,23 @@
 							:to="{name: 'login'}"
 							class="nav-link"
 							:class="{'active-route': isActive('login')}"
+							v-if="getLoggedUserId === -1"
 						>Login</router-link>
+						<div v-else>
+							<b-dropdown variant="link" id="nav-user-logged">
+								<template slot="button-content">
+									<b-img
+										rounded="circle"
+										height="50"
+										width="50"
+										fluid
+										src="https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif"
+										alt="Thumbnail"
+									/>
+									<span class="ml-2" style="color: white;">Admin</span>
+								</template>
+							</b-dropdown>
+						</div>
 					</b-navbar-nav>
 				</b-collapse>
 			</div>
@@ -39,6 +55,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
+
 export default {
 	name: "Navbar",
 	methods: {
@@ -52,12 +70,14 @@ export default {
 				return this.$route.name === route
 			}
 		}
+	},
+	computed: {
+		...mapGetters(["getLoggedUserId"])
 	}
 }
 </script>
 
 <style scoped>
-
 #nav-container {
 	box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.75);
 	height: 75px;
@@ -77,5 +97,4 @@ export default {
 .active-route {
 	color: #008fc1 !important;
 }
-
 </style>
