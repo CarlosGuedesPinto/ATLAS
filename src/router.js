@@ -10,10 +10,7 @@ import ForumTitlesView from "@/views/Forum/ForumTitles.vue"
 import ForumTitleView from "@/views/Forum/ForumTitle.vue"
 import TopicView from "@/views/Forum/Topic.vue"
 import AboutView from "@/views/About.vue"
-
-
-
-
+import LoginView from "@/views/Login.vue"
 import NotFound from "@/views/NotFound.vue"
 
 Vue.use(Router)
@@ -72,6 +69,11 @@ export default new Router({
       path: "/sobre",
       name: "about",
       component: AboutView
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: LoginView
     },
     {
       path: "*",

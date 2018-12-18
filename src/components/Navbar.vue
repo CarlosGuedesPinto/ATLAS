@@ -26,44 +26,44 @@
 					</b-navbar-nav>
 
 					<b-navbar-nav class="ml-auto">
-						<span class="nav-link" @click="modalShow = !modalShow">Login</span>
+						<router-link
+							:to="{name: 'login'}"
+							class="nav-link"
+							:class="{'active-route': isActive('login')}"
+						>Login</router-link>
 					</b-navbar-nav>
 				</b-collapse>
 			</div>
 		</b-navbar>
-		<b-modal v-model="modalShow">Hello From Modal!</b-modal>
 	</div>
 </template>
 
 <script>
 export default {
 	name: "Navbar",
-	data() {
-		return {
-			modalShow: false
-		}
-	},
 	methods: {
 		isActive(route) {
-            switch(route) {
-                case "home": return this.$route.name === route; break
-                case "events":
-                    return this.$route.name === route || this.$route.name === "eventsInfo"
-                    break
-                case "about": return this.$route.name === route; break
-            }
+			if (route === "events") {
+				return (
+					this.$route.name === route ||
+					this.$route.name === "eventsInfo"
+				)
+			} else {
+				return this.$route.name === route
+			}
 		}
 	}
 }
 </script>
 
 <style scoped>
+
 #nav-container {
-    box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.75);
-    height: 75px;
+	box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.75);
+	height: 75px;
 }
 .navbar-brand:hover {
-    transform: scale(1.05);
+	transform: scale(1.05);
 }
 .nav-link {
 	font-size: 1.05rem;
@@ -77,4 +77,5 @@ export default {
 .active-route {
 	color: #008fc1 !important;
 }
+
 </style>
