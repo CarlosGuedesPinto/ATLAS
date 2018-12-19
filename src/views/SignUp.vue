@@ -3,13 +3,13 @@
 		<h2 class="text-center col-12">Criar conta (provisório)</h2>
 		<div class="col-12 col-sm-6 mr-auto ml-auto">
 			<b-form-group
-				label="Username"
+				label="Utilizador"
 				label-for="username"
 				:invalid-feedback="invalidFeedback"
 				:valid-feedback="validFeedback"
-				:state="state"
+				:state="usernameState"
 			>
-				<b-form-input id="username" :state="usernameState" v-model.trim="name"></b-form-input>
+				<b-form-input id="username" :state="usernameState" v-model.trim="username"></b-form-input>
 			</b-form-group>
 			<div class="mt-4">
 				<label for="password">Password</label>
@@ -28,7 +28,8 @@ export default {
 	data() {
 		return {
 			username: "",
-			password: ""
+			password: "",
+			attemptSubmit: false
 		}
 	},
 	methods: {
@@ -44,8 +45,13 @@ export default {
 	},
 	computed: {
 		...mapGetters(["getUserByUsername"]),
-		state() {
-			return this.username.length >= 4 ? true : false
+		usernameState() {
+			if (!this.username && !this.attemptSubmit) {
+				return null
+			} else if (this.attemptSubmit) {
+			} else if (this.username) {
+				return this.getUserByUsername(this.username) ? false : true
+			}
 		},
 		invalidFeedback() {
 			if (this.username.length > 4) {
@@ -57,7 +63,7 @@ export default {
 			}
 		},
 		validFeedback() {
-			return this.state === true ? "Thank you" : ""
+			return this.usernameState === true ? "Thank you" : ""
 		}
 	}
 }
