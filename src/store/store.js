@@ -16,7 +16,7 @@ export default new Vuex.Store({
     getUserById: state => id => {
       return state.users.find(user => user.id === id)
     },
-    getLoggedUserId: state => state.loggedUserId
+    getLoggedUserId: state => state.loggedUserId,
   },
   mutations: {
     SET_USERS(state, payload) {
@@ -35,6 +35,9 @@ export default new Vuex.Store({
     },
     userLoggedIn(context, payload) {
       context.commit("USER_LOGGED_IN", payload)
+    },
+    userLoggedOut(context, payload) {
+      context.commit("USER_LOGGED_OUT", payload)
     }
   }
 })
