@@ -1,21 +1,21 @@
 <template>
 	<div class="row">
-		<h2 class="text-center col-12">Iniciar sessão (provisório)</h2>
+		<h2 class="text-center col-12">Criar conta (provisório)</h2>
 		<div class="col-12 col-sm-6 mr-auto ml-auto">
-			<div>
-				<label for="username">Utilizador</label>
-				<input type="text" id="username" class="form-control" v-model="username">
-			</div>
+			<b-form-group
+				label="Username"
+				label-for="username"
+				:invalid-feedback="invalidFeedback"
+				:valid-feedback="validFeedback"
+				:state="state"
+			>
+				<b-form-input id="username" :state="usernameState" v-model.trim="name"></b-form-input>
+			</b-form-group>
 			<div class="mt-4">
 				<label for="password">Password</label>
 				<input type="password" id="password" class="form-control" v-model="password">
 			</div>
 			<button class="btn btn-atlas1 col-12 mt-4" @click="verifyCredentials()">Iniciar sessão</button>
-			<div class="mt-2">
-				<small>Sem conta? Registe-se
-					<router-link :to="{name: 'signup'}">aqui</router-link>.
-				</small>
-			</div>
 		</div>
 	</div>
 </template>
@@ -24,7 +24,7 @@
 import { mapGetters } from "vuex"
 
 export default {
-	name: "LoginView",
+	name: "SignUpView",
 	data() {
 		return {
 			username: "",
@@ -43,7 +43,22 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(["getUserByUsername"])
+		...mapGetters(["getUserByUsername"]),
+		state() {
+			return this.username.length >= 4 ? true : false
+		},
+		invalidFeedback() {
+			if (this.username.length > 4) {
+				return ""
+			} else if (this.username.length > 0) {
+				return "Enter at least 4 characters"
+			} else {
+				return "Please enter something"
+			}
+		},
+		validFeedback() {
+			return this.state === true ? "Thank you" : ""
+		}
 	}
 }
 </script>

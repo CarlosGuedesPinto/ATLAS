@@ -11,6 +11,7 @@ import ForumTitleView from "@/views/Forum/ForumTitle.vue"
 import TopicView from "@/views/Forum/Topic.vue"
 import AboutView from "@/views/About.vue"
 import LoginView from "@/views/Login.vue"
+import SignUpView from "@/views/SignUp.vue"
 import NotFound from "@/views/NotFound.vue"
 
 Vue.use(Router)
@@ -71,9 +72,14 @@ export default new Router({
       component: AboutView
     },
     {
-      path: "/login",
+      path: "/iniciar-sessao",
       name: "login",
       component: LoginView
+    },
+    {
+      path: "/criar-conta",
+      name: "signup",
+      component: SignUpView
     },
     {
       path: "*",
