@@ -1,5 +1,5 @@
 <template>
-	<div id="nav-container">
+	<div>
 		<b-navbar toggleable="sm" type="dark" variant="atlas1" fixed="top">
 			<div class="container">
 				<router-link :to="{name: 'home'}" class="navbar-brand">
@@ -41,9 +41,9 @@
 										width="35"
 										fluid
 										:src="getLoggedUser.picture"
-										alt="Thumbnail"
+										:alt="getLoggedUser.username"
 									/>
-									<span class="ml-2" style="color: white;">{{ getLoggedUser.username }}</span>
+									<span class="ml-2" style="color: white;">{{ getLoggedUser.username[0].toUpperCase() + getLoggedUser.username.substr(1, getLoggedUser.username.length - 1) }}</span>
 								</template>
 								<b-dropdown-item-button>Perfil</b-dropdown-item-button>
 								<b-dropdown-item-button @click="userLoggedOut">Terminar sessão</b-dropdown-item-button>
@@ -53,6 +53,11 @@
 				</b-collapse>
 			</div>
 		</b-navbar>
+		<div class="container" style="margin-top: 75px;">
+			<div class="mt-4">
+				<b-alert show variant="atlas1" dismissible style="margin-top: 50px;">Conta criada com sucesso!</b-alert>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -85,9 +90,6 @@ export default {
 </script>
 
 <style scoped>
-#nav-container {
-	height: 75px;
-}
 .navbar-brand:hover {
 	transform: scale(1.05);
 }
@@ -106,9 +108,7 @@ export default {
 #nav-user-logged:hover {
 	text-decoration: none !important;
 }
-.dropdown-item:hover{
-}
-.dropdown-item:active{
-	background-color: #00225B;
+.dropdown-item:active {
+	background-color: #00225b;
 }
 </style>

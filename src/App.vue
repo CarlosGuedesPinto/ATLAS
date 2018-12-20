@@ -22,7 +22,7 @@ export default {
 		AtlasFooter
 	},
 	methods: {
-		...mapActions(["setUsers"])
+		...mapActions(["setUsers", "setInstitutions"])
 	},
 	created() {
 		if (!localStorage.users) {
@@ -30,6 +30,13 @@ export default {
 			this.setUsers(database.users)
 		} else {
 			this.setUsers(JSON.parse(localStorage.users))
+		}
+
+		if (!localStorage.institutions) {
+			localStorage.institutions = JSON.stringify(database.institutions)
+			this.setInstitutions(database.institutions)
+		} else {
+			this.setInstitutions(JSON.parse(localStorage.institutions))
 		}
 	}
 }
@@ -46,6 +53,11 @@ export default {
 }
 
 #main-container {
-	height: 1000px;
+	margin-bottom: 100px;
+}
+.form-control:focus {
+	border-color: #008fc1;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+		0 0 8px rgba(0, 142, 193, 0.6);
 }
 </style>
