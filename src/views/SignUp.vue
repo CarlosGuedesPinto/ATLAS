@@ -2,105 +2,108 @@
 	<div class="row">
 		<h2 class="text-center col-12">Criar conta (provisório)</h2>
 		<div class="col-12 col-sm-6 mr-auto ml-auto">
-			<b-form-group
-				label="Nome"
-				label-for="name"
-				:invalid-feedback="nameInvalidFeedback"
-				:valid-feedback="nameValidFeedback"
-				:state="nameState"
-				class="mt-4"
-			>
-				<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label="Utilizador"
-				label-for="username"
-				:invalid-feedback="usernameInvalidFeedback"
-				:valid-feedback="usernameValidFeedback"
-				:state="usernameState"
-				class="mt-4"
-			>
-				<b-form-input
-					id="username"
+			<b-form @submit.prevent="createAccount()">
+				<b-form-group
+					label="Nome"
+					label-for="name"
+					:invalid-feedback="nameInvalidFeedback"
+					:valid-feedback="nameValidFeedback"
+					:state="nameState"
+					class="mt-4"
+				>
+					<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Utilizador"
+					label-for="username"
+					:invalid-feedback="usernameInvalidFeedback"
+					:valid-feedback="usernameValidFeedback"
 					:state="usernameState"
-					v-model="username"
-					type="text"
-					maxlength="15"
-				></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label="Palavra-passe"
-				label-for="password"
-				:invalid-feedback="passwordInvalidFeedback"
-				:state="passwordState"
-				class="mt-4"
-			>
-				<b-form-input
-					id="password"
+					class="mt-4"
+				>
+					<b-form-input
+						id="username"
+						:state="usernameState"
+						v-model="username"
+						type="text"
+						maxlength="15"
+					></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Palavra-passe"
+					label-for="password"
+					:invalid-feedback="passwordInvalidFeedback"
 					:state="passwordState"
-					v-model="password"
-					type="password"
-					maxlength="15"
-				></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label="Confirmar palavra-passe"
-				label-for="confirmPassword"
-				:invalid-feedback="confirmPasswordInvalidFeedback"
-				:state="confirmPasswordState"
-				class="mt-4"
-			>
-				<b-form-input
-					id="confirmPassword"
+					class="mt-4"
+				>
+					<b-form-input
+						id="password"
+						:state="passwordState"
+						v-model="password"
+						type="password"
+						maxlength="15"
+					></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Confirmar palavra-passe"
+					label-for="confirmPassword"
+					:invalid-feedback="confirmPasswordInvalidFeedback"
 					:state="confirmPasswordState"
-					v-model="confirmPassword"
-					type="password"
-					maxlength="15"
-				></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label="Email"
-				label-for="email"
-				:invalid-feedback="emailInvalidFeedback"
-				:state="emailState"
-				class="mt-4"
-			>
-				<b-form-input id="email" :state="emailState" v-model="email" type="email"></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label-for="picture"
-				:invalid-feedback="pictureInvalidFeedback"
-				:state="pictureState"
-				class="mt-4"
-			>
-				<template slot="label">
-					<span>URL foto -</span>
-					<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
-				</template>
-				<b-form-input id="picture" :state="pictureState" v-model="picture" type="url"></b-form-input>
-			</b-form-group>
-			<b-form-group label="Género" class="mt-4">
-				<b-form-radio-group
-					id="btnradios1"
-					buttons
-					button-variant="outline-atlas2"
-					v-model="selectedGender"
-					:options="genders"
-					name="radiosBtnDefault"
-				/>
-			</b-form-group>
-			<b-form-group label="Instituição de ensino" class="mt-4">
-				<b-form-radio-group
-					id="btnradios2"
-					buttons
-					button-variant="outline-atlas2"
-					v-model="selectedInstitution"
-					:options="institutions"
-					name="radiosBtnDefault"
-				/>
-			</b-form-group>
-			<button class="btn btn-atlas1 col-12 mt-4" @click="createAccount()">Criar conta</button>
+					class="mt-4"
+				>
+					<b-form-input
+						id="confirmPassword"
+						:state="confirmPasswordState"
+						v-model="confirmPassword"
+						type="password"
+						maxlength="15"
+					></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Email"
+					label-for="email"
+					:invalid-feedback="emailInvalidFeedback"
+					:state="emailState"
+					class="mt-4"
+				>
+					<b-form-input id="email" :state="emailState" v-model="email" type="email"></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label-for="picture"
+					:invalid-feedback="pictureInvalidFeedback"
+					:state="pictureState"
+					class="mt-4"
+				>
+					<template slot="label">
+						<span>URL foto -</span>
+						<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
+					</template>
+					<b-form-input id="picture" :state="pictureState" v-model="picture" type="url"></b-form-input>
+				</b-form-group>
+				<b-form-group label="Género" class="mt-4">
+					<b-form-radio-group
+						id="btnradios1"
+						buttons
+						button-variant="outline-atlas2"
+						v-model="selectedGender"
+						:options="genders"
+						name="radiosBtnDefault"
+					/>
+				</b-form-group>
+				<b-form-group label="Instituição de ensino" class="mt-4">
+					<b-form-radio-group
+						id="btnradios2"
+						buttons
+						button-variant="outline-atlas2"
+						v-model="selectedInstitution"
+						:options="institutions"
+						name="radiosBtnDefault"
+					/>
+				</b-form-group>
+				<button class="btn btn-atlas1 col-12 mt-2" type="submit">Criar conta</button>
+			</b-form>
 		</div>
+		<vue-snotify></vue-snotify>
 	</div>
 </template>
 
@@ -149,7 +152,7 @@ export default {
 			) {
 				this.$store.dispatch("createdAccount", {
 					id: this.getLastUserId + 1,
-					idProfile: 1,
+					profileId: 1,
 					username: this.username,
 					password: this.password,
 					name: this.name,
@@ -161,7 +164,16 @@ export default {
 				})
 				this.$router.push({ name: "login" })
 			} else {
-				console.log("no!")
+				this.$snotify.error(
+					"Preencha todos os campos corretamente",
+					"",
+					{
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					}
+				)
 			}
 		},
 		verifyImgExists(url, callback) {

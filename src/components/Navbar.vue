@@ -40,10 +40,17 @@
 										height="35"
 										width="35"
 										fluid
-										:src="getLoggedUser.picture"
-										:alt="getLoggedUser.username"
+										:src="getUserById(getLoggedUserId).picture"
+										:alt="getUserById(getLoggedUserId).username"
 									/>
-									<span class="ml-2" style="color: white;">{{ getLoggedUser.username[0].toUpperCase() + getLoggedUser.username.substr(1, getLoggedUser.username.length - 1) }}</span>
+									<span
+										class="ml-2"
+										style="color: white;"
+									>{{ getUserById(getLoggedUserId).username[0].toUpperCase() + getUserById(getLoggedUserId).username.substr(1, getUserById(getLoggedUserId).username.length - 1) }}</span>
+								</template>
+								<template v-if="getUserById(getLoggedUserId).profileId === 3">
+									<router-link :to="{name: 'backoffice'}" class="dropdown-item">Painel de controlo</router-link>
+									<b-dropdown-divider></b-dropdown-divider>
 								</template>
 								<b-dropdown-item-button>Perfil</b-dropdown-item-button>
 								<b-dropdown-item-button @click="userLoggedOut">Terminar sessão</b-dropdown-item-button>
@@ -53,11 +60,7 @@
 				</b-collapse>
 			</div>
 		</b-navbar>
-		<div class="container" style="margin-top: 75px;">
-			<div class="mt-4">
-				<b-alert show variant="atlas1" dismissible style="margin-top: 50px;">Conta criada com sucesso!</b-alert>
-			</div>
-		</div>
+		<vue-snotify></vue-snotify>
 	</div>
 </template>
 
@@ -79,12 +82,38 @@ export default {
 		},
 		...mapActions(["userLoggedOut"])
 	},
+	mounted() {
+		this.$store.subscribe((mutation, state) => {
+			switch (mutation.type) {
+				case "USER_LOGGED_IN":
+					this.$snotify.success(
+						`Bem vindo, ${
+							this.getUserById(this.getLoggedUserId).username
+						}!`,
+						"Sessão iniciada",
+						{
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							position: "centerTop"
+						}
+					)
+					break
+				case "USER_LOGGED_OUT":
+					this.$snotify.success("Até logo!", "Sessão terminada", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						position: "centerTop"
+					})
+					break
+			}
+		})
+	},
 	computed: {
-		...mapGetters(["getLoggedUserId", "getUserById"]),
-		getLoggedUser() {
-			console.log(true)
-			return this.getUserById(this.getLoggedUserId)
-		}
+		...mapGetters(["getLoggedUserId", "getUserById"])
 	}
 }
 </script>

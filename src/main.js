@@ -3,12 +3,12 @@ import App from './App.vue'
 import router from './router'
 import store from './store/store.js'
 import BootstrapVue from 'bootstrap-vue'
-import VueSweetalert2 from 'vue-sweetalert2';
+import Snotify from 'vue-snotify'
 
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
-Vue.use(VueSweetalert2)
+Vue.use(Snotify)
 
 new Vue({
   router,

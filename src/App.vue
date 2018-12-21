@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<Navbar></Navbar>
+		<Navbar style="margin-bottom: 75px;"></Navbar>
 		<div id="main-container" class="container py-4">
 			<transition name="fade" mode="out-in">
 				<router-view/>
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex"
+import { mapGetters, mapActions } from "vuex"
 
 import Navbar from "@/components/Navbar.vue"
 import AtlasFooter from "@/components/AtlasFooter.vue"
@@ -22,14 +22,22 @@ export default {
 		AtlasFooter
 	},
 	methods: {
-		...mapActions(["setUsers", "setInstitutions"])
+		...mapActions(["setUsers", "setInstitutions", "userLoggedIn"])
 	},
 	created() {
+		window.addEventListener("beforeunload", () => {
+			this.$destroy()
+		})
+		
 		if (!localStorage.users) {
 			localStorage.users = JSON.stringify(database.users)
 			this.setUsers(database.users)
 		} else {
 			this.setUsers(JSON.parse(localStorage.users))
+		}
+
+		if(localStorage.loggedUserId) {
+			this.userLoggedIn(parseInt(localStorage.loggedUserId))
 		}
 
 		if (!localStorage.institutions) {
@@ -38,6 +46,14 @@ export default {
 		} else {
 			this.setInstitutions(JSON.parse(localStorage.institutions))
 		}
+	},
+	computed: {
+		...mapGetters(["getUsers", "getInstitutions", "getLoggedUserId"])
+	},
+	destroyed() {
+		localStorage.users = JSON.stringify(this.getUsers)
+		localStorage.institutions = JSON.stringify(this.getInstitutions)
+		localStorage.loggedUserId = JSON.stringify(this.getLoggedUserId)
 	}
 }
 </script>
@@ -46,6 +62,7 @@ export default {
 <style lang="scss">
 @import "@/assets/styles/scss/custom-bootstrap.scss";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import "~vue-snotify/styles/material";
 
 #app {
 	font-family: Exo, sans-serif;

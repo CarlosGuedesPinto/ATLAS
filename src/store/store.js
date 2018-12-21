@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     users: [],
     loggedUserId: -1,
-    institutions: []
+    institutions: [],
+    notifications: []
   },
   getters: {
     getUserById: state => id => {
@@ -31,6 +32,9 @@ export default new Vuex.Store({
         })
       }
       return lastId
+    },
+    getUsers: state => {
+      return state.users
     },
     getInstitutions: state => {
       return state.institutions

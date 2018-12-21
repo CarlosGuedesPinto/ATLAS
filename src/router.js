@@ -12,34 +12,31 @@ import TopicView from "@/views/Forum/Topic.vue"
 import AboutView from "@/views/About.vue"
 import LoginView from "@/views/Login.vue"
 import SignUpView from "@/views/SignUp.vue"
+import BackofficeHomeView from "@/views/Backoffice/Home.vue"
+import BackofficeUsersView from "@/views/Backoffice/Users.vue"
 import NotFound from "@/views/NotFound.vue"
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
       path: "/",
       name: "home",
-      component: HomeView
-    },
-    {
-      path: "/noticias",
-      name: "news",
-      component: NewsView,
-    },
-
-    {
-      path: "/noticia/:id",
-      name: "newsInfo",
-      component: NewsInfoView
+      component: HomeView,
+      meta: {
+        title: "Início"
+      }
     },
     {
       path: "/eventos",
       name: "events",
-      component: EventsView
+      component: EventsView,
+      meta: {
+        title: "Eventos"
+      }
     },
     {
       path: "/evento/:id",
@@ -82,6 +79,18 @@ export default new Router({
       component: SignUpView
     },
     {
+      path: "/painel-controlo",
+      name: "backoffice",
+      component: BackofficeHomeView,
+      meta: {
+        requiresAuth: true,
+        authorizedProfiles: [2, 3]
+      },
+      children: [
+        { path: "utilizadores", name: "backofficeUsers", component: BackofficeUsersView }
+      ]
+    },
+    {
       path: "*",
       component: NotFound
     }
@@ -94,3 +103,26 @@ export default new Router({
     }
   }
 })
+
+import store from "@/store/store.js"
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    if (store.state.loggedUserId === -1) {
+      next({ name: "login" })
+    } else {
+      let hasAuthorization = to.meta.authorizedProfiles.some(
+        authorizedProfile => authorizedProfile === store.getters.getUserById(store.state.loggedUserId).profileId
+      )
+      if (!hasAuthorization) {
+        next({ name: "home" })
+      } else {
+        next()
+      }
+    }
+  } else {
+    next() // make sure to always call next()!
+  }
+})
+
+export default router
