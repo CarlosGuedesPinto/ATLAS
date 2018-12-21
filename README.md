@@ -23,7 +23,6 @@ Para fazer os mockups da aplicação foi utilizado o software [Adobe Xd](https:/
 - [Vuex](https://vuex.vuejs.org/).
 - [Bootstrap-vue](https://bootstrap-vue.js.org/).
 - [Owl Caroulsel 2](https://owlcarousel2.github.io/OwlCarousel2/).
-- [Sweet Alert 2](https://sweetalert2.github.io/).
 
 ### Organização da pasta:
 O ATLAS tem a organização padrão de um projeto de Vue CLI 3, onde todo o código que foi alterado encontra-se na pasta ```src```.
