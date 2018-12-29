@@ -60,7 +60,6 @@
 				</b-collapse>
 			</div>
 		</b-navbar>
-		<vue-snotify></vue-snotify>
 	</div>
 </template>
 
@@ -81,36 +80,6 @@ export default {
 			}
 		},
 		...mapActions(["userLoggedOut"])
-	},
-	mounted() {
-		this.$store.subscribe((mutation, state) => {
-			switch (mutation.type) {
-				case "USER_LOGGED_IN":
-					this.$snotify.success(
-						`Bem vindo, ${
-							this.getUserById(this.getLoggedUserId).username
-						}!`,
-						"Sessão iniciada",
-						{
-							timeout: 2000,
-							showProgressBar: false,
-							closeOnClick: true,
-							pauseOnHover: true,
-							position: "centerTop"
-						}
-					)
-					break
-				case "USER_LOGGED_OUT":
-					this.$snotify.success("Até logo!", "Sessão terminada", {
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						position: "centerTop"
-					})
-					break
-			}
-		})
 	},
 	computed: {
 		...mapGetters(["getLoggedUserId", "getUserById"])

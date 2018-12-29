@@ -1,6 +1,5 @@
 import Vue from "vue"
 import Router from "vue-router"
-import MainView from "@/views/Main.vue"
 import HomeView from "@/views/Home.vue"
 import EventsView from "@/views/Events/Events.vue"
 import EventInfoView from "@/views/Events/EventInfo.vue"
@@ -23,68 +22,59 @@ const router = new Router({
   routes: [
     {
       path: "/",
-      component: MainView,
+      name: "home",
+      component: HomeView,
       meta: {
         title: "Início"
-      },
-      children: [
-        {
-          path: "",
-          component: HomeView,
-          name: "home",
-          meta: {
-            title: "Início"
-          }
-        },
-        {
-          path: "eventos",
-          name: "events",
-          component: EventsView,
-          meta: {
-            title: "Eventos"
-          }
-        },
-        {
-          path: "evento/:id",
-          name: "eventsInfo",
-          component: EventInfoView
-        },
-        {
-          path: "forum",
-          name: "forum",
-          component: ForumView
-        },
-        {
-          path: "forum/f",
-          name: "forumTitles",
-          component: ForumTitlesView
-        },
-        {
-          path: "forum/f/:forumTitle",
-          name: "forumTitle",
-          component: ForumTitleView
-        },
-        {
-          path: "forum/f/:forumTitle/:id",
-          name: "topic",
-          component: TopicView
-        },
-        {
-          path: "sobre",
-          name: "about",
-          component: AboutView
-        },
-        {
-          path: "iniciar-sessao",
-          name: "login",
-          component: LoginView
-        },
-        {
-          path: "criar-conta",
-          name: "signup",
-          component: SignUpView
-        }
-      ]
+      }
+    },
+    {
+      path: "/eventos",
+      name: "events",
+      component: EventsView,
+      meta: {
+        title: "Eventos"
+      }
+    },
+    {
+      path: "/evento/:id",
+      name: "eventsInfo",
+      component: EventInfoView
+    },
+    {
+      path: "/forum",
+      name: "forum",
+      component: ForumView
+    },
+    {
+      path: "/forum/f",
+      name: "forumTitles",
+      component: ForumTitlesView
+    },
+    {
+      path: "/forum/f/:forumTitle",
+      name: "forumTitle",
+      component: ForumTitleView
+    },
+    {
+      path: "/forum/f/:forumTitle/:id",
+      name: "topic",
+      component: TopicView
+    },
+    {
+      path: "/sobre",
+      name: "about",
+      component: AboutView
+    },
+    {
+      path: "/iniciar-sessao",
+      name: "login",
+      component: LoginView
+    },
+    {
+      path: "/criar-conta",
+      name: "signup",
+      component: SignUpView
     },
     {
       path: "/painel-controlo",

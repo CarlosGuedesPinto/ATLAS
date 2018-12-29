@@ -1,7 +1,7 @@
 <template>
 	<div class="row">
 		<h2 class="text-center col-12">Iniciar sessão (provisório)</h2>
-		<div class="col-12 col-sm-6 mr-auto ml-auto">
+		<div class="col-12 col-sm-6 mr-auto ml-auto ">
 			<b-form @submit.prevent="verifyCredentials()">
 				<b-form-group
 					label="Utilizador"
@@ -114,3 +114,7 @@ export default {
 	}
 }
 </script>
+
+<style>
+
+</style>

@@ -1,8 +1,7 @@
 <template>
-	<div>
-        <h1>Painel de controlo</h1>
-		<BackofficeSidebar></BackofficeSidebar>
-		<router-view></router-view>
+	<div ref="backofficeContainer">
+		<BackofficeSidebar/>
+		<router-view/>
 	</div>
 </template>
 

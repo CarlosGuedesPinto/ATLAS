@@ -1,26 +1,17 @@
 <template>
 	<div id="app">
-		<Navbar style="margin-bottom: 75px;"></Navbar>
-		<div id="main-container" class="container py-4">
-			<transition name="fade" mode="out-in">
-				<router-view/>
-			</transition>
-		</div>
-		<AtlasFooter></AtlasFooter>
+		<transition name="fade" mode="out-in">
+			<router-view/>
+		</transition>
+		<vue-snotify></vue-snotify>
 	</div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex"
-
-import Navbar from "@/components/Navbar.vue"
-import AtlasFooter from "@/components/AtlasFooter.vue"
 import database from "@/store/data.js"
+
 export default {
-	components: {
-		Navbar,
-		AtlasFooter
-	},
 	methods: {
 		...mapActions(["setUsers", "setInstitutions", "userLoggedIn"])
 	},
@@ -28,7 +19,7 @@ export default {
 		window.addEventListener("beforeunload", () => {
 			this.$destroy()
 		})
-		
+
 		if (!localStorage.users) {
 			localStorage.users = JSON.stringify(database.users)
 			this.setUsers(database.users)
@@ -36,7 +27,7 @@ export default {
 			this.setUsers(JSON.parse(localStorage.users))
 		}
 
-		if(localStorage.loggedUserId) {
+		if (localStorage.loggedUserId) {
 			this.userLoggedIn(parseInt(localStorage.loggedUserId))
 		}
 
@@ -46,9 +37,38 @@ export default {
 		} else {
 			this.setInstitutions(JSON.parse(localStorage.institutions))
 		}
+
+		this.$store.subscribe((mutation, state) => {
+			switch (mutation.type) {
+				case "USER_LOGGED_IN":
+					this.$snotify.success(
+						`Bem vindo, ${
+							this.getUserById(this.getLoggedUserId).username
+						}!`,
+						"Sessão iniciada",
+						{
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							position: "centerTop"
+						}
+					)
+					break
+				case "USER_LOGGED_OUT":
+					this.$snotify.success("Até logo!", "Sessão terminada", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						position: "centerTop"
+					})
+					break
+			}
+		})
 	},
 	computed: {
-		...mapGetters(["getUsers", "getInstitutions", "getLoggedUserId"])
+		...mapGetters(["getUsers", "getInstitutions", "getLoggedUserId", "getUserById"])
 	},
 	destroyed() {
 		localStorage.users = JSON.stringify(this.getUsers)
@@ -77,4 +97,47 @@ export default {
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
 		0 0 8px rgba(0, 142, 193, 0.6);
 }
+
+.vertical-center {
+	min-height: 100%; /* Fallback for browsers do NOT support vh unit */
+	min-height: 100vh; /* These two lines are counted as one 🙂       */
+	display: flex;
+	align-items: center;
+}
 </style>
+<!--
+computed: {
+		...mapGetters(["getLoggedUserId", "getUserById"])
+	},
+	created() {
+		this.$store.subscribe((mutation, state) => {
+			switch (mutation.type) {
+				case "USER_LOGGED_IN":
+					this.$snotify.success(
+						`Bem vindo, ${
+							this.getUserById(this.getLoggedUserId).username
+						}!`,
+						"Sessão iniciada",
+						{
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							position: "centerTop"
+						}
+					)
+					break
+				case "USER_LOGGED_OUT":
+					this.$snotify.success("Até logo!", "Sessão terminada", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						position: "centerTop"
+					})
+					break
+			}
+		})
+	}
+
+	-->
