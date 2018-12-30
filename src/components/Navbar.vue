@@ -48,7 +48,7 @@
 										style="color: white;"
 									>{{ getUserById(getLoggedUserId).username[0].toUpperCase() + getUserById(getLoggedUserId).username.substr(1, getUserById(getLoggedUserId).username.length - 1) }}</span>
 								</template>
-								<template v-if="getUserById(getLoggedUserId).profileId === 3">
+								<template v-if="getUserById(getLoggedUserId).profileId !== 1">
 									<router-link :to="{name: 'backoffice'}" class="dropdown-item">Painel de controlo</router-link>
 									<b-dropdown-divider></b-dropdown-divider>
 								</template>

@@ -10,7 +10,7 @@
 
 		<vs-sidebar
 			:parent="$refs.backoffice"
-			default-index="1"
+			:default-index="getIndex"
 			color="primary"
 			class="sidebar"
 			:staticPosition="true"
@@ -19,25 +19,22 @@
 			:reduce="sidebarReduced"
 		>
 			<vs-sidebar-item index="1" icon="question_answer" :to="{name: 'backoffice'}">Início</vs-sidebar-item>
-			<vs-sidebar-item index="2" icon="person" :to="{name: 'backofficeUsers'}">Utilizadores</vs-sidebar-item>
-			<vs-sidebar-group title="Eventos">
-				<vs-sidebar-item index="3" icon="question_answer">Meus eventos</vs-sidebar-item>
-				<vs-sidebar-item index="4" icon="question_answer">Criar evento</vs-sidebar-item>
-				<vs-sidebar-group title="Store">
-					<vs-sidebar-item index="2.1" icon="store">Store</vs-sidebar-item>
-					<vs-sidebar-item index="2.2" icon="nature_people">Nature</vs-sidebar-item>
-					<vs-sidebar-item index="2.3" icon="style">Style</vs-sidebar-item>
-				</vs-sidebar-group>
-				<vs-sidebar-item index="2" icon="gavel">History</vs-sidebar-item>
-				<vs-sidebar-item index="3" icon="https">security</vs-sidebar-item>
-				<vs-sidebar-item index="4" icon="help">Help</vs-sidebar-item>
+			<vs-sidebar-item index="2" icon="person" :to="{name: 'backofficeUsers'}" v-if="getUserById(getLoggedUserId).profileId === 3">Utilizadores</vs-sidebar-item>
+			<vs-sidebar-group title="Eventos" open>
+				<vs-sidebar-item index="3.1" icon="event">Meus eventos</vs-sidebar-item>
+				<vs-sidebar-item index="3.2" icon="add">Criar evento</vs-sidebar-item>
+			</vs-sidebar-group>
+			<vs-sidebar-group title="Store">
+				<vs-sidebar-item index="2.1" icon="store">Store</vs-sidebar-item>
+				<vs-sidebar-item index="2.2" icon="nature_people">Nature</vs-sidebar-item>
+				<vs-sidebar-item index="2.3" icon="style">Style</vs-sidebar-item>
 			</vs-sidebar-group>
 		</vs-sidebar>
 	</div>
 </template>
 
 <script>
-import { mapActions } from "vuex"
+import { mapActions, mapGetters } from "vuex"
 
 export default {
 	name: "BackofficeSidebar",
@@ -65,8 +62,15 @@ export default {
 		...mapActions(["toggleBackofficeSidebar"])
 	},
 	computed: {
+		...mapGetters(["getUserById", "getLoggedUserId"]),
 		sidebarReduced() {
 			return this.windowWidth <= 768 ? true : false
+		},
+		getIndex() {
+			switch(this.$route.name) {
+				case "backoffice": return 1
+				case "backofficeUsers": return 2
+			}
 		}
 	}
 }
@@ -75,7 +79,7 @@ export default {
 <style>
 .sidebar {
 	position: fixed;
-	z-index: 1;
+	z-index: 2;
 	top: 0;
 	left: 0;
 	width: 250px;

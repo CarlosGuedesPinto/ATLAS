@@ -49,11 +49,14 @@ export default new Vuex.Store({
     USER_LOGGED_OUT(state) {
       state.loggedUserId = -1
     },
-    CREATED_ACCOUNT(state, payload) {
+    SIGNED_UP(state, payload) {
       state.users.push(payload)
     },
     SET_INSTITUTIONS(state, payload) {
       state.institutions = payload
+    },
+    CREATED_ACCOUNT(state, payload) {
+      state.users.push(payload)
     }
   },
   actions: {
@@ -69,7 +72,10 @@ export default new Vuex.Store({
     userLoggedOut(context, payload) {
       context.commit("USER_LOGGED_OUT", payload)
     },
-    createdAccount(context, payload) {
+    signUp(context, payload) {
+      context.commit("SIGNED_UP", payload)
+    },
+    createAccount(context, payload) {
       context.commit("CREATED_ACCOUNT", payload)
     }
   }

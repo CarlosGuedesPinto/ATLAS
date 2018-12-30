@@ -1,7 +1,9 @@
 <template>
-	<div class="row container" id="backofficeParent">
-		<BackofficeSidebar class="col-xl-3 col-lg-4 col-md-5 col-2"/>
-		<router-view class="col-xl-9 col-lg-8 col-md-7 col-10 view"/>
+	<div class="row container col-12" id="backofficeParent">
+		<BackofficeSidebar class="col-xl-3 col-md-4 col-2"/>
+		<transition name="fade" mode="out-in">
+			<router-view class="col-xl-9 col-md-8 col-10 view"/>
+		</transition>
 	</div>
 </template>
 

@@ -54,12 +54,18 @@ const router = new Router({
         {
           path: "iniciar-sessao",
           name: "login",
-          component: LoginView
+          component: LoginView,
+          meta: {
+            requiresNotAuth: true
+          }
         },
         {
           path: "criar-conta",
           name: "signup",
-          component: SignUpView
+          component: SignUpView,
+          meta: {
+            requiresNotAuth: true
+          }
         }
       ]
     },
@@ -67,12 +73,19 @@ const router = new Router({
       path: "/painel-controlo",
       component: BackofficeView,
       meta: {
-        requiresAuth: true,
-        authorizedProfiles: [2, 3]
+        requiresAuth: true
       },
       children: [
-        { path: "", name: "backoffice", component: BackofficeHomeView },
-        { path: "utilizadores", name: "backofficeUsers", component: BackofficeUsersView }
+        {
+          path: "", name: "backoffice", component: BackofficeHomeView, meta: {
+            authorizedProfiles: [2, 3]
+          }
+        },
+        {
+          path: "utilizadores", name: "backofficeUsers", component: BackofficeUsersView, meta: {
+            authorizedProfiles: [3]
+          }
+        }
       ]
     },
     {
@@ -90,23 +103,41 @@ const router = new Router({
 })
 
 import store from "@/store/store.js"
+let loggedUserId = -1, users = [], loggedUser = null
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth) {
-    if (store.state.loggedUserId === -1) {
+  if (!from.name) {
+    loggedUserId = parseInt(localStorage.loggedUserId)
+    users = JSON.parse(localStorage.users)
+  } else {
+    loggedUserId = store.state.loggedUserId
+    users = store.getters.getUsers
+  }
+
+  loggedUser = users.find(user => user.id === loggedUserId)
+
+  if (to.matched.some(m => m.meta.requiresAuth)) {
+    if (loggedUserId === -1) {
       next({ name: "login" })
     } else {
-      let hasAuthorization = to.meta.authorizedProfiles.some(
-        authorizedProfile => authorizedProfile === store.getters.getUserById(store.state.loggedUserId).profileId
+      let hasAuthorization = to.matched.some(
+        m => m.meta.authorizedProfiles ?
+          m.meta.authorizedProfiles.some(
+            authorizedProfile => authorizedProfile === loggedUser.profileId
+          ) : false
       )
-      if (!hasAuthorization) {
+      if (!hasAuthorization && loggedUser.profileId === 1) {
         next({ name: "home" })
+      } else if (!hasAuthorization && loggedUser.profileId === 2) {
+        next({ name: "backoffice" })
       } else {
         next()
       }
     }
+  } else if (to.matched.some(m => m.meta.requiresNotAuth) && loggedUserId !== -1) {
+    next({ name: "home" })
   } else {
-    next() // make sure to always call next()!
+    next()
   }
 })
 

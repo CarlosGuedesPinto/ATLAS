@@ -38,7 +38,7 @@ export default {
 			this.setInstitutions(JSON.parse(localStorage.institutions))
 		}
 
-		this.$store.subscribe((mutation, state) => {
+		this.$store.subscribe(mutation => {
 			switch (mutation.type) {
 				case "USER_LOGGED_IN":
 					this.$snotify.success(
@@ -64,11 +64,29 @@ export default {
 						position: "centerTop"
 					})
 					break
+				case "SIGNED_UP":
+					this.$snotify.info(
+						"Faça login com os seus dados.",
+						"Conta criada.",
+						{
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							position: "centerTop"
+						}
+					)
+					break
 			}
 		})
 	},
 	computed: {
-		...mapGetters(["getUsers", "getInstitutions", "getLoggedUserId", "getUserById"])
+		...mapGetters([
+			"getUsers",
+			"getInstitutions",
+			"getLoggedUserId",
+			"getUserById"
+		])
 	},
 	destroyed() {
 		localStorage.users = JSON.stringify(this.getUsers)
@@ -85,7 +103,7 @@ export default {
 @import "~vue-snotify/styles/material";
 #app {
 	font-family: Exo, sans-serif;
-	background-color: #f1f1f1;
+	background: #f1f1f1;
 }
 
 .form-control:focus {
