@@ -13,7 +13,17 @@ Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
 Vue.use(Snotify)
-Vue.use(Vuesax)
+Vue.use(Vuesax, {
+  theme: {
+    colors: {
+      primary: '#00225B',
+      success: 'rgb(23, 201, 100)',
+      danger: 'rgb(242, 19, 93)',
+      warning: 'rgb(255, 130, 0)',
+      dark: '#008FC1'
+    }
+  }
+})
 
 new Vue({
   router,

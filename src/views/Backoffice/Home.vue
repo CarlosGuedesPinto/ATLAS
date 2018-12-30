@@ -1,16 +1,42 @@
 <template>
-	<div ref="backofficeContainer">
-		<BackofficeSidebar/>
-		<router-view/>
-	</div>
+    <div>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+        <p>Home</p>
+    </div>
 </template>
 
 <script>
-import BackofficeSidebar from "@/components/BackofficeSidebar.vue"
-
 export default {
-	name: "BackofficeHomeView",
-	components: { BackofficeSidebar }
+    name: "BackofficeHomeView"
 }
 </script>
 

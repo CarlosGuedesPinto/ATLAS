@@ -1,9 +1,9 @@
 <template>
-	<div style="height: 1000px">
+	<div>
 		<div class="container">
 			<Navbar style="margin-bottom: 75px;"></Navbar>
 			<transition name="fade" mode="out-in">
-				<router-view/>
+				<router-view style="padding: 50px 0 60px 0"/>
 			</transition>
 		</div>
 		<AtlasFooter></AtlasFooter>

@@ -4,13 +4,10 @@ import MainView from "@/views/Main.vue"
 import HomeView from "@/views/Home.vue"
 import EventsView from "@/views/Events/Events.vue"
 import EventInfoView from "@/views/Events/EventInfo.vue"
-import ForumView from "@/views/Forum/Forum.vue"
-import ForumTitlesView from "@/views/Forum/ForumTitles.vue"
-import ForumTitleView from "@/views/Forum/ForumTitle.vue"
-import TopicView from "@/views/Forum/Topic.vue"
 import AboutView from "@/views/About.vue"
 import LoginView from "@/views/Login.vue"
 import SignUpView from "@/views/SignUp.vue"
+import BackofficeView from "@/views/Backoffice/Backoffice.vue"
 import BackofficeHomeView from "@/views/Backoffice/Home.vue"
 import BackofficeUsersView from "@/views/Backoffice/Users.vue"
 import NotFound from "@/views/NotFound.vue"
@@ -50,26 +47,6 @@ const router = new Router({
           component: EventInfoView
         },
         {
-          path: "forum",
-          name: "forum",
-          component: ForumView
-        },
-        {
-          path: "forum/f",
-          name: "forumTitles",
-          component: ForumTitlesView
-        },
-        {
-          path: "forum/f/:forumTitle",
-          name: "forumTitle",
-          component: ForumTitleView
-        },
-        {
-          path: "forum/f/:forumTitle/:id",
-          name: "topic",
-          component: TopicView
-        },
-        {
           path: "sobre",
           name: "about",
           component: AboutView
@@ -88,13 +65,13 @@ const router = new Router({
     },
     {
       path: "/painel-controlo",
-      name: "backoffice",
-      component: BackofficeHomeView,
+      component: BackofficeView,
       meta: {
         requiresAuth: true,
         authorizedProfiles: [2, 3]
       },
       children: [
+        { path: "", name: "backoffice", component: BackofficeHomeView },
         { path: "utilizadores", name: "backofficeUsers", component: BackofficeUsersView }
       ]
     },

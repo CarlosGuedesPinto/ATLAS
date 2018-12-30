@@ -1,12 +1,10 @@
 <template>
-	<div>
-        <h1>Users view</h1>
-	</div>
+	<div>users</div>
 </template>
 
 <script>
 export default {
-	name: "BackofficeUsersView",
+	name: "BackofficeUsersView"
 }
 </script>
 
