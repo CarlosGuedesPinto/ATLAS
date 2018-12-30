@@ -1,17 +1,17 @@
 <template>
 	<div class="row">
-		<h2 class="text-center col-12">Criar conta (provisório)</h2>
-		<div class="col-12 col-sm-6 mr-auto ml-auto">
+		<Panel title="Criar conta" class="col-md-8 col-sm-9 col-10 mr-auto ml-auto">
 			<FormCreateAccount :backoffice="false"></FormCreateAccount>
-		</div>
+		</Panel>
 	</div>
 </template>
 
 <script>
+import Panel from "@/components/Panel.vue"
 import FormCreateAccount from "@/components/FormCreateAccount.vue"
 
 export default {
 	name: "SignUpView",
-	components: { FormCreateAccount }
+	components: { Panel, FormCreateAccount }
 }
 </script>

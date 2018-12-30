@@ -18,17 +18,18 @@
 			:hidden-background="true"
 			:reduce="sidebarReduced"
 		>
-			<vs-sidebar-item index="1" icon="question_answer" :to="{name: 'backoffice'}">Início</vs-sidebar-item>
-			<vs-sidebar-item index="2" icon="person" :to="{name: 'backofficeUsers'}" v-if="getUserById(getLoggedUserId).profileId === 3">Utilizadores</vs-sidebar-item>
-			<vs-sidebar-group title="Eventos" open>
-				<vs-sidebar-item index="3.1" icon="event">Meus eventos</vs-sidebar-item>
-				<vs-sidebar-item index="3.2" icon="add">Criar evento</vs-sidebar-item>
-			</vs-sidebar-group>
-			<vs-sidebar-group title="Store">
-				<vs-sidebar-item index="2.1" icon="store">Store</vs-sidebar-item>
-				<vs-sidebar-item index="2.2" icon="nature_people">Nature</vs-sidebar-item>
-				<vs-sidebar-item index="2.3" icon="style">Style</vs-sidebar-item>
-			</vs-sidebar-group>
+			<vs-sidebar-item index="1" icon="question_answer" :to="{ name: 'backoffice' }">Início</vs-sidebar-item>
+			<vs-sidebar-item
+				index="2"
+				icon="person"
+				:to="{name: 'backofficeUsers'}"
+				v-if="getUserById(getLoggedUserId).profileId === 3"
+			>Utilizadores</vs-sidebar-item>
+			<vs-sidebar-item
+				index="3"
+				icon="event"
+				:to="{ name: 'backofficeEvents' }"
+			>{{ getUserById(getLoggedUserId).profileId === 2 ? "Meus eventos" : "Eventos" }}</vs-sidebar-item>
 		</vs-sidebar>
 	</div>
 </template>
@@ -67,9 +68,13 @@ export default {
 			return this.windowWidth <= 768 ? true : false
 		},
 		getIndex() {
-			switch(this.$route.name) {
-				case "backoffice": return 1
-				case "backofficeUsers": return 2
+			switch (this.$route.name) {
+				case "backoffice":
+					return 1
+				case "backofficeUsers":
+					return 2
+				case "backofficeEvents":
+					return 3
 			}
 		}
 	}

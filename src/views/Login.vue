@@ -1,7 +1,6 @@
 <template>
 	<div class="row">
-		<h2 class="text-center col-12">Iniciar sessão (provisório)</h2>
-		<div class="col-12 col-sm-6 mr-auto ml-auto ">
+		<Panel title="Iniciar sessão" class="col-md-8 col-sm-9 col-10 mr-auto ml-auto">
 			<b-form @submit.prevent="verifyCredentials()">
 				<b-form-group
 					label="Utilizador"
@@ -40,16 +39,18 @@
 					<router-link :to="{name: 'signup'}">aqui</router-link>.
 				</small>
 			</div>
-		</div>
+		</Panel>
 		<vue-snotify></vue-snotify>
 	</div>
 </template>
 
 <script>
 import { mapGetters } from "vuex"
+import Panel from "@/components/Panel.vue"
 
 export default {
 	name: "LoginView",
+	components: { Panel },
 	data() {
 		return {
 			username: "",
@@ -116,5 +117,4 @@ export default {
 </script>
 
 <style>
-
 </style>

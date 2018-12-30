@@ -30,20 +30,17 @@
 			@filtered="onFiltered"
 			outlined
 			hover
-            responsive
-            empty-filtered-text="Não há resultados para a sua pesquisa"
+			responsive
+			empty-filtered-text="Não há resultados para a sua pesquisa"
+			@row-clicked="$router.push({name: 'backofficeUserInfo', params: {username: $event.username}})"
 		>
-			<template slot="row-details" slot-scope="row">
-				<b-card>
-					<ul>
-						<li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value}}</li>
-					</ul>
-				</b-card>
+			<template slot="userType" slot-scope="row">
+				{{ getNameUserType(row.item.profileId) }}
 			</template>
 		</b-table>
 		<div class="row">
 			<div class="my-1 mr-auto ml-auto">
-				<b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" variant="atlas2"/>
+				<b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0"/>
 			</div>
 		</div>
 	</div>
@@ -68,7 +65,6 @@ export default {
 	},
 	computed: {
 		sortOptions() {
-			// Create an options list from our fields
 			return this.fields
 				.filter(f => f.sortable)
 				.map(f => {
@@ -77,6 +73,16 @@ export default {
 		}
 	},
 	methods: {
+		getNameUserType(profileId) {
+			switch(profileId) {
+				case 1: return "Aluno"
+				case 2: return "Propon. evento."
+				case 3: return "Administrador"
+			}
+		},
+		clicked() {
+			console.log("clicked")
+		},
 		info(item, index, button) {
 			this.modalInfo.title = `Row index: ${index}`
 			this.modalInfo.content = JSON.stringify(item, null, 2)
@@ -87,10 +93,15 @@ export default {
 			this.modalInfo.content = ""
 		},
 		onFiltered(filteredItems) {
-			// Trigger pagination to update the number of buttons/pages due to filtering
 			this.totalRows = filteredItems.length
 			this.currentPage = 1
 		}
 	}
 }
 </script>
+
+<style>
+td:hover{
+	cursor: pointer;
+}
+</style>

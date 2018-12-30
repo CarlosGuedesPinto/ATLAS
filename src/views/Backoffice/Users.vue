@@ -1,23 +1,23 @@
 <template>
 	<div class="pb-5">
-		<BackofficePanel title="Criar utilizador">
+		<Panel title="Criar utilizador">
 			<FormCreateAccount :backoffice="true"></FormCreateAccount>
-		</BackofficePanel>
-		<BackofficePanel title="Lista de utilizadores" class="mt-5">
+		</Panel>
+		<Panel :title="`Lista de utilizadores - ${getUsers.length}`" class="mt-5">
 			<DataTable :items="getUsers" :fields="userFields"></DataTable>
-		</BackofficePanel>
+		</Panel>
 	</div>
 </template>
 
 <script>
-import BackofficePanel from "@/components/BackofficePanel.vue"
+import Panel from "@/components/Panel.vue"
 import FormCreateAccount from "@/components/FormCreateAccount.vue"
 import DataTable from "@/components/DataTable.vue"
 import { mapGetters } from "vuex"
 
 export default {
 	name: "BackofficeUsersView",
-	components: { BackofficePanel, FormCreateAccount, DataTable },
+	components: { Panel, FormCreateAccount, DataTable },
 	data() {
 		return {
 			userFields: [
@@ -29,7 +29,7 @@ export default {
 				},
 				{
 					key: "name",
-					label: "Person age",
+					label: "Nome",
 					sortable: true,
 				},
 				{
@@ -41,6 +41,14 @@ export default {
 					key: "email",
 					label: "Email",
 					sortable: true,
+				},
+				{
+					key: "userType",
+					label: "Tipo de utilizador"
+				},
+				{
+					key: "actions",
+					label: ""
 				}
 			]
 		}

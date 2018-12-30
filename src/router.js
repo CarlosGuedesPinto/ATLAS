@@ -10,6 +10,9 @@ import SignUpView from "@/views/SignUp.vue"
 import BackofficeView from "@/views/Backoffice/Backoffice.vue"
 import BackofficeHomeView from "@/views/Backoffice/Home.vue"
 import BackofficeUsersView from "@/views/Backoffice/Users.vue"
+import BackofficeUserInfoView from "@/views/Backoffice/UserInfo.vue"
+import BackofficeEventsView from "@/views/Backoffice/Events.vue"
+import BackofficeEventInfoView from "@/views/Backoffice/EventInfo.vue"
 import NotFound from "@/views/NotFound.vue"
 
 Vue.use(Router)
@@ -77,15 +80,45 @@ const router = new Router({
       },
       children: [
         {
-          path: "", name: "backoffice", component: BackofficeHomeView, meta: {
+          path: "",
+          name: "backoffice",
+          component: BackofficeHomeView,
+          meta: {
             authorizedProfiles: [2, 3]
           }
         },
         {
-          path: "utilizadores", name: "backofficeUsers", component: BackofficeUsersView, meta: {
+          path: "utilizadores",
+          name: "backofficeUsers",
+          component: BackofficeUsersView,
+          meta: {
             authorizedProfiles: [3]
           }
-        }
+        },
+        {
+          path: "utilizador/:username",
+          name: "backofficeUserInfo",
+          component: BackofficeUserInfoView,
+          meta: {
+            authorizedProfiles: [3]
+          }
+        },
+        {
+          path: "eventos",
+          name: "backofficeEvents",
+          component: BackofficeEventsView,
+          meta: {
+            authorizedProfiles: [2, 3]
+          }
+        },
+        {
+          path: "evento/:id",
+          name: "backofficeEventInfo",
+          component: BackofficeEventInfoView,
+          meta: {
+            authorizedProfiles: [2, 3]
+          }
+        },
       ]
     },
     {
