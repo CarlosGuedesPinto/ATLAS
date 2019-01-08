@@ -7,7 +7,6 @@ export default new Vuex.Store({
   state: {
     users: [],
     loggedUserId: -1,
-    institutions: [],
     notifications: []
   },
   getters: {
@@ -34,9 +33,6 @@ export default new Vuex.Store({
     },
     getUsers: state => {
       return state.users
-    },
-    getInstitutions: state => {
-      return state.institutions
     }
   },
   mutations: {
@@ -52,9 +48,6 @@ export default new Vuex.Store({
     SIGNED_UP(state, payload) {
       state.users.push(payload)
     },
-    SET_INSTITUTIONS(state, payload) {
-      state.institutions = payload
-    },
     CREATED_ACCOUNT(state, payload) {
       state.users.push(payload)
     }
@@ -62,9 +55,6 @@ export default new Vuex.Store({
   actions: {
     setUsers(context, payload) {
       context.commit("SET_USERS", payload)
-    },
-    setInstitutions(context, payload) {
-      context.commit("SET_INSTITUTIONS", payload)
     },
     userLoggedIn(context, payload) {
       context.commit("USER_LOGGED_IN", payload)

@@ -1,3 +1,6 @@
 <template>
-    <div>Eventos</div>
+    <div>
+        
+        
+    </div>
 </template>

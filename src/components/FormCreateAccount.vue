@@ -88,16 +88,7 @@
 					name="genders"
 				/>
 			</b-form-group>
-			<b-form-group label="Instituição de ensino" class="mt-4">
-				<b-form-radio-group
-					buttons
-					button-variant="outline-atlas2"
-					v-model="selectedInstitution"
-					:options="institutions"
-					name="institutions"
-				/>
-			</b-form-group>
-			<b-form-group label="Tipo de utilizador" class="mt-4">
+			<b-form-group label="Tipo de utilizador" class="mt-4" v-if="this.backoffice">
 				<b-form-radio-group
 					buttons
 					:stacked="windowWidth < 595 ? true : false"
@@ -133,8 +124,6 @@ export default {
 				{ text: "Feminino", value: 2 }
 			],
 			selectedGender: 1,
-			institutions: [],
-			selectedInstitution: "",
 			userTypes: [
 				{ text: "Aluno", value: 1 },
 				{ text: "Proponente de evento", value: 2 },
@@ -146,14 +135,6 @@ export default {
 		}
 	},
 	created() {
-		this.getInstitutions.forEach(institution => {
-			this.institutions.push({
-				text: institution.name,
-				value: institution.id
-			})
-		})
-		this.selectedInstitution = this.institutions[0].value
-
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()
 	},
@@ -179,8 +160,7 @@ export default {
 						picture: !this.picture
 							? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
 							: this.picture,
-						gender: this.selectedGender,
-						institution: this.selectedInstitution
+						gender: this.selectedGender
 					})
 					this.$router.push({ name: "login" })
 				} else {
@@ -194,8 +174,7 @@ export default {
 						picture: !this.picture
 							? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
 							: this.picture,
-						gender: this.selectedGender,
-						institution: this.selectedInstitution
+						gender: this.selectedGender
 					})
 				}
 				
@@ -230,8 +209,7 @@ export default {
 		...mapGetters([
 			"getUserByUsername",
 			"getUserByEmail",
-			"getLastUserId",
-			"getInstitutions"
+			"getLastUserId"
 		]),
 		nameState() {
 			if (!this.name && !this.attemptSubmit) {
@@ -261,9 +239,7 @@ export default {
 				return null
 			} else if (!this.username && this.attemptSubmit) {
 				return false
-			} else if (
-				this.username !== this.username.replace(/[^a-z0-9]/gi, "")
-			) {
+			} else if ( this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
 				return false
 			} else if (this.getUserByUsername(this.username)) {
 				return false
