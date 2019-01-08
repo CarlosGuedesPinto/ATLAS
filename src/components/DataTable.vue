@@ -49,7 +49,7 @@
 <script>
 export default {
 	name: "DataTable",
-	props: ["items", "fields"],
+	props: ["name", "items", "fields"],
 	data() {
 		return {
 			currentPage: 1,

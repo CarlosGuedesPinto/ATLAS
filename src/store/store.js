@@ -7,8 +7,7 @@ export default new Vuex.Store({
   state: {
     users: [],
     loggedUserId: -1,
-    institutions: [],
-    notifications: []
+    courses: []
   },
   getters: {
     getUserById: state => id => {
@@ -35,8 +34,25 @@ export default new Vuex.Store({
     getUsers: state => {
       return state.users
     },
-    getInstitutions: state => {
-      return state.institutions
+    getCourses: state => {
+      return state.courses
+    },
+    getLastCourseId: state => {
+      let lastId = 0
+      if (state.courses.length) {
+        state.courses.forEach(course => {
+          if (course.id >= lastId) {
+            lastId = course.id
+          }
+        })
+      }
+      return lastId
+    },
+    getCourseByName: state => name => {
+      return state.courses.find(course => course.name.toLowerCase() === name.toLowerCase())
+    },
+    getCourseByAbbreviation: state => abbreviation => {
+      return state.courses.find(course => course.abbreviation.toLowerCase() === abbreviation.toLowerCase())
     }
   },
   mutations: {
@@ -52,19 +68,19 @@ export default new Vuex.Store({
     SIGNED_UP(state, payload) {
       state.users.push(payload)
     },
-    SET_INSTITUTIONS(state, payload) {
-      state.institutions = payload
-    },
     CREATED_ACCOUNT(state, payload) {
       state.users.push(payload)
+    },
+    SET_COURSES(state, payload) {
+      state.courses = payload
+    },
+    ADD_COURSE(state, payload) {
+      state.courses.push(payload)
     }
   },
   actions: {
     setUsers(context, payload) {
       context.commit("SET_USERS", payload)
-    },
-    setInstitutions(context, payload) {
-      context.commit("SET_INSTITUTIONS", payload)
     },
     userLoggedIn(context, payload) {
       context.commit("USER_LOGGED_IN", payload)
@@ -77,6 +93,12 @@ export default new Vuex.Store({
     },
     createAccount(context, payload) {
       context.commit("CREATED_ACCOUNT", payload)
+    },
+    setCourses(context, payload) {
+      context.commit("SET_COURSES", payload)
+    },
+    addCourse(context, payload) {
+      context.commit("ADD_COURSE", payload)
     }
   }
 })

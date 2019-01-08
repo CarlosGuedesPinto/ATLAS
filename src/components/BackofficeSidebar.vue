@@ -27,6 +27,12 @@
 			>Utilizadores</vs-sidebar-item>
 			<vs-sidebar-item
 				index="3"
+				icon="school"
+				:to="{name: 'backofficeCourses'}"
+				v-if="getUserById(getLoggedUserId).profileId === 3"
+			>Cursos</vs-sidebar-item>
+			<vs-sidebar-item
+				index="4"
 				icon="event"
 				:to="{ name: 'backofficeEvents' }"
 			>{{ getUserById(getLoggedUserId).profileId === 2 ? "Meus eventos" : "Eventos" }}</vs-sidebar-item>
@@ -73,8 +79,10 @@ export default {
 					return 1
 				case "backofficeUsers":
 					return 2
-				case "backofficeEvents":
+				case "backofficeCourses":
 					return 3
+				case "backofficeEvents":
+					return 4
 			}
 		}
 	}
