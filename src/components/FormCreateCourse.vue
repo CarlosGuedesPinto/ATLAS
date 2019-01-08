@@ -24,7 +24,7 @@
 					:state="abbreviationState"
 					v-model="abbreviation"
 					type="text"
-					maxlength="15"
+					maxlength="6"
 				></b-form-input>
 			</b-form-group>
 			<button class="btn btn-atlas1 col-12 mt-2" type="submit">Adicionar curso</button>
@@ -48,17 +48,10 @@ export default {
 		addCourse() {
 			this.attemptSubmit = true
 			if (this.nameState && this.abbreviationState) {
-                this.$store.dispatch("createAccount", {
-                    id: this.getLastUserId + 1,
-                    profileId: this.selectedUserType,
-                    username: this.username,
-                    password: this.password,
-                    email: this.email,
-                    name: this.name,
-                    picture: !this.picture
-                        ? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
-                        : this.picture,
-                    gender: this.selectedGender
+                this.$store.dispatch("addCourse", {
+                    id: this.getLastCourseId + 1,
+					name: this.name,
+					abbreviation: this.abbreviation
                 })
             } else {
 				this.$snotify.error(
@@ -75,15 +68,13 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters([
-			"getUserByUsername",
-			"getUserByEmail",
-			"getLastUserId"
-		]),
+		...mapGetters(["getCourses", "getLastCourseId", "getCourseByName", "getCourseByAbbreviation"]),
 		nameState() {
 			if (!this.name && !this.attemptSubmit) {
 				return null
 			} else if (!this.name && this.attemptSubmit) {
+				return false
+			} else if (this.getCourseByName(this.name)) {
 				return false
 			} else {
 				return true
@@ -91,7 +82,9 @@ export default {
 		},
 		nameInvalidFeedback() {
 			if (!this.name && this.attemptSubmit) {
-				return "Introduza o nome"
+				return "Introduza o nome do curso"
+			} else if (this.getCourseByName(this.name)) {
+				return "Nome de curso em uso"
 			} else {
 				return null
 			}
@@ -103,31 +96,31 @@ export default {
 				return null
 			}
 		},
-		usernameState() {
-			if (!this.username && !this.attemptSubmit) {
+		abbreviationState() {
+			if (!this.abbreviation && !this.attemptSubmit) {
 				return null
-			} else if (!this.username && this.attemptSubmit) {
+			} else if (!this.abbreviation && this.attemptSubmit) {
 				return false
-			} else if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
+			} else if (this.abbreviation !== this.abbreviation.replace(/[^a-z0-9]/gi, "")) {
 				return false
-			} else if (this.getUserByUsername(this.username)) {
+			} else if (this.getCourseByAbbreviation(this.abbreviation)) {
 				return false
 			} else {
 				return true
 			}
 		},
-		usernameInvalidFeedback() {
-			if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
+		abbreviationInvalidFeedback() {
+			if (this.abbreviation !== this.abbreviation.replace(/[^a-z0-9]/gi, "")) {
 				return "Introduza apenas letras e/ou números"
-			} else if (this.getUserByUsername(this.username)) {
-				return "Nome de utilizador em uso"
+			} else if (this.getCourseByAbbreviation(this.abbreviation)) {
+				return "Abreviação em uso"
 			} else {
-				return "Introduza o nome de utilizador"
+				return "Introduza a abreviação"
 			}
 		},
-		usernameValidFeedback() {
-			if (this.username.length === 15) {
-				return "Máximo 15 caracteres"
+		abbreviationValidFeedback() {
+			if (this.abbreviation.length === 6) {
+				return "Máximo 6 caracteres"
 			} else {
 				return null
 			}

@@ -13,7 +13,7 @@ import database from "@/store/data.js"
 
 export default {
 	methods: {
-		...mapActions(["setUsers", "userLoggedIn"])
+		...mapActions(["setUsers", "userLoggedIn", "setCourses"])
 	},
 	created() {
 		window.addEventListener("beforeunload", () => {
@@ -29,6 +29,13 @@ export default {
 
 		if (localStorage.loggedUserId) {
 			this.userLoggedIn(parseInt(localStorage.loggedUserId))
+		}
+
+		if (!localStorage.courses) {
+			localStorage.courses = JSON.stringify(database.courses)
+			this.setCourses(database.courses)
+		} else {
+			this.setCourses(JSON.parse(localStorage.courses))
 		}
 
 		this.$store.subscribe(mutation => {
