@@ -135,8 +135,10 @@ export default {
 		}
 	},
 	created() {
-		window.addEventListener("resize", this.handleResize)
-		this.handleResize()
+		if(this.backoffice) {
+			window.addEventListener("resize", this.handleResize)
+			this.handleResize()
+		}
 	},
 	methods: {
 		createAccount() {

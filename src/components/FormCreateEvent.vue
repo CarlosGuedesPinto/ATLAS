@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form @submit.prevent="createAccount()">
+    <b-form @submit.prevent="createEvent()">
       <b-form-group
         label="Nome"
         label-for="name"

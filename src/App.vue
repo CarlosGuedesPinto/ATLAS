@@ -13,7 +13,7 @@ import database from "@/store/data.js"
 
 export default {
 	methods: {
-		...mapActions(["setUsers", "setInstitutions", "userLoggedIn"])
+		...mapActions(["setUsers", "userLoggedIn"])
 	},
 	created() {
 		window.addEventListener("beforeunload", () => {
@@ -29,13 +29,6 @@ export default {
 
 		if (localStorage.loggedUserId) {
 			this.userLoggedIn(parseInt(localStorage.loggedUserId))
-		}
-
-		if (!localStorage.institutions) {
-			localStorage.institutions = JSON.stringify(database.institutions)
-			this.setInstitutions(database.institutions)
-		} else {
-			this.setInstitutions(JSON.parse(localStorage.institutions))
 		}
 
 		this.$store.subscribe(mutation => {
@@ -83,14 +76,12 @@ export default {
 	computed: {
 		...mapGetters([
 			"getUsers",
-			"getInstitutions",
 			"getLoggedUserId",
 			"getUserById"
 		])
 	},
 	destroyed() {
 		localStorage.users = JSON.stringify(this.getUsers)
-		localStorage.institutions = JSON.stringify(this.getInstitutions)
 		localStorage.loggedUserId = JSON.stringify(this.getLoggedUserId)
 	}
 }
