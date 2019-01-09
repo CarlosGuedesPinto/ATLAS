@@ -98,7 +98,7 @@
 					name="userTypes"
 				/>
 			</b-form-group>
-			<button class="btn btn-atlas1 col-12 mt-2" type="submit">Criar conta</button>
+			<button class="btn btn-atlas1 col-12 mt-2" type="submit">{{ backoffice ? "Adicionar utilizador" : "Criar conta" }}</button>
 		</b-form>
 		<vue-snotify></vue-snotify>
 	</div>
@@ -180,6 +180,16 @@ export default {
 					})
 				}
 				
+				// clears form
+				this.name = ""
+				this.username = ""
+				this.password = ""
+				this.confirmPassword = ""
+				this.email = ""
+				this.picture = ""
+				this.selectedGender = 1
+				this.selectedUserType = 1
+				this.attemptSubmit = false
 			} else {
 				this.$snotify.error(
 					"Preencha todos os campos corretamente",

@@ -48,6 +48,9 @@ export default new Vuex.Store({
       }
       return lastId
     },
+    getCourseById: state => id => {
+      return state.courses.find(course => course.id === id)
+    },
     getCourseByName: state => name => {
       return state.courses.find(course => course.name.toLowerCase() === name.toLowerCase())
     },
@@ -76,6 +79,19 @@ export default new Vuex.Store({
     },
     ADD_COURSE(state, payload) {
       state.courses.push(payload)
+    },
+    EDIT_COURSE(state, payload) {
+      state.courses.forEach(course => {
+        if(course.id === payload.id) {
+          course.name = payload.name
+          course.abbreviation = payload.abbreviation
+        }
+      })
+    },
+    REMOVE_COURSE_BY_ID(state, payload) {
+      state.courses.forEach((course, index) => {
+        if(course.id === payload) state.courses.splice(index, 1)
+      })
     }
   },
   actions: {
@@ -99,6 +115,12 @@ export default new Vuex.Store({
     },
     addCourse(context, payload) {
       context.commit("ADD_COURSE", payload)
+    },
+    editCourse(context, payload) {
+      context.commit("EDIT_COURSE", payload)
+    },
+    removeCourseById(context, payload) {
+      context.commit("REMOVE_COURSE_BY_ID", payload)
     }
   }
 })

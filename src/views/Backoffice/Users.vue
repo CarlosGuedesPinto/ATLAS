@@ -1,10 +1,10 @@
 <template>
 	<div class="pb-5">
-		<Panel title="Criar utilizador">
+		<Panel title="Adicionar utilizador">
 			<FormCreateAccount :backoffice="true"></FormCreateAccount>
 		</Panel>
-		<Panel :title="`Lista de utilizadores - ${getUsers.length}`" class="mt-5">
-			<DataTable :items="getUsers" :fields="userFields"></DataTable>
+		<Panel :title="`Utilizadores - ${getUsers.length}`" class="mt-5">
+			<DataTable name="users" :items="getUsers" :fields="userFields"></DataTable>
 		</Panel>
 	</div>
 </template>
@@ -59,3 +59,8 @@ export default {
 }
 </script>
 
+<style scoped>
+td:hover {
+	cursor: pointer;
+}
+</style>

@@ -84,12 +84,14 @@ export default {
 		...mapGetters([
 			"getUsers",
 			"getLoggedUserId",
-			"getUserById"
+			"getUserById",
+			"getCourses"
 		])
 	},
 	destroyed() {
 		localStorage.users = JSON.stringify(this.getUsers)
 		localStorage.loggedUserId = JSON.stringify(this.getLoggedUserId)
+		localStorage.courses = JSON.stringify(this.getCourses)
 	}
 }
 </script>

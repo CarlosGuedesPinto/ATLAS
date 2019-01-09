@@ -2,19 +2,30 @@
 	<div class="container-fluid">
 		<!-- User Interface controls -->
 		<div class="row">
-			<div class="col-md-6 my-1">
-				<b-form-group horizontal label="Filtrar" class="mb-0">
-					<b-input-group>
-						<b-form-input v-model="filter" placeholder="Escreva para filtrar..."/>
-					</b-input-group>
-				</b-form-group>
-			</div>
+			<template v-if="items.length > 5">
+				<div class="col-md-6 my-1">
+					<b-form-group horizontal label="Filtrar" class="mb-0">
+						<b-input-group>
+							<b-form-input v-model="filter" placeholder="Escreva para filtrar..."/>
+						</b-input-group>
+					</b-form-group>
+				</div>
 
-			<div class="col-md-6 my-1 mb-3">
-				<b-form-group horizontal label="Por página" class="mb-0">
-					<b-form-select :options="pageOptions" v-model="perPage"/>
-				</b-form-group>
-			</div>
+				<div class="col-md-6 my-1 mb-3">
+					<b-form-group horizontal label="Por página" class="mb-0">
+						<b-form-select :options="pageOptions" v-model="perPage"/>
+					</b-form-group>
+				</div>
+			</template>
+			<template v-else>
+				<div class="col-12 my-1">
+					<b-form-group horizontal label="Filtrar" class="mb-0">
+						<b-input-group>
+							<b-form-input v-model="filter" placeholder="Escreva para filtrar..."/>
+						</b-input-group>
+					</b-form-group>
+				</div>
+			</template>
 		</div>
 
 		<!-- Main table element -->
@@ -32,38 +43,61 @@
 			hover
 			responsive
 			empty-filtered-text="Não há resultados para a sua pesquisa"
-			@row-clicked="$router.push({name: 'backofficeUserInfo', params: {username: $event.username}})"
+			@row-clicked="rowClicked($event)"
 		>
-			<template slot="userType" slot-scope="row">
-				{{ getNameUserType(row.item.profileId) }}
+			<template
+				slot="userType"
+				slot-scope="row"
+				v-if="name === 'users'"
+			>{{ getNameUserType(row.item.profileId) }}</template>
+			<template slot="actions" slot-scope="row" v-if="name === 'courses'">
+				<button class="btn btn-warning text-white" @click="btnEditClicked(parseInt(row.item.id))">
+					<i class="fa fa-edit" aria-hidden="true"></i>
+				</button>
+				<button class="btn btn-danger ml-1" @click="btnRemoveClicked(parseInt(row.item.id))">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
 			</template>
 		</b-table>
-		<div class="row">
+		<div class="row" v-show="items.length > perPage">
 			<div class="my-1 mr-auto ml-auto">
 				<b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0"/>
 			</div>
 		</div>
+		<vs-prompt vs-title="Editar curso" :vs-active.sync="activePrompt" :vs-buttons-hidden="true">
+			<FormCourse :editId="editId"></FormCourse>
+		</vs-prompt>
 	</div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex"
+import FormCourse from "@/components/FormCourse.vue"
+
 export default {
-	name: "DataTable",
+	components: { FormCourse },
 	props: ["name", "items", "fields"],
 	data() {
 		return {
 			currentPage: 1,
-			perPage: 5,
+			perPage: 20,
 			totalRows: this.items.length,
-			pageOptions: [5, 10, 15],
+			pageOptions: [20, 35, 50],
 			sortBy: null,
 			sortDesc: false,
 			sortDirection: "asc",
 			filter: null,
-			modalInfo: { title: "", content: "" }
+			activePrompt: false,
+			editId: 0
 		}
 	},
+	created() {
+		this.$store.subscribe(mutation => {
+			if (mutation.type === "EDIT_COURSE") this.activePrompt = false
+		})
+	},
 	computed: {
+		...mapGetters(["getCourseById"]),
 		sortOptions() {
 			return this.fields
 				.filter(f => f.sortable)
@@ -73,35 +107,69 @@ export default {
 		}
 	},
 	methods: {
+		...mapActions(["removeCourseById"]),
 		getNameUserType(profileId) {
-			switch(profileId) {
-				case 1: return "Aluno"
-				case 2: return "Propon. evento."
-				case 3: return "Administrador"
+			switch (profileId) {
+				case 1:
+					return "Aluno"
+				case 2:
+					return "Propon. evento."
+				case 3:
+					return "Administrador"
 			}
 		},
 		clicked() {
 			console.log("clicked")
 		},
-		info(item, index, button) {
-			this.modalInfo.title = `Row index: ${index}`
-			this.modalInfo.content = JSON.stringify(item, null, 2)
-			this.$root.$emit("bv::show::modal", "modalInfo", button)
-		},
-		resetModal() {
-			this.modalInfo.title = ""
-			this.modalInfo.content = ""
-		},
 		onFiltered(filteredItems) {
 			this.totalRows = filteredItems.length
 			this.currentPage = 1
+		},
+		rowClicked(event) {
+			switch (this.name) {
+				case "users":
+					this.$router.push({
+						name: "backofficeUserInfo",
+						params: { username: event.username }
+					})
+					break
+				default:
+					break
+			}
+		},
+		btnEditClicked(id) {
+			switch (this.name) {
+				case "courses":
+					this.editId = id
+					this.activePrompt = true
+					break
+			}
+		},
+		btnRemoveClicked(id) {
+			switch (this.name) {
+				case "courses":
+					this.$vs.dialog({
+						type: "confirm",
+						color: "danger",
+						title: "Remover curso?",
+						acceptText: "Remover",
+						cancelText: "Cancelar",
+						text: `O curso ${
+							this.getCourseById(id).name
+						} será removido para sempre.`,
+						accept: () => {
+							this.removeCourseById(id)
+							this.$snotify.success("Curso removido", "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+						}
+					})
+					break
+			}
 		}
 	}
 }
 </script>
-
-<style>
-td:hover{
-	cursor: pointer;
-}
-</style>
