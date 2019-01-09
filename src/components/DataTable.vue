@@ -50,7 +50,8 @@
 				slot-scope="row"
 				v-if="name === 'users'"
 			>{{ getNameUserType(row.item.profileId) }}</template>
-			<template slot="actions" slot-scope="row" v-if="name === 'courses'">
+
+			<template slot="actions" slot-scope="row" v-if="name === 'courses' || name === 'tags'">
 				<button class="btn btn-warning text-white" @click="btnEditClicked(parseInt(row.item.id))">
 					<i class="fa fa-edit" aria-hidden="true"></i>
 				</button>
@@ -65,7 +66,8 @@
 			</div>
 		</div>
 		<vs-prompt vs-title="Editar curso" :vs-active.sync="activePrompt" :vs-buttons-hidden="true">
-			<FormCourse :editId="editId"></FormCourse>
+			<FormCourse :editId="editId" v-if="name === 'courses'"></FormCourse>
+			<FormTag :editId="editId" v-if="name === 'tags'"></FormTag>
 		</vs-prompt>
 	</div>
 </template>
@@ -73,9 +75,10 @@
 <script>
 import { mapGetters, mapActions } from "vuex"
 import FormCourse from "@/components/FormCourse.vue"
+import FormTag from "@/components/FormTag.vue"
 
 export default {
-	components: { FormCourse },
+	components: { FormCourse, FormTag },
 	props: ["name", "items", "fields"],
 	data() {
 		return {
@@ -93,11 +96,12 @@ export default {
 	},
 	created() {
 		this.$store.subscribe(mutation => {
-			if (mutation.type === "EDIT_COURSE") this.activePrompt = false
+			if (mutation.type === "EDIT_COURSE" || mutation.type === "EDIT_TAG")
+				this.activePrompt = false
 		})
 	},
 	computed: {
-		...mapGetters(["getCourseById"]),
+		...mapGetters(["getCourseById", "getTagById"]),
 		sortOptions() {
 			return this.fields
 				.filter(f => f.sortable)
@@ -107,7 +111,7 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(["removeCourseById"]),
+		...mapActions(["removeCourseById", "removeTagById"]),
 		getNameUserType(profileId) {
 			switch (profileId) {
 				case 1:
@@ -117,9 +121,6 @@ export default {
 				case 3:
 					return "Administrador"
 			}
-		},
-		clicked() {
-			console.log("clicked")
 		},
 		onFiltered(filteredItems) {
 			this.totalRows = filteredItems.length
@@ -138,11 +139,9 @@ export default {
 			}
 		},
 		btnEditClicked(id) {
-			switch (this.name) {
-				case "courses":
-					this.editId = id
-					this.activePrompt = true
-					break
+			if (this.name === "courses" || this.name === "tags") {
+				this.editId = id
+				this.activePrompt = true
 			}
 		},
 		btnRemoveClicked(id) {

@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     users: [],
     loggedUserId: -1,
-    courses: []
+    courses: [],
+    tags: []
   },
   getters: {
     getUserById: state => id => {
@@ -56,6 +57,26 @@ export default new Vuex.Store({
     },
     getCourseByAbbreviation: state => abbreviation => {
       return state.courses.find(course => course.abbreviation.toLowerCase() === abbreviation.toLowerCase())
+    },
+    getTags: state => {
+      return state.tags
+    },
+    getLastTagId: state => {
+      let lastId = 0
+      if (state.tags.length) {
+        state.tags.forEach(tag => {
+          if (tag.id >= lastId) {
+            lastId = tag.id
+          }
+        })
+      }
+      return lastId
+    },
+    getTagById: state => id => {
+      return state.tags.find(tag => tag.id === id)
+    },
+    getTagByName: state => name => {
+      return state.tags.find(tag => tag.name.toLowerCase() === name.toLowerCase())
     }
   },
   mutations: {
@@ -82,7 +103,7 @@ export default new Vuex.Store({
     },
     EDIT_COURSE(state, payload) {
       state.courses.forEach(course => {
-        if(course.id === payload.id) {
+        if (course.id === payload.id) {
           course.name = payload.name
           course.abbreviation = payload.abbreviation
         }
@@ -90,9 +111,25 @@ export default new Vuex.Store({
     },
     REMOVE_COURSE_BY_ID(state, payload) {
       state.courses.forEach((course, index) => {
-        if(course.id === payload) state.courses.splice(index, 1)
+        if (course.id === payload) state.courses.splice(index, 1)
       })
-    }
+    },
+    SET_TAGS(state, payload) {
+      state.tags = payload
+    },
+    ADD_TAG(state, payload) {
+      state.tags.push(payload)
+    },
+    EDIT_TAG(state, payload) {
+      state.tags.forEach(tag => {
+        if (tag.id === payload.id) tag.name = payload.name
+      })
+    },
+    REMOVE_TAG_BY_ID(state, payload) {
+      state.tags.forEach((tag, index) => {
+        if (tag.id === payload) state.tags.splice(index, 1)
+      })
+    },
   },
   actions: {
     setUsers(context, payload) {
@@ -121,6 +158,18 @@ export default new Vuex.Store({
     },
     removeCourseById(context, payload) {
       context.commit("REMOVE_COURSE_BY_ID", payload)
+    },
+    setTags(context, payload) {
+      context.commit("SET_TAGS", payload)
+    },
+    addTag(context, payload) {
+      context.commit("ADD_TAG", payload)
+    },
+    editTag(context, payload) {
+      context.commit("EDIT_TAG", payload)
+    },
+    removeTagById(context, payload) {
+      context.commit("REMOVE_TAG_BY_ID", payload)
     }
   }
 })

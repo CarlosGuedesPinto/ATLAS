@@ -11,7 +11,7 @@ import BackofficeView from "@/views/Backoffice/Backoffice.vue"
 import BackofficeHomeView from "@/views/Backoffice/Home.vue"
 import BackofficeUsersView from "@/views/Backoffice/Users.vue"
 import BackofficeUserInfoView from "@/views/Backoffice/UserInfo.vue"
-import BackofficeCategoriesTagsView from "@/views/Backoffice/CategoriesTags.vue"
+import BackofficeTagsView from "@/views/Backoffice/Tags.vue"
 import BackofficeCoursesView from "@/views/Backoffice/Courses.vue"
 import BackofficeEventsView from "@/views/Backoffice/Events.vue"
 import BackofficeEventInfoView from "@/views/Backoffice/EventInfo.vue"
@@ -107,8 +107,8 @@ const router = new Router({
         },
         {
           path: "categorias-tags",
-          name: "backofficeCategoriesTags",
-          component: BackofficeCategoriesTagsView,
+          name: "backofficeTags",
+          component: BackofficeTagsView,
           meta: {
             authorizedProfiles: [3]
           }

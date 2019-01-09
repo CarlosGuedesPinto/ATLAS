@@ -28,9 +28,9 @@
 			<vs-sidebar-item
 				index="3"
 				icon="local_offer"
-				:to="{name: 'backofficeCategoriesTags'}"
+				:to="{name: 'backofficeTags'}"
 				v-if="getUserById(getLoggedUserId).profileId === 3"
-			>Categorias & Tags</vs-sidebar-item>
+			>Tags</vs-sidebar-item>
 			<vs-sidebar-item
 				index="4"
 				icon="school"
@@ -85,7 +85,7 @@ export default {
 					return 1
 				case "backofficeUsers":
 					return 2
-				case "backofficeCategoriesTags":
+				case "backofficeTags":
 					return 3
 				case "backofficeCourses":
 					return 4

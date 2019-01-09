@@ -6,5 +6,11 @@ export default {
     ],
     courses: [
         { id: 1, name: "Tecnologias e Sistemas de Informação para a Web", abbreviation: "TSIW" }
+    ],
+    tags: [
+        { id: 1, name: "web" },
+        { id: 2, name: "programação" },
+        { id: 3, name: "fotografia" },
+        { id: 4, name: "design" }
     ]
 }

@@ -98,7 +98,10 @@
 					name="userTypes"
 				/>
 			</b-form-group>
-			<button class="btn btn-atlas1 col-12 mt-2" type="submit">{{ backoffice ? "Adicionar utilizador" : "Criar conta" }}</button>
+			<button
+				class="btn btn-atlas1 col-12 mt-2"
+				type="submit"
+			>{{ backoffice ? "Adicionar utilizador" : "Criar conta" }}</button>
 		</b-form>
 		<vue-snotify></vue-snotify>
 	</div>
@@ -135,7 +138,7 @@ export default {
 		}
 	},
 	created() {
-		if(this.backoffice) {
+		if (this.backoffice) {
 			window.addEventListener("resize", this.handleResize)
 			this.handleResize()
 		}
@@ -178,8 +181,19 @@ export default {
 							: this.picture,
 						gender: this.selectedGender
 					})
+
+					this.$snotify.success(
+						"Utilizador adicionado",
+						"",
+						{
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						}
+					)
 				}
-				
+
 				// clears form
 				this.name = ""
 				this.username = ""
@@ -218,11 +232,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters([
-			"getUserByUsername",
-			"getUserByEmail",
-			"getLastUserId"
-		]),
+		...mapGetters(["getUserByUsername", "getUserByEmail", "getLastUserId"]),
 		nameState() {
 			if (!this.name && !this.attemptSubmit) {
 				return null
@@ -251,7 +261,9 @@ export default {
 				return null
 			} else if (!this.username && this.attemptSubmit) {
 				return false
-			} else if ( this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
+			} else if (
+				this.username !== this.username.replace(/[^a-z0-9]/gi, "")
+			) {
 				return false
 			} else if (this.getUserByUsername(this.username)) {
 				return false
