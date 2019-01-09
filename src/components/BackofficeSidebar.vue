@@ -27,12 +27,18 @@
 			>Utilizadores</vs-sidebar-item>
 			<vs-sidebar-item
 				index="3"
+				icon="local_offer"
+				:to="{name: 'backofficeCategoriesTags'}"
+				v-if="getUserById(getLoggedUserId).profileId === 3"
+			>Categorias & Tags</vs-sidebar-item>
+			<vs-sidebar-item
+				index="4"
 				icon="school"
 				:to="{name: 'backofficeCourses'}"
 				v-if="getUserById(getLoggedUserId).profileId === 3"
 			>Cursos</vs-sidebar-item>
 			<vs-sidebar-item
-				index="4"
+				index="5"
 				icon="event"
 				:to="{ name: 'backofficeEvents' }"
 			>{{ getUserById(getLoggedUserId).profileId === 2 ? "Meus eventos" : "Eventos" }}</vs-sidebar-item>
@@ -79,10 +85,12 @@ export default {
 					return 1
 				case "backofficeUsers":
 					return 2
-				case "backofficeCourses":
+				case "backofficeCategoriesTags":
 					return 3
-				case "backofficeEvents":
+				case "backofficeCourses":
 					return 4
+				case "backofficeEvents":
+					return 5
 			}
 		}
 	}

@@ -11,6 +11,7 @@ import BackofficeView from "@/views/Backoffice/Backoffice.vue"
 import BackofficeHomeView from "@/views/Backoffice/Home.vue"
 import BackofficeUsersView from "@/views/Backoffice/Users.vue"
 import BackofficeUserInfoView from "@/views/Backoffice/UserInfo.vue"
+import BackofficeCategoriesTagsView from "@/views/Backoffice/CategoriesTags.vue"
 import BackofficeCoursesView from "@/views/Backoffice/Courses.vue"
 import BackofficeEventsView from "@/views/Backoffice/Events.vue"
 import BackofficeEventInfoView from "@/views/Backoffice/EventInfo.vue"
@@ -100,6 +101,14 @@ const router = new Router({
           path: "utilizador/:username",
           name: "backofficeUserInfo",
           component: BackofficeUserInfoView,
+          meta: {
+            authorizedProfiles: [3]
+          }
+        },
+        {
+          path: "categorias-tags",
+          name: "backofficeCategoriesTags",
+          component: BackofficeCategoriesTagsView,
           meta: {
             authorizedProfiles: [3]
           }
