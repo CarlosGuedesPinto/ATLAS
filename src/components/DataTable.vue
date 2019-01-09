@@ -167,6 +167,27 @@ export default {
 						}
 					})
 					break
+				case "tags":
+					this.$vs.dialog({
+						type: "confirm",
+						color: "danger",
+						title: "Remover tag?",
+						acceptText: "Remover",
+						cancelText: "Cancelar",
+						text: `A tag ${
+							this.getTagById(id).name
+						} será removida para sempre.`,
+						accept: () => {
+							this.removeTagById(id)
+							this.$snotify.success("Tag removida", "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+						}
+					})
+					break
 			}
 		}
 	}

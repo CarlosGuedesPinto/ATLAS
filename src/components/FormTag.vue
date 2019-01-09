@@ -72,6 +72,17 @@ export default {
 				// clears form
 				this.name = ""
 				this.attemptSubmit = false
+
+				this.$snotify.success(
+					"Tag editada",
+					"",
+					{
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					}
+				)
 			} else {
 				this.$snotify.error(
 					"Preencha todos os campos corretamente",

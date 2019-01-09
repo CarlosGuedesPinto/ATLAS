@@ -36,7 +36,7 @@
 			</b-form>
 			<div class="mt-2">
 				<small>Sem conta? Registe-se
-					<router-link :to="{name: 'signup'}">aqui</router-link>.
+					<router-link :to="{name: 'signup'}" class="text-atlas2">aqui</router-link>.
 				</small>
 			</div>
 		</Panel>
