@@ -47,7 +47,7 @@
       >
         <b-form-input id="dateStart" :state="dateStartState" v-model="dateStart" type="date" class="col-3" :min="getTodays()"></b-form-input>
       </b-form-group>
-      <transition name="fade" mode="out-in">
+      <transition name="fade">
         <b-form-group
           label="Data de fim"
           label-for="dateEnd"
@@ -58,23 +58,6 @@
           <b-form-input id="dateEnd" :state="dateEndState" v-model="dateEnd" type="date" class="col-3"></b-form-input>
         </b-form-group>
       </transition>
-
-			<b-form-group
-				label="Abreviatura"
-				label-for="abbreviation"
-				:invalid-feedback="abbreviationInvalidFeedback"
-				:valid-feedback="abbreviationValidFeedback"
-				:state="abbreviationState"
-				class="mt-4"
-			>
-				<b-form-input
-					id="abbreviation"
-					:state="abbreviationState"
-					v-model="abbreviation"
-					type="text"
-					maxlength="6"
-				></b-form-input>
-			</b-form-group>
 			<button
 				class="btn btn-atlas1 col-12 mt-2"
 				type="submit"
@@ -319,63 +302,7 @@ export default {
       } else {
         return null
       }
-    },
-		abbreviationState() {
-			if (!this.editId) {
-				if (!this.abbreviation && !this.attemptSubmit) {
-					return null
-				} else if (!this.abbreviation && this.attemptSubmit) {
-					return false
-				} else if (
-					this.abbreviation !==
-					this.abbreviation.replace(/[^a-z0-9]/gi, "")
-				) {
-					return false
-				} else if (this.getCourseByAbbreviation(this.abbreviation)) {
-					return false
-				} else {
-					return true
-				}
-			} else {
-				if (!this.abbreviation && !this.attemptSubmit) {
-					return null
-				} else if (!this.abbreviation && this.attemptSubmit) {
-					return false
-				} else if (
-					this.abbreviation !==
-					this.abbreviation.replace(/[^a-z0-9]/gi, "")
-				) {
-					return false
-				} else if (
-					this.getCourseByAbbreviation(this.abbreviation) !==
-						this.getCourseById(this.editId) &&
-					this.getCourseByAbbreviation(this.abbreviation)
-				) {
-					return false
-				} else {
-					return true
-				}
-			}
-		},
-		abbreviationInvalidFeedback() {
-			if (
-				this.abbreviation !==
-				this.abbreviation.replace(/[^a-z0-9]/gi, "")
-			) {
-				return "Introduza apenas letras e/ou números"
-			} else if (this.getCourseByAbbreviation(this.abbreviation)) {
-				return "Abreviação em uso"
-			} else {
-				return "Introduza a abreviação"
-			}
-		},
-		abbreviationValidFeedback() {
-			if (this.abbreviation.length === 6) {
-				return "Máximo 6 caracteres"
-			} else {
-				return null
-			}
-		}
+    }
 	}
 }
 </script>
