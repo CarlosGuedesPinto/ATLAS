@@ -8,7 +8,8 @@ export default new Vuex.Store({
     users: [],
     loggedUserId: -1,
     courses: [],
-    tags: []
+    tags: [],
+    events: []
   },
   getters: {
     getUserById: state => id => {
@@ -77,6 +78,16 @@ export default new Vuex.Store({
     },
     getTagByName: state => name => {
       return state.tags.find(tag => tag.name.toLowerCase() === name.toLowerCase())
+    },
+    getEvents: state => {
+      return state.events
+    },
+    getEventsByAuthorId: state => authorId => {
+      let eventsByAuthorId = []
+      state.events.forEach(event => {
+        if(event.authorId === authorId) eventsByAuthorId.push(event)
+      })
+      return eventsByAuthorId
     }
   },
   mutations: {

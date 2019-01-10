@@ -52,11 +52,11 @@
 			>{{ getNameUserType(row.item.profileId) }}</template>
 
 			<template slot="actions" slot-scope="row" v-if="name === 'courses' || name === 'tags'">
-				<button class="btn btn-warning text-white" @click="btnEditClicked(parseInt(row.item.id))">
-					<i class="fa fa-edit" aria-hidden="true"></i>
-				</button>
-				<button class="btn btn-danger ml-1" @click="btnRemoveClicked(parseInt(row.item.id))">
+				<button class="btn btn-danger float-right" @click="btnRemoveClicked(parseInt(row.item.id))">
 					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				<button class="btn btn-warning text-white mx-2 float-right" @click="btnEditClicked(parseInt(row.item.id))">
+					<i class="fa fa-edit" aria-hidden="true"></i>
 				</button>
 			</template>
 		</b-table>
