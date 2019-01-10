@@ -3,7 +3,7 @@
 		<Panel title="Adicionar evento">
 			<FormEvent></FormEvent>
 		</Panel>
-        <Panel :title="getUserById(getLoggedUserId).profileId === 3 ? `Eventos - ${getEvents.length}` : `Meus eventos - ${getEventsByAuthorId(getLoggedUserId)}`" class="mt-5">
+        <Panel :title="getUserById(getLoggedUserId).profileId === 3 ? `Eventos - ${getEvents.length}` : `Meus eventos - ${getEventsByAuthorId(getLoggedUserId).length}`" class="mt-5">
 			<DataTable :items="getUserById(getLoggedUserId).profileId === 3 ? getEvents : getEventsByAuthorId(getLoggedUserId)" :fields="eventsFields"></DataTable>
 		</Panel>
 	</div>
