@@ -91,6 +91,8 @@ export default {
 					return 4
 				case "backofficeEvents":
 					return 5
+				default:
+					return null
 			}
 		}
 	}

@@ -73,16 +73,12 @@ export default {
 				this.name = ""
 				this.attemptSubmit = false
 
-				this.$snotify.success(
-					"Tag editada",
-					"",
-					{
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					}
-				)
+				this.$snotify.success("Tag editada", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
 			} else {
 				this.$snotify.error(
 					"Preencha todos os campos corretamente",
@@ -108,7 +104,10 @@ export default {
 			if (!this.editId) {
 				if (!this.name && !this.attemptSubmit) {
 					return null
-				} else if ((!this.name || !this.name.trim()) && this.attemptSubmit) {
+				} else if (
+					(!this.name || !this.name.trim()) &&
+					this.attemptSubmit
+				) {
 					return false
 				} else if (this.getTagByName(this.name)) {
 					return false

@@ -51,11 +51,30 @@
 				v-if="name === 'users'"
 			>{{ getNameUserType(row.item.profileId) }}</template>
 
+			<template
+				slot="author"
+				slot-scope="row"
+				v-if="name === 'events' && getUserById(getLoggedUserId).profileId === 3"
+			>{{ `${getUserById(row.item.authorId).username} (${row.item.authorId})` }}</template>
+
+			<template
+				slot="tags"
+				slot-scope="row"
+				v-if="name === 'events' && getUserById(getLoggedUserId).profileId === 3"
+			>
+				<template v-for="tag in row.item.tags">
+					{{ "#" + getTagNameById(tag) }}
+				</template>
+			</template>
+
 			<template slot="actions" slot-scope="row" v-if="name === 'courses' || name === 'tags'">
 				<button class="btn btn-danger float-right" @click="btnRemoveClicked(parseInt(row.item.id))">
 					<i class="fa fa-times" aria-hidden="true"></i>
 				</button>
-				<button class="btn btn-warning text-white mx-2 float-right" @click="btnEditClicked(parseInt(row.item.id))">
+				<button
+					class="btn btn-warning text-white mx-2 float-right"
+					@click="btnEditClicked(parseInt(row.item.id))"
+				>
 					<i class="fa fa-edit" aria-hidden="true"></i>
 				</button>
 			</template>
@@ -101,7 +120,13 @@ export default {
 		})
 	},
 	computed: {
-		...mapGetters(["getCourseById", "getTagById"]),
+		...mapGetters([
+			"getCourseById",
+			"getTagById",
+			"getUserById",
+			"getLoggedUserId",
+			"getTagNameById"
+		]),
 		sortOptions() {
 			return this.fields
 				.filter(f => f.sortable)

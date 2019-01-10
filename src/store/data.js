@@ -12,5 +12,9 @@ export default {
         { id: 2, name: "programação" },
         { id: 3, name: "fotografia" },
         { id: 4, name: "design" }
+    ],
+    events: [
+        { id: 1, authorId: 1, name: "Primeiro evento", category: "Evento", tags: [1, 2], description: "Vai ser muito bom!", dateStart: "2018-01-10", durationDays: 1, dateEnd: "2018-01-10", paid: false, paymentPrice: 0 },
+        { id: 2, authorId: 2, name: "Segundo evento", category: "Evento", tags: [3, 4], description: "Vai ser muito bom!", dateStart: "2018-01-10", durationDays: 1, dateEnd: "2018-01-10", paid: false, paymentPrice: 0 }
     ]
 }
