@@ -7,11 +7,11 @@
 			<router-link :to="to" class="router-link">
 				<h5 class="text-white">{{ event.name }}</h5>
 			</router-link>
-			<div class="text-atlas3 event-card-body d-flex align-content-end flex-wrap">
-				<div class="col-12 col-sm-4">
+			<div class="text-atlas3 event-card-body row">
+				<div class="col-sm-12 col-lg-4">
 					<template v-for="eventTag in event.tags">{{ "#" + getTagById(eventTag).name + " " }}</template>
 				</div>
-				<div class="col-12 col-sm-8 row pull-right">
+				<div class="col-sm-12 col-lg-8 row">
 					<div class="mr-2">
 						<i class="fa fa-map-marker-alt text-atlas1" aria-hidden="true"></i>
 						{{ event.classroom }}
