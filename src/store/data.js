@@ -14,7 +14,9 @@ export default {
         { id: 4, name: "design" }
     ],
     events: [
-        { id: 1, authorId: 1, name: "Primeiro evento", category: "Evento", tags: [1, 2], description: "Vai ser muito bom!", dateStart: "2018-01-10", durationDays: 1, dateEnd: "2018-01-10", paid: false, paymentPrice: 0 },
-        { id: 2, authorId: 2, name: "Segundo evento", category: "Evento", tags: [3, 4], description: "Vai ser muito bom!", dateStart: "2018-01-10", durationDays: 1, dateEnd: "2018-01-10", paid: false, paymentPrice: 0 }
+        { id: 1, authorId: 1, name: "Primeiro evento", category: "Evento", tags: [1, 2], description: "Vai ser muito bom!", classroom: "B203", dateStart: "2018-01-10", durationDays: 1, dateEnd: "2018-01-10", picture: { thumbnail: "https://i.imgur.com/9kTBtgg.jpg", poster: "" }, paid: false, paymentPrice: 0 },
+        { id: 2, authorId: 2, name: "Segundo evento", category: "Evento", tags: [3, 4], description: "Vai ser muito bom!", classroom: "B203", dateStart: "2018-01-10", durationDays: 1, dateEnd: "2018-01-10", picture: { thumbnail: "https://i.imgur.com/9kTBtgg.jpg", poster: "" }, paid: false, paymentPrice: 0 },
+        { id: 3, authorId: 2, name: "Terceiro evento", category: "Evento", tags: [3, 4], description: "Vai ser muito bom!", classroom: "B203", dateStart: "2018-01-10", durationDays: 1, dateEnd: "2018-01-10", picture: { thumbnail: "https://i.imgur.com/9kTBtgg.jpg", poster: "" }, paid: false, paymentPrice: 0 },
+        { id: 4, authorId: 2, name: "Quarto evento", category: "Evento", tags: [3, 4], description: "Vai ser muito bom!", classroom: "B203", dateStart: "2018-01-10", durationDays: 1, dateEnd: "2018-01-10", picture: { thumbnail: "https://i.imgur.com/9kTBtgg.jpg", poster: "" }, paid: false, paymentPrice: 0 }
     ]
 }

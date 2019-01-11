@@ -24,3 +24,10 @@ export default {
 	}
 }
 </script>
+
+<style>
+.owl-dot.active span {
+	background: #00225B !important;
+}
+</style>
+

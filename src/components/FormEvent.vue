@@ -35,7 +35,7 @@
 					:options="filteredTags"
 					:stacked="true"
 					style="overflow-y: scroll; max-height: 200px;"
-					class="mt-2"
+					class="mt-2 px-1"
 					:state="tagsState"
 				></b-form-checkbox-group>
 			</b-form-group>

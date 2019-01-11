@@ -5,9 +5,11 @@ import store from './store/store.js'
 import BootstrapVue from 'bootstrap-vue'
 import Snotify from 'vue-snotify'
 import Vuesax from 'vuesax'
-
 import 'vuesax/dist/vuesax.css'
-import 'material-icons/iconfont/material-icons.css';
+import 'material-icons/iconfont/material-icons.css'
+import VoerroTagsInput from '@voerro/vue-tagsinput'
+
+Vue.component('tags-input', VoerroTagsInput)
 
 Vue.config.productionTip = false
 
