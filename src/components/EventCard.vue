@@ -4,13 +4,16 @@
 			<router-link :to="to">
 				<img :src="event.picture.thumbnail" class="card-img-top">
 			</router-link>
-			<div class="bg-atlas2 px-3 py-2">
+			<div class="bg-atlas2 px-3 py-2 body-card">
 				<router-link :to="to" class="router-link">
 					<h5 class="text-white m-0">{{ event.name }}</h5>
 				</router-link>
 				<div class="text-atlas3 event-card-body">
 					<div class="mb-2">
 						<template v-for="eventTag in event.tags">{{ "#" + getTagById(eventTag).name + " " }}</template>
+						<div v-if="ended">
+							{{ getEventShortDescription(event.id) }}
+						</div>
 					</div>
 					<div class="row">
 						<div class="col-6">
@@ -19,7 +22,7 @@
 						</div>
 						<div class="col-6">
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-							daqui a 3 dias
+							{{ event.dateStart | moment("from", "now") }}
 						</div>
 					</div>
 					<div>
@@ -40,9 +43,9 @@
 import { mapGetters } from "vuex"
 
 export default {
-	props: ["to", "event"],
+	props: ["to", "event", "ended"],
 	computed: {
-		...mapGetters(["getUserById", "getTagById"])
+		...mapGetters(["getUserById", "getTagById", "getEventShortDescription"])
 	}
 }
 </script>
@@ -51,8 +54,21 @@ export default {
 a {
 	text-decoration: none;
 }
-
 .event-card-body {
 	font-size: 0.8em;
+}
+.card {
+	overflow: hidden;
+}
+
+.card-img-top {
+	overflow: hidden;
+	transition: all 0.5s;
+}
+.card-img-top:hover {
+	transform: scale(1.05) !important;
+}
+.body-card {
+	z-index: 2;
 }
 </style>

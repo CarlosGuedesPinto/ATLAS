@@ -2,7 +2,12 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
+const moment = require("moment")
+require("moment/locale/pt")
 
+Vue.use(require("vue-moment"), {
+    moment
+})
 export default new Vuex.Store({
     state: {
         users: [],
@@ -102,6 +107,16 @@ export default new Vuex.Store({
                 })
             }
             return lastId
+        },
+        getEventShortDescription: state => eventId => {
+            let description = state.events.find(event => event.id === eventId).description
+            return description.length <= 100 ? description : description.substr(0, description.indexOf(" ", 250)) + "..."
+        },
+        getEndedEvents: state => {
+            return state.events.filter(event => moment().diff(event.dateEnd, "days") > 0)
+        },
+        getEventById: state => id => {
+            return state.events.find(event => event.id === id)
         }
     },
     mutations: {

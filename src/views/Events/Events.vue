@@ -29,13 +29,27 @@
 		</div>
 		<div class="pt-5">
 			<TitleAtlas>Eventos anteriores</TitleAtlas>
-			<EventListItem
-				v-for="event in getEvents"
+			<template v-if="windowWidth >= 768">
+				<EventListItem
+					v-for="event in getEndedEventsSelectedPage"
+					:key="event.id"
+					:to="{name: 'eventsInfo', params: {id: event.id}}"
+					:event="event"
+					class="mb-1"
+				/>
+			</template>
+			<EventCard
+				v-else
+				v-for="event in getEndedEventsSelectedPage"
+				:ended="true"
 				:key="event.id"
 				:to="{name: 'eventsInfo', params: {id: event.id}}"
 				:event="event"
 				class="mb-1"
-			></EventListItem>
+			/>
+			<div class="mt-3" v-if="getEndedEvents.length > endedEventsPerPage">
+				<vs-pagination :total="totalPages" v-model="currentPage"/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -49,9 +63,19 @@ import EventListItem from "@/components/EventListItem.vue"
 
 import { mapGetters } from "vuex"
 
-
 export default {
 	components: { TitleAtlas, Panel, Carousel, EventCard, EventListItem },
+	created() {
+		window.addEventListener("resize", this.handleResize)
+		this.handleResize()
+
+		this.totalPages =
+			this.getEndedEvents.length <= this.endedEventsPerPage
+				? 1
+				: Math.floor(
+						this.getEndedEvents.length / this.endedEventsPerPage
+				  ) + 1
+	},
 	data() {
 		return {
 			name: "",
@@ -60,14 +84,34 @@ export default {
 			dateEnd: "",
 			carouselResponsivity: {
 				0: { items: 1 },
-				576: { items: 2 },
-				768: { items: 3 },
+				768: { items: 2 },
+				992: { items: 3 },
 				1200: { items: 4 }
-			}
+			},
+			windowWidth: 0,
+			totalPages: 1,
+			currentPage: 1,
+			endedEventsPerPage: 5
 		}
 	},
 	computed: {
-		...mapGetters(["getEvents"])
+		...mapGetters(["getEvents", "getEndedEvents"]),
+		getEndedEventsSelectedPage() {
+			if (this.getEndedEvents.length > this.endedEventsPerPage) {
+				console.log("this one")
+				return this.getEndedEvents.slice(
+					(this.currentPage - 1) * this.endedEventsPerPage,
+					this.endedEventsPerPage * this.currentPage
+				)
+			} else {
+				return this.getEndedEvents
+			}
+		}
+	},
+	methods: {
+		handleResize() {
+			this.windowWidth = window.innerWidth
+		}
 	}
 }
 </script>
