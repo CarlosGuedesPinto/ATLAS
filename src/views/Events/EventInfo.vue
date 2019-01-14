@@ -6,8 +6,9 @@
 				<img :src="event.picture.poster" class="img-fluid img-thumbnail">
 			</div>
 			<div class="col-xl-8 col-lg-9 col-md-5 col-12">
+				<div></div>
 				<div>
-					<h4>Detalhes:</h4>
+					<h4>Descrição:</h4>
 					{{ event.description }}
 				</div>
 				<div class="mt-4">
@@ -52,6 +53,15 @@ export default {
 	},
 	computed: {
 		...mapGetters(["getEventById", "getTagById"])
-	}
+    },
+    methods: {
+        sortToDo(type) {
+            switch(type) {
+                case "alphabetic":
+                    this.toDos.sort(/* função para ordenar */)
+                    break;
+            }
+        }
+    }
 }
 </script>

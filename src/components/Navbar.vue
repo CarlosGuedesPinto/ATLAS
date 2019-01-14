@@ -70,14 +70,7 @@ export default {
 	name: "Navbar",
 	methods: {
 		isActive(route) {
-			if (route === "events") {
-				return (
-					this.$route.name === route ||
-					this.$route.name === "eventsInfo"
-				)
-			} else {
-				return this.$route.name === route
-			}
+			return this.$route.name === route
 		},
 		...mapActions(["userLoggedOut"])
 	},
