@@ -98,7 +98,6 @@ export default {
 		...mapGetters(["getEvents", "getEndedEvents"]),
 		getEndedEventsSelectedPage() {
 			if (this.getEndedEvents.length > this.endedEventsPerPage) {
-				console.log("this one")
 				return this.getEndedEvents.slice(
 					(this.currentPage - 1) * this.endedEventsPerPage,
 					this.endedEventsPerPage * this.currentPage
