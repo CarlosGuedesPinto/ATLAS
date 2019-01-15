@@ -13,7 +13,7 @@ import database from "@/store/data.js"
 
 export default {
 	methods: {
-		...mapActions(["setUsers", "userLoggedIn", "setCourses", "setTags", "setEvents"])
+		...mapActions(["setUsers", "userLoggedIn", "setCourses", "setTags", "setEvents", "setEnrollments"])
 	},
 	created() {
 		window.addEventListener("beforeunload", () => {
@@ -50,6 +50,13 @@ export default {
 			this.setEvents(database.events)
 		} else {
 			this.setEvents(JSON.parse(localStorage.events))
+		}
+
+		if (!localStorage.enrollments) {
+			localStorage.enrollments = JSON.stringify(database.enrollments)
+			this.setEnrollments(database.enrollments)
+		} else {
+			this.setEnrollments(JSON.parse(localStorage.enrollments))
 		}
 
 		this.$store.subscribe(mutation => {

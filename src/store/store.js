@@ -14,7 +14,8 @@ export default new Vuex.Store({
         loggedUserId: -1,
         courses: [],
         tags: [],
-        events: []
+        events: [],
+        enrollments: []
     },
     getters: {
         getUserById: state => id => {
@@ -117,6 +118,9 @@ export default new Vuex.Store({
         },
         getEventById: state => id => {
             return state.events.find(event => event.id === id)
+        },
+        getEnrollmentsByEventId: state => eventId => {
+            return state.enrollments.filter(enrollment => enrollment.eventId === eventId)
         }
     },
     mutations: {
@@ -175,6 +179,9 @@ export default new Vuex.Store({
         },
         ADD_EVENT(state, payload) {
             state.events.push(payload)
+        },
+        SET_ENROLLMENTS(state, payload) {
+            state.enrollments = payload
         }
     },
     actions: {
@@ -222,6 +229,9 @@ export default new Vuex.Store({
         },
         addEvent(context, payload) {
             context.commit("ADD_EVENT", payload)
+        },
+        setEnrollments(context, payload) {
+            context.commit("SET_ENROLLMENTS", payload)
         }
     }
 })
