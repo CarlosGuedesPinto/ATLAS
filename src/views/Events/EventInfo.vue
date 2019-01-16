@@ -35,7 +35,7 @@
 						</div>
 						<div>
 							<i class="fa fa-graduation-cap text-atlas1" aria-hidden="true"></i>
-							Tecnologias e Sistemas de Informação para a Web
+							{{ getCourseById(event.courseId).name }}
 						</div>
 					</div>
 					<hr class="bg-atlas1">
@@ -192,7 +192,8 @@ export default {
 			"getEnrollmentsByEventId",
 			"getLastDiscussionIdByEvent",
 			"getLastDiscussionIdByEventId",
-			"getLoggedUserId"
+			"getLoggedUserId",
+			"getCourseById"
 		]),
 
 		titleState() {
