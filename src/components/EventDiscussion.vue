@@ -50,7 +50,7 @@ export default {
 		return {
 			mouseOverUpvote: false
 		}
-	},
+    },
 	methods: {
 		...mapActions([
 			"upvoteEventDiscussionByEventIdDiscussionId",
