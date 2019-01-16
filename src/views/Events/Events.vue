@@ -109,9 +109,9 @@
 		</div>
 		<div v-else class="mt-5">
 			<div v-if="getFilteredEvents.length">
-				<TitleAtlas>{{ getFilteredEvents.length === 1 ? 'Resultado' : 'Resultados' }} da pesquisa</TitleAtlas>
+				<TitleAtlas>{{ getFilteredEvents.length === 1 ? 'Resultado' : 'Resultados' }} da pesquisa - {{ getFilteredEvents.length }}</TitleAtlas>
 				<EventListItem
-					v-for="event in getFilteredEvents"
+					v-for="event in getFilteredEventsSelectedPage"
 					:key="event.id"
 					:to="{name: 'eventsInfo', params: {id: event.id}}"
 					:event="event"
@@ -121,7 +121,7 @@
 					:total="totalPages"
 					v-model="currentPage"
 					class="mt-3"
-					v-if="getEndedEvents.length > endedEventsPerPage"
+					v-if="getFilteredEvents.length > filteredEventsPerPage"
 				/>
 			</div>
 			<div v-else>
@@ -146,12 +146,7 @@ export default {
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()
 
-		this.totalPages =
-			this.getEndedEvents.length <= this.endedEventsPerPage
-				? 1
-				: Math.floor(
-						this.getEndedEvents.length / this.endedEventsPerPage
-				  ) + 1
+		this.getTotalPages()
 
 		let query = this.$route.query
 		if (query) {
@@ -194,7 +189,9 @@ export default {
 			windowWidth: 0,
 			totalPages: 1,
 			currentPage: 1,
-			endedEventsPerPage: 5
+			endedEventsPerPage: 5,
+			totalPagesFilteredEvents: 1,
+			filteredEventsPerPage: 10
 		}
 	},
 	computed: {
@@ -218,6 +215,7 @@ export default {
 			}
 		},
 		filtering() {
+			this.currentPage = 1
 			return (
 				this.name ||
 				this.dateStart ||
@@ -267,6 +265,7 @@ export default {
 				delete queryResult.sala
 			}
 
+			this.getTotalPages()
 			this.$router.replace({ name: "events", query: queryResult })
 			return true
 		},
@@ -323,6 +322,16 @@ export default {
 				return result
 			})
 		},
+		getFilteredEventsSelectedPage() {
+			if (this.getFilteredEvents.length > this.filteredEventsPerPage) {
+				return this.getFilteredEvents.slice(
+					(this.currentPage - 1) * this.filteredEventsPerPage,
+					this.filteredEventsPerPage * this.currentPage
+				)
+			} else {
+				return this.getFilteredEvents
+			}
+		},
 		getFilteredTags() {
 			let tags = []
 			this.getTags.forEach(tag => {
@@ -363,6 +372,25 @@ export default {
 			this.dateEnd = ""
 			this.selectedTags = []
 			this.tagsCollapse = false
+		},
+		getTotalPages() {
+			if (!this.filtering) {
+				this.totalPages =
+					this.getEndedEvents.length <= this.endedEventsPerPage
+						? 1
+						: Math.floor(
+								this.getEndedEvents.length /
+									this.endedEventsPerPage
+						  ) + 1
+			} else {
+				this.totalPages =
+					this.getFilteredEvents.length <= this.filteredEventsPerPage
+						? 1
+						: Math.floor(
+								this.getFilteredEvents.length /
+									this.filteredEventsPerPage
+						  ) + 1
+			}
 		}
 	}
 }

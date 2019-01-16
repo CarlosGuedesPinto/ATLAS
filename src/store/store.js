@@ -119,9 +119,6 @@ export default new Vuex.Store({
         getEventById: state => id => {
             return state.events.find(event => event.id === id)
         },
-        getEnrollmentsByEventId: state => eventId => {
-            return state.enrollments.filter(enrollment => enrollment.eventId === eventId)
-        },
         getEventDiscussionByEventIdDiscussionId: state => eventId => discussionId => {
             return state.events.find(event => event.id === eventId).discussions.find(discussion => discussion.id === discussionId)
         },
@@ -137,6 +134,9 @@ export default new Vuex.Store({
             }
             return lastId
         },
+        getEnrollmentsByEventId: state => eventId => {
+            return state.enrollments.filter(enrollment => enrollment.eventId === eventId)
+        }    
     },
     mutations: {
         SET_USERS(state, payload) {
