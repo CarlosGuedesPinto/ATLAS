@@ -121,7 +121,22 @@ export default new Vuex.Store({
         },
         getEnrollmentsByEventId: state => eventId => {
             return state.enrollments.filter(enrollment => enrollment.eventId === eventId)
-        }
+        },
+        getEventDiscussionByEventIdDiscussionId: state => eventId => discussionId => {
+            return state.events.find(event => event.id === eventId).discussions.find(discussion => discussion.id === discussionId)
+        },
+        getLastDiscussionIdByEventId: state => eventId => {
+            let lastId = 0
+            let eventIndex = state.events.findIndex(event => event.id === eventId)
+            if (state.events[eventIndex].discussions.length) {
+                state.events[eventIndex].discussions.forEach(discussion => {
+                    if (discussion.id >= lastId) {
+                        lastId = discussion.id
+                    }
+                })
+            }
+            return lastId
+        },
     },
     mutations: {
         SET_USERS(state, payload) {
@@ -182,6 +197,34 @@ export default new Vuex.Store({
         },
         SET_ENROLLMENTS(state, payload) {
             state.enrollments = payload
+        },
+        UPVOTE_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.eventId) {
+                    event.discussions.forEach(discussion => {
+                        if (discussion.id === payload.discussionId) {
+                            discussion.upvotes++
+                            discussion.usersVoted.push(state.loggedUserId)
+                        }
+                    })
+                }
+            })
+        },
+        DOWNVOTE_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.eventId) {
+                    event.discussions.forEach(discussion => {
+                        if (discussion.id === payload.discussionId) {
+                            discussion.downvotes++
+                            discussion.usersVoted.push(state.loggedUserId)
+                        }
+                    })
+                }
+            })
+        },
+        CREATE_EVENT_DISCUSSION(state, payload) {
+            let index = state.events.findIndex(event => event.id === payload.eventId)
+            state.events[index].discussions.push(payload.discussion)
         }
     },
     actions: {
@@ -232,6 +275,15 @@ export default new Vuex.Store({
         },
         setEnrollments(context, payload) {
             context.commit("SET_ENROLLMENTS", payload)
+        },
+        upvoteEventDiscussionByEventIdDiscussionId(context, payload) {
+            context.commit("UPVOTE_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID", payload)
+        },
+        downvoteEventDiscussionByEventIdDiscussionId(context, payload) {
+            context.commit("DOWNVOTE_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID", payload)
+        },
+        createEventDiscussion(context, payload) {
+            context.commit("CREATE_EVENT_DISCUSSION", payload)
         }
     }
 })

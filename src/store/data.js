@@ -22,7 +22,14 @@ export default {
         {
             id: 2, authorId: 2, name: "Segundo evento", category: "Evento", tags: [3, 4],
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            classroom: "B203", dateStart: "2019-01-12", durationDays: 1, dateEnd: "2019-01-13", picture: { thumbnail: "https://i.imgur.com/9kTBtgg.jpg", poster: "https://i.imgur.com/MXuI7WL.jpg", gallery: ["http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_10.jpg", "http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_07.jpg", "http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_08.jpg"] }, paid: false, paymentPrice: 0
+            classroom: "B203", dateStart: "2019-01-12", durationDays: 1, dateEnd: "2019-01-13", picture: { thumbnail: "https://i.imgur.com/9kTBtgg.jpg", poster: "https://i.imgur.com/MXuI7WL.jpg", gallery: ["http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_10.jpg", "http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_07.jpg", "http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_08.jpg"] }, paid: false, paymentPrice: 0,
+            discussions: [
+                { id: 1, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
+                { id: 2, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
+                { id: 3, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
+                { id: 4, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
+                { id: 5, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
+            ]
         },
         {
             id: 3, authorId: 2, name: "Terceiro evento", category: "Evento", tags: [3, 4],
