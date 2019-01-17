@@ -4,7 +4,7 @@
 			<TitleAtlas>{{ event.name }}</TitleAtlas>
 			<div class="row">
 				<div class="col-lg-4 col-md-5 col-6 ml-auto mr-auto">
-					<img :src="event.picture.poster" class="img-fluid img-thumbnail">
+					<img :src="event.picture.poster.url" class="img-fluid img-thumbnail">
 				</div>
 				<div class="col-lg-8 col-12">
 					<div>
