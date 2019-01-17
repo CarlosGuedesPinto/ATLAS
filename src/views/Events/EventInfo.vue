@@ -3,10 +3,10 @@
 		<div>
 			<TitleAtlas>{{ event.name }}</TitleAtlas>
 			<div class="row">
-				<div class="col-lg-4 col-md-5 col-6 ml-auto mr-auto">
+				<div class="ml-auto mr-auto mb-2" :class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-4 col-md-5 col-6' : 'col-lg-6 col-12'">
 					<img :src="event.picture.poster.url" class="img-fluid img-thumbnail">
 				</div>
-				<div class="col-lg-8 col-12">
+				<div :class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-8 col-12' : 'col-12'">
 					<div>
 						<h4>Descrição:</h4>
 						{{ event.description }}
@@ -19,7 +19,11 @@
 						</div>
 						<div>
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-							{{ event.dateEnd | moment("from", "now") }}
+							{{ $moment(event.dateStart).format("DD [de] MMMM [de] YYYY") }}
+						</div>
+						<div>
+							<i class="fa fa-clock text-atlas1" aria-hidden="true"></i>
+							{{ event.hourStart }} - {{ event.hourEnd }}
 						</div>
 						<div>
 							<i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
@@ -35,7 +39,9 @@
 						</div>
 						<div>
 							<i class="fa fa-graduation-cap text-atlas1" aria-hidden="true"></i>
-							{{ getCourseById(event.courseId).name }}
+							<template v-for="courseId in event.coursesIds">
+								{{ getCourseById(courseId).name}}
+							</template>
 						</div>
 					</div>
 					<hr class="bg-atlas1">

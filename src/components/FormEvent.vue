@@ -49,21 +49,34 @@
 				/>
 				<small>Máximo 500 caracteres</small>
 			</b-form-group>
-			<!--
 			<b-form-group
 				label="Hora de início"
 				label-for="hourStart"
 				:state="hourStartState"
+				:invalid-feedback="hourStartInvalidFeedback"
 			>
 				<b-form-input
 					id="hourStart"
 					:state="hourStartState"
 					type="time"
 					class="col-lg-4 col-md-5 col-sm-6 col-12"
-					:value="hourStart"
+					v-model="hourStart"
 				></b-form-input>
 			</b-form-group>
-			-->
+			<b-form-group
+				label="Hora de fim"
+				label-for="hourEnd"
+				:state="hourEndState"
+				:invalid-feedback="hourEndInvalidFeedback"
+			>
+				<b-form-input
+					id="hourEnd"
+					:state="hourEndState"
+					type="time"
+					class="col-lg-4 col-md-5 col-sm-6 col-12"
+					v-model="hourEnd"
+				></b-form-input>
+			</b-form-group>
 			<b-form-group
 				label="Data de início"
 				label-for="dateStart"
@@ -285,7 +298,8 @@ export default {
 			tags: [],
 			filterTag: "",
 			description: "",
-			hourStart: "16:20",
+			hourStart: "",
+			hourEnd: "",
 			duration: 1,
 			dateStart: "",
 			selectedPayment: false,
@@ -343,7 +357,8 @@ export default {
 				this.tagsState &&
 				this.descriptionState &&
 				this.dateStartState &&
-				//this.hourStartState &&
+				this.hourStartState &&
+				this.hourEndState &&
 				(!this.selectedPayment ||
 					(this.selectedPayment && this.priceState)) &&
 				this.classroomState &&
@@ -363,8 +378,9 @@ export default {
 					tags: this.selectedTags,
 					description: this.description,
 					classroom: this.classroom,
-					courseId: this.selectedCourses,
+					coursesIds: this.selectedCourses,
 					hourStart: this.hourStart,
+					hourEnd: this.hourEnd,
 					dateStart: this.dateStart,
 					durationDays: this.duration,
 					dateEnd: this.dateEnd,
@@ -410,6 +426,7 @@ export default {
 			this.filterTag = ""
 			this.description = ""
 			this.hourStart = ""
+			this.hourEnd = ""
 			this.dateStart = ""
 			this.duration = 1
 			this.selectedPayment = false
@@ -517,6 +534,22 @@ export default {
 		hourStartInvalidFeedback() {
 			if (!this.hourStart && this.attemptSubmit) {
 				return "Introduza a hora de início"
+			} else {
+				return null
+			}
+		},
+		hourEndState() {
+			if(!this.hourEnd && !this.attemptSubmit) {
+				return null
+			} else if (!this.hourEnd && this.attemptSubmit) {
+				return false
+			} else {
+				return true
+			}
+		},
+		hourEndInvalidFeedback() {
+			if (!this.hourEnd && this.attemptSubmit) {
+				return "Introduza a hora de fim"
 			} else {
 				return null
 			}
