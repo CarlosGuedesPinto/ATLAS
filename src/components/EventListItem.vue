@@ -2,11 +2,11 @@
 	<div class="d-flex event-list-item">
 		<router-link
 			:to="{ name: 'eventsInfo', params: { id: event.id } }"
-			class="p-0 col-lg-3 col-md-5 col-5"
+			class="p-0 col-lg-3 col-6"
 		>
 			<img :src="event.picture.thumbnail" class="card-img-top" style="height: 100%; border-radius: 0;">
 		</router-link>
-		<div class="bg-atlas2 py-2 col-lg-9 col-md-7 col-7">
+		<div class="bg-atlas2 py-2 col-lg-9 col-6">
 			<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
 				<h5 class="text-white">{{ event.name }}</h5>
 			</router-link>

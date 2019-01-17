@@ -1,13 +1,13 @@
 <template>
 	<div>
-		<b-form @submit.prevent="!editId ? addCourse() : editCourse()">
+		<b-form @submit.prevent="addEvent()">
 			<b-form-group
 				label="Nome"
 				label-for="name"
 				:invalid-feedback="nameInvalidFeedback"
 				:valid-feedback="nameValidFeedback"
 				:state="nameState"
-				:class="!editId ? 'mt-4' : ''"
+				class="mt-4"
 			>
 				<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
 			</b-form-group>
@@ -48,6 +48,19 @@
 					maxlength="500"
 				/>
 				<small>Máximo 500 caracteres</small>
+			</b-form-group>
+			<b-form-group
+				label="Hora de início"
+				label-for="hourStart"
+				:state="hourStartState"
+			>
+				<b-form-input
+					id="hourStart"
+					:state="hourStartState"
+					type="time"
+					class="col-lg-4 col-md-5 col-sm-6 col-12"
+					:value="hourStart"
+				></b-form-input>
 			</b-form-group>
 			<b-form-group
 				label="Data de início"
@@ -112,11 +125,104 @@
 					></b-form-input>
 				</b-form-group>
 			</transition>
+			<b-form-group
+				label="Sala"
+				:state="classrromState"
+				:invalid-feedback="classrromInvalidFeedback"
+				class="mt-4"
+			>
+				<b-form-select v-model="classroom" :state="classrromState">
+					<option :value="null">Selecione uma sala</option>
+					<optgroup label="Piso 0">
+						<option value="B101">B101</option>
+						<option value="B102">B102</option>
+					</optgroup>
+					<optgroup label="Piso 1">
+						<option value="B201">B201</option>
+						<option value="B202">B202</option>
+					</optgroup>
+				</b-form-select>
+			</b-form-group>
+			<b-form-group
+				label="Cursos"
+				:state="coursesStates"
+				:invalid-feedback="coursesInvalidFeedback"
+				class="mt-4"
+			>
+				<b-form-checkbox-group
+					v-model="selectedCourses"
+					name="courses"
+					:options="courses"
+					:stacked="true"
+					class="mt-2 px-1"
+					:state="coursesState"
+				></b-form-checkbox-group>
+			</b-form-group>
+			<hr class="mt-4">
+			<b-form-group
+				label="URL miniatura (proporção 16:9)"
+				label-for="thumbnail"
+				:invalid-feedback="thumbnailInvalidFeedback"
+				:valid-feedback="thumbnailValidFeedback"
+				:state="thumbnailState"
+				class="mt-4"
+			>
+				<b-form-input id="thumbnail" :state="thumbnailState" v-model="thumbnail" type="url"></b-form-input>
+				<small>Imagem que aparecerá no card do evento. É mandatório que a proporção seja 16:9.</small>
+			</b-form-group>
+			<b-form-group
+				label="URL poster"
+				label-for="poster"
+				:invalid-feedback="posterInvalidFeedback"
+				:valid-feedback="posterValidFeedback"
+				:state="posterState"
+				class="mt-4"
+			>
+				<b-form-input id="poster" :state="posterState" v-model="poster" type="url"></b-form-input>
+			</b-form-group>
+			<transition name="fade" mode="in-out">
+				<b-form-group label="Orientação do poster" class="mt-4" v-if="poster">
+					<b-form-radio-group
+						buttons
+						button-variant="outline-atlas2"
+						v-model="posterOrientation"
+						:options="['Vertical', 'Horizontal']"
+						name="posterOrientation"
+					/>
+				</b-form-group>
+			</transition>
+			<b-form-group label="Galeria de fotos?" class="mt-4">
+				<b-form-radio-group
+					buttons
+					button-variant="outline-atlas2"
+					v-model="selectedGallery"
+					:options="optionsGallery"
+					name="gallery"
+				/>
+			</b-form-group>
+			<transition-group name="fade" mode="in-out">
+				<b-form-group label="Quantidade de fotos" v-if="selectedGallery" key="transition1">
+					<button
+						class="btn btn-atlas2"
+						@click.prevent="decreasePhotoQuantity()"
+						:disabled="photoQuantity === 2"
+					>-</button>
+					<span class="mx-3">{{ photoQuantity }}</span>
+					<button class="btn btn-atlas2" @click.prevent="photoQuantity++">+</button>
+				</b-form-group>
+				<b-card v-if="selectedGallery" key="transition2">
+					<b-form-group
+						:label="'URL foto ' + photoInput "
+						label-for="name"
+						v-for="photoInput in photoQuantity"
+						:key="photoInput"
+					>
+						<b-form-input id="name" v-model="photos[photoInput - 1]" type="url"></b-form-input>
+					</b-form-group>
+				</b-card>
+			</transition-group>
 
-			<button
-				class="btn btn-atlas1 col-12 mt-2"
-				type="submit"
-			>{{ !editId ? "Adicionar evento" : "Editar evento"}}</button>
+			<button class="btn btn-atlas1 col-12 mt-2" type="submit">Adicionar evento</button>
 		</b-form>
 		<vue-snotify></vue-snotify>
 	</div>
@@ -126,11 +232,9 @@
 import { mapGetters } from "vuex"
 
 export default {
-	props: ["editId"],
 	data() {
 		return {
 			name: "",
-			abbreviation: "",
 			selectedCategory: "Evento",
 			categories: [
 				"Evento",
@@ -151,24 +255,37 @@ export default {
 				{ text: "Sim", value: true }
 			],
 			price: 0,
+			classroom: null,
+			courses: [],
+			thumbnail: "",
+			poster: "",
+			posterOrientation: "Vertical",
+			selectedGallery: false,
+			optionsGallery: [
+				{ text: "Não", value: false },
+				{ text: "Sim", value: true }
+			],
+			photoQuantity: 2,
+			photos: [],
 			attemptSubmit: false,
 			windowWidth: 0
 		}
 	},
 	created() {
-		if (this.editId) {
-			let course = this.getCourseById(this.editId)
-			this.name = course.name
-			this.abbreviation = course.abbreviation
-		} else {
-			window.addEventListener("resize", this.handleResize)
-			this.handleResize()
-		}
+		window.addEventListener("resize", this.handleResize)
+		this.handleResize()
 
 		this.getTags.forEach(tag => {
 			this.tags.push({
 				text: tag.name,
 				value: tag.id
+			})
+		})
+
+		this.getCourses.forEach(course => {
+			this.courses.push({
+				text: course.name,
+				value: course.id
 			})
 		})
 	},
@@ -179,7 +296,7 @@ export default {
 		getTodays() {
 			return new Date()
 		},
-		addCourse() {
+		addEvent() {
 			this.attemptSubmit = true
 			if (
 				this.nameState &&
@@ -189,6 +306,9 @@ export default {
 				(!this.selectedPayment ||
 					(this.selectedPayment && this.priceState))
 			) {
+				if (!this.selectedGallery) {
+					this.photos = []
+				}
 				this.$store.dispatch("addEvent", {
 					id: this.getLastEventId + 1,
 					authorId: this.getLoggedUserId,
@@ -203,8 +323,6 @@ export default {
 				})
 
 				// clears form
-				this.name = ""
-				this.abbreviation = ""
 				this.attemptSubmit = false
 			} else {
 				this.$snotify.error(
@@ -219,52 +337,25 @@ export default {
 				)
 			}
 		},
-		editCourse() {
-			this.attemptSubmit = true
-			if (this.nameState && this.abbreviationState) {
-				this.$store.dispatch("editCourse", {
-					id: this.editId,
-					name: this.name,
-					abbreviation: this.abbreviation
-				})
-
-				// clears form
-				this.name = ""
-				this.abbreviation = ""
-				this.attemptSubmit = false
-			} else {
-				this.$snotify.error(
-					"Preencha todos os campos corretamente",
-					"",
-					{
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					}
-				)
-			}
+		decreasePhotoQuantity() {
+			this.photos[this.photoQuantity - 1] = ""
+			this.photoQuantity--
 		}
 	},
 	computed: {
-		...mapGetters(["getLoggedUserId", "getLastEventId", "getTags"]),
+		...mapGetters([
+			"getLoggedUserId",
+			"getLastEventId",
+			"getTags",
+			"getCourses"
+		]),
 		nameState() {
-			if (!this.editId) {
-				if (!this.name && !this.attemptSubmit) {
-					return null
-				} else if (!this.name && this.attemptSubmit) {
-					return false
-				} else {
-					return true
-				}
+			if (!this.name && !this.attemptSubmit) {
+				return null
+			} else if (!this.name && this.attemptSubmit) {
+				return false
 			} else {
-				if (!this.name && !this.attemptSubmit) {
-					return null
-				} else if (!this.name && this.attemptSubmit) {
-					return false
-				} else {
-					return true
-				}
+				return true
 			}
 		},
 		nameInvalidFeedback() {
