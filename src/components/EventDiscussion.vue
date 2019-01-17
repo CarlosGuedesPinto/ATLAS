@@ -19,7 +19,8 @@
 			<div>
 				<div>
 					<router-link
-						:to="{ name: 'eventsInfo', params: { name: this.getEventUrlByName(event.name), id: event.id, discussionTitle: discussion.title, discussionId: discussion.id } }"
+						:to="{ name: 'eventDiscussion', params: { id: $route.params.id, discussionId: discussion.id } }"
+						class="text-white"
 					>
 						<b class="text-atlas1">[{{ discussion.category }}]</b>
 						{{ discussion.title }}
@@ -43,11 +44,6 @@
 <script>
 import { mapActions, mapGetters } from "vuex"
 
-/*
-<router-link
-				:to="{name: 'eventDiscussion', params: {eventId: $route.params.id, discussionId: discussion.id } }"
-				class="p-0 col-lg-3 col-md-5 col-5"
-			>*/
 export default {
 	props: ["discussion"],
 	data() {

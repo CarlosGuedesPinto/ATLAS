@@ -1,13 +1,13 @@
 <template>
 	<div class="d-flex event-list-item">
 		<router-link
-			:to="{ name: 'eventsInfo', params: { name: this.getEventUrlByName(event.name), id: event.id } }"
+			:to="{ name: 'eventsInfo', params: { id: event.id } }"
 			class="p-0 col-lg-3 col-md-5 col-5"
 		>
 			<img :src="event.picture.thumbnail" class="card-img-top" style="height: 100%; border-radius: 0;">
 		</router-link>
 		<div class="bg-atlas2 py-2 col-lg-9 col-md-7 col-7">
-			<router-link :to="{ name: 'eventsInfo', params: { name: this.getEventUrlByName(event.name), id: event.id } }" class="router-link">
+			<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
 				<h5 class="text-white">{{ event.name }}</h5>
 			</router-link>
 			<div class="text-atlas3 event-card-body">
@@ -51,7 +51,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(["getUserById", "getTagById", "getEventShortDescription", "getEventUrlByName"])
+		...mapGetters(["getUserById", "getTagById", "getEventShortDescription"])
 	}
 }
 </script>

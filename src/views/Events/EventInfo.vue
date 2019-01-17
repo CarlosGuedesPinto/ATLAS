@@ -141,7 +141,6 @@
 		</vs-popup>
 		<div class="mt-5">
 			<TitleAtlas>Comentários</TitleAtlas>
-			
 		</div>
 	</div>
 </template>
@@ -324,3 +323,10 @@ export default {
 	}
 }
 </script>
+
+<style>
+a:hover {
+	text-decoration: none;
+}
+</style>
+

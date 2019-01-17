@@ -48,12 +48,12 @@ const router = new Router({
           }
         },
         {
-          path: "evento/:name-:id",
+          path: "evento/:id",
           name: "eventsInfo",
           component: EventInfoView
         },
         {
-          path: "evento/:name-:id/discussao/:discussionTitle-:discussionId",
+          path: "evento/:id/discussao/:discussionId",
           name: "eventDiscussion",
           component: EventDiscussionView
         },
