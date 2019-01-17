@@ -139,6 +139,10 @@
 				<button type="submit" class="btn btn-atlas1 col-12">Criar discussão</button>
 			</form>
 		</vs-popup>
+		<div class="mt-5">
+			<TitleAtlas>Comentários</TitleAtlas>
+			
+		</div>
 	</div>
 </template>
 

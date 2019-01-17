@@ -119,6 +119,14 @@ export default new Vuex.Store({
         getEventById: state => id => {
             return state.events.find(event => event.id === id)
         },
+        getEventUrlByName: state => name => {
+			let words = name.split(" ")
+			for (let i = words.length; i >= 0; i--) {
+				if (!words[i]) words.splice(i, 1)
+				else words[i] = words[i].toLowerCase()
+			}
+			return words.join("-")
+		},
         getEventDiscussionByEventIdDiscussionId: state => eventId => discussionId => {
             return state.events.find(event => event.id === eventId).discussions.find(discussion => discussion.id === discussionId)
         },

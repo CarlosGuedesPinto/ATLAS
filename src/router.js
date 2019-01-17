@@ -4,6 +4,7 @@ import MainView from "@/views/Main.vue"
 import HomeView from "@/views/Home.vue"
 import EventsView from "@/views/Events/Events.vue"
 import EventInfoView from "@/views/Events/EventInfo.vue"
+import EventDiscussionView from "@/views/Events/EventDiscussion.vue"
 import AboutView from "@/views/About.vue"
 import LoginView from "@/views/Login.vue"
 import SignUpView from "@/views/SignUp.vue"
@@ -47,9 +48,14 @@ const router = new Router({
           }
         },
         {
-          path: "evento/:id",
+          path: "evento/:name-:id",
           name: "eventsInfo",
           component: EventInfoView
+        },
+        {
+          path: "evento/:name-:id/discussao/:discussionTitle-:discussionId",
+          name: "eventDiscussion",
+          component: EventDiscussionView
         },
         {
           path: "sobre",

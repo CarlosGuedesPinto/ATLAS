@@ -18,8 +18,12 @@
 			</div>
 			<div>
 				<div>
-					<b class="text-atlas1">[{{ discussion.category }}]</b>
-					{{ discussion.title }}
+					<router-link
+						:to="{ name: 'eventsInfo', params: { name: this.getEventUrlByName(event.name), id: event.id, discussionTitle: discussion.title, discussionId: discussion.id } }"
+					>
+						<b class="text-atlas1">[{{ discussion.category }}]</b>
+						{{ discussion.title }}
+					</router-link>
 				</div>
 				<div class="row mt-4">
 					<div class="ml-3">
@@ -50,7 +54,7 @@ export default {
 		return {
 			mouseOverUpvote: false
 		}
-    },
+	},
 	methods: {
 		...mapActions([
 			"upvoteEventDiscussionByEventIdDiscussionId",
@@ -109,7 +113,8 @@ export default {
 		...mapGetters([
 			"getEventDiscussionsById",
 			"getLoggedUserId",
-			"getUserById"
+			"getUserById",
+			"getEventUrlByName"
 		]),
 		userAlreadyVoted() {
 			return this.discussion.usersVoted.some(

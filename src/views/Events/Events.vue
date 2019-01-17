@@ -75,7 +75,6 @@
 						v-for="event in getEvents"
 						:key="event.id"
 						:event="event"
-						:to="{name: 'eventsInfo', params: {id: event.id}}"
 					/>
 				</Carousel>
 			</div>
@@ -85,7 +84,6 @@
 					<EventListItem
 						v-for="event in getEndedEventsSelectedPage"
 						:key="event.id"
-						:to="{name: 'eventsInfo', params: {id: event.id}}"
 						:event="event"
 						class="mb-1"
 					/>
@@ -95,7 +93,6 @@
 					v-for="event in getEndedEventsSelectedPage"
 					:ended="true"
 					:key="event.id"
-					:to="{name: 'eventsInfo', params: {id: event.id}}"
 					:event="event"
 					class="mb-1"
 				/>
@@ -113,7 +110,6 @@
 				<EventListItem
 					v-for="event in getFilteredEventsSelectedPage"
 					:key="event.id"
-					:to="{name: 'eventsInfo', params: {id: event.id}}"
 					:event="event"
 					class="mb-1"
 				/>

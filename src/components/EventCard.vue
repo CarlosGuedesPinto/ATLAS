@@ -1,19 +1,22 @@
 <template>
 	<div>
 		<div class="card">
-			<router-link :to="to">
+			<router-link
+				:to="{ name: 'eventsInfo', params: { name: this.getEventUrlByName(event.name), id: event.id } }"
+			>
 				<img :src="event.picture.thumbnail" class="card-img-top">
 			</router-link>
 			<div class="bg-atlas2 px-3 py-2 body-card">
-				<router-link :to="to" class="router-link">
+				<router-link
+					:to="{ name: 'eventsInfo', params: { name: this.getEventUrlByName(event.name), id: event.id } }"
+					class="router-link"
+				>
 					<h5 class="text-white m-0">{{ event.name }}</h5>
 				</router-link>
 				<div class="text-atlas3 event-card-body">
 					<div class="mb-2">
 						<template v-for="eventTag in event.tags">{{ "#" + getTagById(eventTag).name + " " }}</template>
-						<div v-if="ended">
-							{{ getEventShortDescription(event.id) }}
-						</div>
+						<div v-if="ended">{{ getEventShortDescription(event.id) }}</div>
 					</div>
 					<div class="row">
 						<div class="col-6">
@@ -45,7 +48,7 @@ import { mapGetters } from "vuex"
 export default {
 	props: ["to", "event", "ended"],
 	computed: {
-		...mapGetters(["getUserById", "getTagById", "getEventShortDescription"])
+		...mapGetters(["getUserById", "getTagById", "getEventShortDescription", "getEventUrlByName"])
 	}
 }
 </script>
