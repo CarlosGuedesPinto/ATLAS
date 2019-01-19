@@ -7,7 +7,7 @@
 				:invalid-feedback="nameInvalidFeedback"
 				:valid-feedback="nameValidFeedback"
 				:state="nameState"
-				class="mt-4"
+				:class="!edit ? 'mt-4' : ''"
 			>
 				<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
 			</b-form-group>
@@ -88,7 +88,11 @@
 					name="genders"
 				/>
 			</b-form-group>
-			<b-form-group label="Tipo de utilizador" class="mt-4" v-if="this.backoffice">
+			<b-form-group
+				label="Tipo de utilizador"
+				class="mt-4"
+				v-if="backoffice || getUserById(getLoggedUserId).profileId === 3"
+			>
 				<b-form-radio-group
 					buttons
 					:stacked="windowWidth < 595 ? true : false"
@@ -132,7 +136,7 @@
 			<button
 				class="btn btn-atlas1 col-12 mt-2"
 				type="submit"
-			>{{ backoffice ? "Adicionar utilizador" : "Criar conta" }}</button>
+			>{{ !edit ? (backoffice && !edit ? "Adicionar utilizador" : "Criar conta") : "Editar perfil" }}</button>
 		</b-form>
 		<vue-snotify></vue-snotify>
 	</div>
@@ -143,7 +147,7 @@ import { mapGetters } from "vuex"
 
 export default {
 	name: "FormCreateAccount",
-	props: ["backoffice"],
+	props: ["backoffice", "edit"],
 	data() {
 		return {
 			name: "",
@@ -177,12 +181,27 @@ export default {
 			window.addEventListener("resize", this.handleResize)
 			this.handleResize()
 		}
+
 		this.getCourses.forEach(course => {
 			this.courses.push({
 				text: course.name,
 				value: course.id
 			})
 		})
+
+		if (this.edit) {
+			this.name = this.edit.name
+			this.username = this.edit.username
+			this.password = this.edit.password
+			this.confirmPassword = this.edit.password
+			this.email = this.edit.email
+			this.picture = this.edit.picture
+			this.selectedGender = this.edit.gender
+			this.selectedUserType = this.edit.profileId
+			this.filterTags = ""
+			this.selectedTags = this.edit.interests.tags
+			this.selectedCourses = this.edit.interests.courses
+		}
 	},
 	methods: {
 		createAccount() {
@@ -293,7 +312,9 @@ export default {
 			"getUserByEmail",
 			"getLastUserId",
 			"getTags",
-			"getCourses"
+			"getCourses",
+			"getLoggedUserId",
+			"getUserById"
 		]),
 		nameState() {
 			if (!this.name && !this.attemptSubmit) {
@@ -319,18 +340,38 @@ export default {
 			}
 		},
 		usernameState() {
-			if (!this.username && !this.attemptSubmit) {
-				return null
-			} else if (!this.username && this.attemptSubmit) {
-				return false
-			} else if (
-				this.username !== this.username.replace(/[^a-z0-9]/gi, "")
-			) {
-				return false
-			} else if (this.getUserByUsername(this.username)) {
-				return false
+			if (!this.edit) {
+				if (!this.username && !this.attemptSubmit) {
+					return null
+				} else if (!this.username && this.attemptSubmit) {
+					return false
+				} else if (
+					this.username !== this.username.replace(/[^a-z0-9]/gi, "")
+				) {
+					return false
+				} else if (this.getUserByUsername(this.username)) {
+					return false
+				} else {
+					return true
+				}
 			} else {
-				return true
+				if (!this.username && !this.attemptSubmit) {
+					return null
+				} else if (!this.username && this.attemptSubmit) {
+					return false
+				} else if (
+					this.username !== this.username.replace(/[^a-z0-9]/gi, "")
+				) {
+					return false
+				} else if (
+					this.getUserByUsername(this.username) !==
+						this.getUserById(this.edit.id) &&
+					this.getUserByUsername(this.username)
+				) {
+					return false
+				} else {
+					return true
+				}
 			}
 		},
 		usernameInvalidFeedback() {
@@ -390,14 +431,30 @@ export default {
 			}
 		},
 		emailState() {
-			if (!this.email && !this.attemptSubmit) {
-				return null
-			} else if (!this.email && this.attemptSubmit) {
-				return false
-			} else if (this.getUserByEmail(this.email)) {
-				return false
+			if (!this.edit) {
+				if (!this.email && !this.attemptSubmit) {
+					return null
+				} else if (!this.email && this.attemptSubmit) {
+					return false
+				} else if (this.getUserByEmail(this.email)) {
+					return false
+				} else {
+					return true
+				}
 			} else {
-				return true
+				if (!this.email && !this.attemptSubmit) {
+					return null
+				} else if (!this.email && this.attemptSubmit) {
+					return false
+				} else if (
+					this.getUserByEmail(this.email) !==
+						this.getUserById(this.edit.id) &&
+					this.getUserByEmail(this.email)
+				) {
+					return false
+				} else {
+					return true
+				}
 			}
 		},
 		emailInvalidFeedback() {
