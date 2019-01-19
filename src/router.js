@@ -8,6 +8,7 @@ import EventDiscussionView from "@/views/Events/EventDiscussion.vue"
 import AboutView from "@/views/About.vue"
 import LoginView from "@/views/Login.vue"
 import SignUpView from "@/views/SignUp.vue"
+import ProfileView from "@/views/Profile.vue"
 import BackofficeView from "@/views/Backoffice/Backoffice.vue"
 import BackofficeHomeView from "@/views/Backoffice/Home.vue"
 import BackofficeUsersView from "@/views/Backoffice/Users.vue"
@@ -77,6 +78,11 @@ const router = new Router({
           meta: {
             requiresNotAuth: true
           }
+        },
+        {
+          path: "perfil/:username",
+          name: "profile",
+          component: ProfileView
         }
       ]
     },

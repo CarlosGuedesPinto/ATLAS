@@ -1,9 +1,6 @@
 <template>
 	<div class="d-flex event-list-item">
-		<router-link
-			:to="{ name: 'eventsInfo', params: { id: event.id } }"
-			class="p-0 col-lg-3 col-6"
-		>
+		<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="p-0 col-lg-3 col-6">
 			<img :src="event.picture.thumbnail" class="card-img-top" style="height: 100%; border-radius: 0;">
 		</router-link>
 		<div class="bg-atlas2 py-2 col-lg-9 col-6">
@@ -27,7 +24,10 @@
 						</div>
 						<div class="ml-3">
 							<i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
-							{{ getUserById(event.authorId).name }}
+							<router-link
+								:to="{name: 'profile', params: { username: getUserById(event.authorId).username }}"
+								class="text-atlas3"
+							>&nbsp;{{ getUserById(event.authorId).name }}</router-link>
 						</div>
 						<div class="mx-3">
 							<i class="fa fa-users text-atlas1" aria-hidden="true"></i>

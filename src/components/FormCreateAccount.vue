@@ -98,6 +98,37 @@
 					name="userTypes"
 				/>
 			</b-form-group>
+			<hr>
+			<h5>
+				Interesses -
+				<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
+			</h5>
+			<b-form-group label="Tags" label-for="filterTag">
+				<b-form-input
+					id="filterTag"
+					v-model="filterTags"
+					type="text"
+					maxlength="50"
+					placeholder="Filtrar tags..."
+				></b-form-input>
+				<b-form-checkbox-group
+					v-model="selectedTags"
+					name="tags"
+					:options="getFilteredTags"
+					:stacked="true"
+					style="overflow-y: scroll; max-height: 200px;"
+					class="mt-2 px-1"
+				></b-form-checkbox-group>
+			</b-form-group>
+			<b-form-group label="Cursos" class="mt-4">
+				<b-form-checkbox-group
+					v-model="selectedCourses"
+					name="courses"
+					:options="courses"
+					:stacked="true"
+					class="px-1"
+				></b-form-checkbox-group>
+			</b-form-group>
 			<button
 				class="btn btn-atlas1 col-12 mt-2"
 				type="submit"
@@ -133,6 +164,10 @@ export default {
 				{ text: "Administrador", value: 3 }
 			],
 			selectedUserType: 1,
+			filterTags: "",
+			selectedTags: [],
+			selectedCourses: [],
+			courses: [],
 			attemptSubmit: false,
 			windowWidth: 0
 		}
@@ -142,6 +177,12 @@ export default {
 			window.addEventListener("resize", this.handleResize)
 			this.handleResize()
 		}
+		this.getCourses.forEach(course => {
+			this.courses.push({
+				text: course.name,
+				value: course.id
+			})
+		})
 	},
 	methods: {
 		createAccount() {
@@ -165,7 +206,15 @@ export default {
 						picture: !this.picture
 							? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
 							: this.picture,
-						gender: this.selectedGender
+						gender: this.selectedGender,
+						accountCreation: {
+							date: this.$moment().format("YYYY-MM-DD"),
+							hour: this.$moment().format("HH:mm")
+						},
+						interests: {
+							tags: this.selectedTags,
+							courses: this.selectedCourses
+						}
 					})
 					this.$router.push({ name: "login" })
 				} else {
@@ -179,19 +228,23 @@ export default {
 						picture: !this.picture
 							? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
 							: this.picture,
-						gender: this.selectedGender
+						gender: this.selectedGender,
+						accountCreation: {
+							date: this.$moment().format("YYYY-MM-DD"),
+							hour: this.$moment().format("HH:mm")
+						},
+						interests: {
+							tags: this.selectedTags,
+							courses: this.selectedCourses
+						}
 					})
 
-					this.$snotify.success(
-						"Utilizador adicionado",
-						"",
-						{
-							timeout: 2000,
-							showProgressBar: false,
-							closeOnClick: true,
-							pauseOnHover: true
-						}
-					)
+					this.$snotify.success("Utilizador adicionado", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
 				}
 
 				// clears form
@@ -204,6 +257,9 @@ export default {
 				this.selectedGender = 1
 				this.selectedUserType = 1
 				this.attemptSubmit = false
+				this.filterTags = ""
+				this.selectedTags = []
+				this.selectedCourses = []
 			} else {
 				this.$snotify.error(
 					"Preencha todos os campos corretamente",
@@ -232,7 +288,13 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(["getUserByUsername", "getUserByEmail", "getLastUserId"]),
+		...mapGetters([
+			"getUserByUsername",
+			"getUserByEmail",
+			"getLastUserId",
+			"getTags",
+			"getCourses"
+		]),
 		nameState() {
 			if (!this.name && !this.attemptSubmit) {
 				return null
@@ -368,6 +430,35 @@ export default {
 				return "Imagem inválida"
 			} else {
 				return null
+			}
+		},
+		getFilteredTags() {
+			let tags = []
+			this.getTags.forEach(tag => {
+				tags.push({
+					text: tag.name,
+					value: tag.id
+				})
+			})
+
+			// alphabetical order
+			tags.sort((a, b) => {
+				if (a.name > b.name) {
+					return 1
+				} else if (a.name < b.name) {
+					return -1
+				}
+				return 0
+			})
+
+			if (!this.filterTags) {
+				return tags
+			} else {
+				return tags.filter(tag =>
+					tag.text
+						.toLowerCase()
+						.includes(this.filterTags.toLowerCase())
+				)
 			}
 		}
 	}

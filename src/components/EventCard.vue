@@ -1,16 +1,11 @@
 <template>
 	<div>
 		<div class="card">
-			<router-link
-				:to="{ name: 'eventsInfo', params: { id: event.id } }"
-			>
+			<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }">
 				<img :src="event.picture.thumbnail" class="card-img-top">
 			</router-link>
 			<div class="bg-atlas2 px-3 py-2 body-card">
-				<router-link
-					:to="{ name: 'eventsInfo', params: { id: event.id } }"
-					class="router-link"
-				>
+				<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
 					<h5 class="text-white m-0">{{ event.name }}</h5>
 				</router-link>
 				<div class="text-atlas3 event-card-body">
@@ -30,7 +25,10 @@
 					</div>
 					<div>
 						<i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
-						{{ getUserById(event.authorId).name }}
+						<router-link
+							:to="{name: 'profile', params: { username: getUserById(event.authorId).username }}"
+							class="text-atlas3"
+						>&nbsp;{{ getUserById(event.authorId).name }}</router-link>
 					</div>
 					<div>
 						<i class="fa fa-users text-atlas1" aria-hidden="true"></i>

@@ -59,7 +59,7 @@
 					id="hourStart"
 					:state="hourStartState"
 					type="time"
-					class="col-lg-4 col-md-5 col-sm-6 col-12"
+					class="col-xl-2 col-lg-3 col-sm-4 col-12"
 					v-model="hourStart"
 				></b-form-input>
 			</b-form-group>
@@ -73,7 +73,7 @@
 					id="hourEnd"
 					:state="hourEndState"
 					type="time"
-					class="col-lg-4 col-md-5 col-sm-6 col-12"
+					class="col-xl-2 col-lg-3 col-sm-4 col-12"
 					v-model="hourEnd"
 				></b-form-input>
 			</b-form-group>

@@ -119,7 +119,7 @@ export default new Vuex.Store({
         getEventById: state => id => {
             return state.events.find(event => event.id === id)
         },
-        getEventDiscussionByEventIdDiscussionId: state => eventId => discussionId => {
+        getEventDiscussionByEventIdDiscussionId: state => (eventId, discussionId) => {
             return state.events.find(event => event.id === eventId).discussions.find(discussion => discussion.id === discussionId)
         },
         getLastDiscussionIdByEventId: state => eventId => {
@@ -143,6 +143,7 @@ export default new Vuex.Store({
             state.users = payload
         },
         USER_LOGGED_IN(state, payload) {
+            //state.users.find(user => user.id === payload.id).lastLogin = payload.lastLogin
             state.loggedUserId = payload
         },
         USER_LOGGED_OUT(state) {

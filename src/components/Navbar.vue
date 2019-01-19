@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<b-navbar toggleable="sm" type="dark" variant="atlas1" fixed="top">
+		<b-navbar toggleable="md" type="dark" variant="atlas1" fixed="top">
 			<div class="container">
 				<router-link :to="{name: 'home'}" class="navbar-brand">
 					<img src="@/assets/img/logo.png" alt="ATLAS" height="50">
@@ -52,7 +52,7 @@
 									<router-link :to="{name: 'backoffice'}" class="dropdown-item">Painel de controlo</router-link>
 									<b-dropdown-divider></b-dropdown-divider>
 								</template>
-								<b-dropdown-item-button>Perfil</b-dropdown-item-button>
+								<router-link :to="{name: 'profile', params: { username: getUserById(getLoggedUserId).username }}" class="dropdown-item">Perfil</router-link>
 								<b-dropdown-item-button @click="userLoggedOut">Terminar sessão</b-dropdown-item-button>
 							</b-dropdown>
 						</div>

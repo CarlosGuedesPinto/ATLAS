@@ -1,8 +1,8 @@
 export default {
     users: [
-        { id: 1, profileId: 3, name: "Administrador", username: "admin", password: "12345", email: "admin@atlas.pt", picture: "https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif", gender: 1, idInstitution: 1 },
-        { id: 2, profileId: 2, name: "Proponente de evento", username: "proponente", password: "12345", email: "proponente@atlas.pt", picture: "https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif", gender: 1, idInstitution: 1 },
-        { id: 3, profileId: 1, name: "Atlas", username: "atlas", password: "12345", email: "atlas@atlas.pt", picture: "https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif", gender: 1, idInstitution: 1 }
+        { id: 1, profileId: 3, name: "Administrador", username: "admin", password: "12345", email: "admin@atlas.pt", picture: "https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif", gender: 1, accountCreation: { date: "2019-01-01", hour: "00:00" }, interests: { tags: [1, 2], courses: [1] } },
+        { id: 2, profileId: 2, name: "Proponente de evento", username: "proponente", password: "12345", email: "proponente@atlas.pt", picture: "https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif", gender: 1, accountCreation: { date: "2019-01-01", hour: "00:00" }, interests: { tags: [1, 2], courses: [1] } },
+        { id: 3, profileId: 1, name: "Atlas", username: "atlas", password: "12345", email: "atlas@atlas.pt", picture: "https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif", gender: 1, accountCreation: { date: "2019-01-01", hour: "00:00" }, interests: { tags: [1, 2], courses: [1] } }
     ],
     courses: [
         { id: 1, name: "Tecnologias e Sistemas de Informação para a Web", abbreviation: "TSIW" }
@@ -24,11 +24,26 @@ export default {
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
             classroom: "B203", coursesIds: [1], hourStart: "14:30", hourEnd: "17:30", dateStart: "2019-01-12", durationDays: 1, dateEnd: "2019-01-13", picture: { thumbnail: "https://i.imgur.com/9kTBtgg.jpg", poster: { url: "https://i.imgur.com/MXuI7WL.jpg", orientation: "Vertical" }, gallery: ["http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_10.jpg", "http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_07.jpg", "http://eventos.esmad.ipp.pt/plug-in/img/galeria/gal_08.jpg"] }, paid: false, paymentPrice: 0,
             discussions: [
-                { id: 1, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
-                { id: 2, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
-                { id: 3, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
-                { id: 4, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
-                { id: 5, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [] },
+                {
+                    id: 1, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                },
+                {
+                    id: 2, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                },
+                {
+                    id: 3, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                },
+                {
+                    id: 4, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                },
+                {
+                    id: 5, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                },
             ]
         },
         {

@@ -19,7 +19,7 @@
 						</div>
 						<div>
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-							{{ $moment(event.dateStart).format("DD [de] MMMM [de] YYYY") }}
+							{{ $moment(event.dateStart).format("LL") }}
 						</div>
 						<div>
 							<i class="fa fa-clock text-atlas1" aria-hidden="true"></i>
@@ -27,7 +27,7 @@
 						</div>
 						<div>
 							<i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
-							{{ getUserById(event.authorId).name }}
+							<router-link :to="{name: 'profile', params: { username: getUserById(event.authorId).username }}" class="text-atlas2">&nbsp;{{ getUserById(event.authorId).name }}</router-link>
 						</div>
 						<div>
 							<i class="fa fa-users text-atlas1" aria-hidden="true"></i>
@@ -285,7 +285,7 @@ export default {
 						upvotes: 0,
 						downvotes: 0,
 						date: this.$moment().format("YYYY-MM-DD"),
-						hour: this.$moment().format("HH:MM"),
+						hour: this.$moment().format("HH:mm"),
 						usersVoted: []
 					}
 				})
