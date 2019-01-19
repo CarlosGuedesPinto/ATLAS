@@ -214,7 +214,7 @@ export default {
 					this.backoffice) &&
 				this.emailState
 			) {
-				if (!this.backoffice) {
+				if (!this.backoffice && !this.edit) {
 					this.$store.dispatch("signUp", {
 						id: this.getLastUserId + 1,
 						profileId: 1,
@@ -236,7 +236,7 @@ export default {
 						}
 					})
 					this.$router.push({ name: "login" })
-				} else {
+				} else if(!this.edit) {
 					this.$store.dispatch("createAccount", {
 						id: this.getLastUserId + 1,
 						profileId: this.selectedUserType,
@@ -259,6 +259,34 @@ export default {
 					})
 
 					this.$snotify.success("Utilizador adicionado", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				} else {
+					this.$store.dispatch("editUserById", {
+						id: this.edit.id,
+						profileId: this.selectedUserType,
+						username: this.username,
+						password: this.password,
+						email: this.email,
+						name: this.name,
+						picture: !this.picture
+							? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
+							: this.picture,
+						gender: this.selectedGender,
+						accountCreation: {
+							date: this.edit.accountCreation.date,
+							hour: this.edit.accountCreation.hour
+						},
+						interests: {
+							tags: this.selectedTags,
+							courses: this.selectedCourses
+						}
+					})
+
+					this.$snotify.success("Perfil editado", "", {
 						timeout: 2000,
 						showProgressBar: false,
 						closeOnClick: true,
