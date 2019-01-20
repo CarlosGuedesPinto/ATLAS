@@ -136,7 +136,7 @@ export default new Vuex.Store({
         },
         getEnrollmentsByEventId: state => eventId => {
             return state.enrollments.filter(enrollment => enrollment.eventId === eventId)
-        }    
+        }
     },
     mutations: {
         SET_USERS(state, payload) {
@@ -154,6 +154,20 @@ export default new Vuex.Store({
         },
         CREATED_ACCOUNT(state, payload) {
             state.users.push(payload)
+        },
+        EDIT_USER_BY_ID(state, payload) {
+            state.users.forEach(user => {
+                if (user.id === payload.id) {
+                    user.name = payload.name
+                    user.profileId = payload.profileId
+                    user.username = payload.username
+                    user.password = payload.password
+                    user.email = payload.email
+                    user.name = payload.name
+                    user.picture = payload.picture
+                    user.interests = payload.interests
+                }
+            })
         },
         SET_COURSES(state, payload) {
             state.courses = payload
@@ -285,6 +299,9 @@ export default new Vuex.Store({
         },
         createEventDiscussion(context, payload) {
             context.commit("CREATE_EVENT_DISCUSSION", payload)
+        },
+        editUserById(context, payload) {
+            context.commit("EDIT_USER_BY_ID", payload)
         }
     }
 })

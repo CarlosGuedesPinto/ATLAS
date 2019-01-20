@@ -88,20 +88,22 @@
 					name="genders"
 				/>
 			</b-form-group>
-			<b-form-group
-				label="Tipo de utilizador"
-				class="mt-4"
-				v-if="backoffice || getUserById(getLoggedUserId).profileId === 3"
-			>
-				<b-form-radio-group
-					buttons
-					:stacked="windowWidth < 595 ? true : false"
-					button-variant="outline-atlas2"
-					v-model="selectedUserType"
-					:options="userTypes"
-					name="userTypes"
-				/>
-			</b-form-group>
+			<template v-if="backoffice || (edit && getLoggedUserId !== -1)">
+				<b-form-group
+					label="Tipo de utilizador"
+					class="mt-4"
+					v-if="getUserById(getLoggedUserId).profileId === 3"
+				>
+					<b-form-radio-group
+						buttons
+						:stacked="windowWidth < 595 ? true : false"
+						button-variant="outline-atlas2"
+						v-model="selectedUserType"
+						:options="userTypes"
+						name="userTypes"
+					/>
+				</b-form-group>
+			</template>
 			<hr>
 			<h5>
 				Interesses -
@@ -236,7 +238,7 @@ export default {
 						}
 					})
 					this.$router.push({ name: "login" })
-				} else if(!this.edit) {
+				} else if (!this.edit) {
 					this.$store.dispatch("createAccount", {
 						id: this.getLastUserId + 1,
 						profileId: this.selectedUserType,
