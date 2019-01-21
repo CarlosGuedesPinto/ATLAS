@@ -41,11 +41,7 @@
 		<div class="mt-5">
 			<TitleAtlas>
 				Interesses
-				<button
-					class="btn btn-atlas2"
-					@click="modalInterests = true"
-					v-if="btnConditions()"
-				>
+				<button class="btn btn-atlas2" @click="modalInterests = true" v-if="btnConditions()">
 					<i class="fa fa-cog" aria-hidden="true"></i>
 				</button>
 			</TitleAtlas>
@@ -67,12 +63,26 @@
 				v-else
 			>Recomendamos selecionar tags e cursos de interesse, para que possamos mostrar-lhe os eventos de seu gosto.</p>
 		</div>
-		<vs-popup title="Editar perfil" :active.sync="modalProfile">
+		<b-modal
+			title="Editar perfil"
+			header-bg-variant="atlas1"
+			header-text-variant="white"
+			:centered="true"
+			v-model="modalProfile"
+			:hide-footer="true"
+		>
 			<FormCreateAccount :editProfile="user"></FormCreateAccount>
-		</vs-popup>
-		<vs-popup title="Editar interesses" :active.sync="modalInterests">
+		</b-modal>
+		<b-modal
+			title="Editar interesses"
+			header-bg-variant="atlas1"
+			header-text-variant="white"
+			:centered="true"
+			v-model="modalInterests"
+			:hide-footer="true"
+		>
 			<FormCreateAccount :editInterests="user"></FormCreateAccount>
-		</vs-popup>
+		</b-modal>
 	</div>
 </template>
 
@@ -128,12 +138,12 @@ export default {
 		},
 		btnConditions() {
 			if (this.getLoggedUserId !== -1) {
-				if (this.getUserById(this.getLoggedUserId).profileId === 3) {
+				if (
+					this.getUserById(this.getLoggedUserId).profileId === 3 ||
+					this.getLoggedUserId === this.user.id
+				) {
 					return true
 				}
-			}
-			if (this.getLoggedUserId === this.user.id) {
-				return true
 			}
 			return false
 		},

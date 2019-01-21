@@ -273,6 +273,30 @@ export default new Vuex.Store({
             let index = state.events.findIndex(event => event.id === payload.eventId)
             state.events[index].discussions.push(payload.discussion)
         },
+        EDIT_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.eventId) {
+                    event.discussions.forEach(discussion => {
+                        if (discussion.id === payload.discussionId) {
+                            discussion.title = payload.discussion.title
+                            discussion.category = payload.discussion.category
+                            discussion.content = payload.discussion.content
+                        }
+                    })
+                }
+            })
+        },
+        REMOVE_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.eventId) {
+                    event.discussions.forEach((discussion, index) => {
+                        if (discussion.id === payload.discussionId) {
+                            event.discussions.splice(index, 1)
+                        }
+                    })
+                }
+            })
+        },
         ADD_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
                 if (event.id === payload.eventId) {
@@ -351,6 +375,12 @@ export default new Vuex.Store({
         },
         createEventDiscussion(context, payload) {
             context.commit("CREATE_EVENT_DISCUSSION", payload)
+        },
+        editEventDiscussionByEventIdDiscussionId(context, payload) {
+            context.commit("EDIT_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID", payload)
+        },
+        removeDiscussionByEventIdDiscussionId(context, payload) {
+            context.commit("REMOVE_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID", payload)
         },
         addDiscussionAnswerByEventIdDiscussionId(context, payload) {
             context.commit("ADD_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID", payload)

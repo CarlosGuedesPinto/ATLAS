@@ -62,9 +62,7 @@
 				slot-scope="row"
 				v-if="name === 'events' && getUserById(getLoggedUserId).profileId === 3"
 			>
-				<template v-for="tag in row.item.tags">
-					{{ "#" + getTagNameById(tag) }}
-				</template>
+				<template v-for="tag in row.item.tags">{{ "#" + getTagNameById(tag) }}</template>
 			</template>
 
 			<template slot="actions" slot-scope="row" v-if="name === 'courses' || name === 'tags'">
@@ -84,6 +82,19 @@
 				<b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0"/>
 			</div>
 		</div>
+		<!--
+		<b-modal
+			:title="name === 'courses' ? 'Editar curso' : 'Editar tag'"
+			header-bg-variant="atlas1"
+			header-text-variant="white"
+			:centered="true"
+			v-model="activePrompt"
+			:hide-footer="true"
+		>
+			<FormCourse :editId="editId" v-if="name === 'courses'"></FormCourse>
+			<FormTag :editId="editId" v-if="name === 'tags'"></FormTag>
+		</b-modal>
+		-->
 		<vs-prompt vs-title="Editar curso" :vs-active.sync="activePrompt" :vs-buttons-hidden="true">
 			<FormCourse :editId="editId" v-if="name === 'courses'"></FormCourse>
 			<FormTag :editId="editId" v-if="name === 'tags'"></FormTag>

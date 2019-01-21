@@ -7,6 +7,16 @@
 			>{{ event.name }}</router-link>&nbsp;/
 			<span class="text-atlas2">[{{ discussion.category }}]</span>
 			&nbsp;{{ discussion.title }}
+			<button
+				class="btn btn-atlas2"
+				@click="modal = true"
+				v-if="btnConditions()"
+			>
+				<i class="fa fa-edit" aria-hidden="true"></i>
+			</button>
+			<button class="btn btn-danger ml-2" @click="btnRemoveClicked()" v-if="btnConditions()">
+				<i class="fa fa-times" aria-hidden="true"></i>
+			</button>
 		</TitleAtlas>
 		<EventDiscussionAnswer :answer="{authorId: discussion.authorId, content: discussion.content}"/>
 		<EventDiscussionAnswer v-for="answer in discussion.answers" :key="answer.id" :answer="answer"/>
@@ -32,16 +42,27 @@
 				</div>
 			</transition>
 		</b-form>
+		<b-modal
+			title="Editar discussão"
+			header-bg-variant="atlas1"
+			header-text-variant="white"
+			:centered="true"
+			v-model="modal"
+			:hide-footer="true"
+		>
+			<FormDiscussion :eventId="event.id" :edit="discussion"/>
+		</b-modal>
 	</div>
 </template>
 
 <script>
 import TitleAtlas from "@/components/TitleAtlas.vue"
 import EventDiscussionAnswer from "@/components/EventDiscussionAnswer.vue"
+import FormDiscussion from "@/components/FormDiscussion.vue"
 import { mapGetters } from "vuex"
 
 export default {
-	components: { TitleAtlas, EventDiscussionAnswer },
+	components: { TitleAtlas, EventDiscussionAnswer, FormDiscussion },
 	created() {
 		this.event = this.getEventById(parseInt(this.$route.params.id))
 		this.discussion = this.getEventDiscussionByEventIdDiscussionId(
@@ -49,13 +70,23 @@ export default {
 			parseInt(this.$route.params.discussionId)
 		)
 		this.author = this.getUserById(this.discussion.authorId)
+
+		this.$store.subscribe(mutation => {
+			if (
+				mutation.type ===
+				"EDIT_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID"
+			) {
+				this.modal = false
+			}
+		})
 	},
 	data() {
 		return {
 			event: {},
 			discussion: {},
 			author: {},
-			answer: ""
+			answer: "",
+			modal: false
 		}
 	},
 	computed: {
@@ -73,7 +104,11 @@ export default {
 				eventId: this.event.id,
 				discussionId: this.discussion.id,
 				answer: {
-					id: this.getLastAnswerIdByEventIdDiscussionId(this.event.id, this.discussion.id) + 1,
+					id:
+						this.getLastAnswerIdByEventIdDiscussionId(
+							this.event.id,
+							this.discussion.id
+						) + 1,
 					authorId: this.getLoggedUserId,
 					content: this.answer,
 					moment: this.$moment()
@@ -85,6 +120,47 @@ export default {
 				showProgressBar: false,
 				closeOnClick: true,
 				pauseOnHover: true
+			})
+		},
+		btnConditions() {
+			if (this.getLoggedUserId !== -1) {
+				if (
+					this.getUserById(this.getLoggedUserId).profileId === 3 ||
+					this.getLoggedUserId === this.author.id ||
+					this.getLoggedUserId === this.event.authorId
+				) {
+					return true
+				}
+			}
+			return false
+		},
+		btnRemoveClicked() {
+			this.$vs.dialog({
+				type: "confirm",
+				color: "danger",
+				title: "Remover discussão?",
+				acceptText: "Remover",
+				cancelText: "Cancelar",
+				text: "Esta discussão será removida para sempre.",
+				accept: () => {
+					this.$store.dispatch(
+						"removeDiscussionByEventIdDiscussionId",
+						{
+							eventId: this.event.id,
+							discussionId: this.discussion.id
+						}
+					)
+					this.$snotify.success("Discussão removida", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+					this.$router.replace({
+						name: "eventsInfo",
+						params: { id: this.event.id }
+					})
+				}
 			})
 		}
 	}
