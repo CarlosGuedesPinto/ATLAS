@@ -75,7 +75,8 @@ export default {
 				answer: {
 					id: this.getLastAnswerIdByEventIdDiscussionId(this.event.id, this.discussion.id) + 1,
 					authorId: this.getLoggedUserId,
-					content: this.answer
+					content: this.answer,
+					moment: this.$moment()
 				}
 			})
 			this.answer = ""

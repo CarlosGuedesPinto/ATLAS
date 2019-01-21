@@ -170,7 +170,6 @@ export default {
 	created() {
 		this.event = this.getEventById(parseInt(this.$route.params.id))
 		this.enrollments = this.getEnrollmentsByEventId(this.event.id)
-
 		this.totalPages =
 			this.event.discussions.length <= this.discussionsPerPage
 				? 1
@@ -205,7 +204,6 @@ export default {
 			"getTagById",
 			"getUserById",
 			"getEnrollmentsByEventId",
-			"getLastDiscussionIdByEvent",
 			"getLastDiscussionIdByEventId",
 			"getLoggedUserId",
 			"getCourseById"
@@ -292,7 +290,8 @@ export default {
 						downvotes: 0,
 						date: this.$moment().format("YYYY-MM-DD"),
 						hour: this.$moment().format("HH:mm"),
-						usersVoted: []
+						usersVoted: [],
+						moment: this.$moment()
 					}
 				})
 

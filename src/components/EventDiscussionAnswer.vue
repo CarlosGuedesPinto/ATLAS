@@ -32,9 +32,10 @@
 					:to="{name:'profile', params: { username: user.username } }"
 					class="text-atlas2"
 				>@{{ user.username }}</router-link>
-				/ {{ $moment().format("LL") }}
-				/ {{ $moment().format("HH:mm") }}
+				/ {{ answer.moment.format("LL") }}
+				/ {{ answer.moment.format("HH:mm") }}
 			</div>
+			<hr>
 			<div class="col-12 mt-2">{{ answer.content }}</div>
 		</div>
 		<hr>
