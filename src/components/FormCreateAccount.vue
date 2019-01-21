@@ -1,144 +1,150 @@
 <template>
 	<div>
-		<b-form @submit.prevent="createAccount()">
-			<b-form-group
-				label="Nome"
-				label-for="name"
-				:invalid-feedback="nameInvalidFeedback"
-				:valid-feedback="nameValidFeedback"
-				:state="nameState"
-				:class="!edit ? 'mt-4' : ''"
-			>
-				<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label="Utilizador"
-				label-for="username"
-				:invalid-feedback="usernameInvalidFeedback"
-				:valid-feedback="usernameValidFeedback"
-				:state="usernameState"
-				class="mt-4"
-			>
-				<b-form-input
-					id="username"
-					:state="usernameState"
-					v-model="username"
-					type="text"
-					maxlength="15"
-				></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label="Palavra-passe"
-				label-for="password"
-				:invalid-feedback="passwordInvalidFeedback"
-				:state="passwordState"
-				class="mt-4"
-			>
-				<b-form-input
-					id="password"
-					:state="passwordState"
-					v-model="password"
-					type="password"
-					maxlength="15"
-				></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label="Confirmar palavra-passe"
-				label-for="confirmPassword"
-				:invalid-feedback="confirmPasswordInvalidFeedback"
-				:state="confirmPasswordState"
-				class="mt-4"
-				v-if="!backoffice"
-			>
-				<b-form-input
-					id="confirmPassword"
-					:state="confirmPasswordState"
-					v-model="confirmPassword"
-					type="password"
-					maxlength="15"
-				></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label="Email"
-				label-for="email"
-				:invalid-feedback="emailInvalidFeedback"
-				:state="emailState"
-				class="mt-4"
-			>
-				<b-form-input id="email" :state="emailState" v-model="email" type="email"></b-form-input>
-			</b-form-group>
-			<b-form-group
-				label-for="picture"
-				:invalid-feedback="pictureInvalidFeedback"
-				:state="pictureState"
-				class="mt-4"
-			>
-				<template slot="label">
-					<span>URL foto -</span>
-					<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
-				</template>
-				<b-form-input id="picture" :state="pictureState" v-model="picture" type="url"></b-form-input>
-			</b-form-group>
-			<b-form-group label="Género" class="mt-4">
-				<b-form-radio-group
-					buttons
-					button-variant="outline-atlas2"
-					v-model="selectedGender"
-					:options="genders"
-					name="genders"
-				/>
-			</b-form-group>
-			<template v-if="backoffice || (edit && getLoggedUserId !== -1)">
+		<b-form @submit.prevent="submitForm()">
+			<template v-if="!editInterests">
 				<b-form-group
-					label="Tipo de utilizador"
-					class="mt-4"
-					v-if="getUserById(getLoggedUserId).profileId === 3"
+					label="Nome"
+					label-for="name"
+					:invalid-feedback="nameInvalidFeedback"
+					:valid-feedback="nameValidFeedback"
+					:state="nameState"
+					:class="!editProfile ? 'mt-4' : ''"
 				>
+					<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Utilizador"
+					label-for="username"
+					:invalid-feedback="usernameInvalidFeedback"
+					:valid-feedback="usernameValidFeedback"
+					:state="usernameState"
+					class="mt-4"
+				>
+					<b-form-input
+						id="username"
+						:state="usernameState"
+						v-model="username"
+						type="text"
+						maxlength="15"
+					></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Palavra-passe"
+					label-for="password"
+					:invalid-feedback="passwordInvalidFeedback"
+					:state="passwordState"
+					class="mt-4"
+				>
+					<b-form-input
+						id="password"
+						:state="passwordState"
+						v-model="password"
+						type="password"
+						maxlength="15"
+					></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Confirmar palavra-passe"
+					label-for="confirmPassword"
+					:invalid-feedback="confirmPasswordInvalidFeedback"
+					:state="confirmPasswordState"
+					class="mt-4"
+					v-if="!backoffice"
+				>
+					<b-form-input
+						id="confirmPassword"
+						:state="confirmPasswordState"
+						v-model="confirmPassword"
+						type="password"
+						maxlength="15"
+					></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Email"
+					label-for="email"
+					:invalid-feedback="emailInvalidFeedback"
+					:state="emailState"
+					class="mt-4"
+				>
+					<b-form-input id="email" :state="emailState" v-model="email" type="email"></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label-for="picture"
+					:invalid-feedback="pictureInvalidFeedback"
+					:state="pictureState"
+					class="mt-4"
+				>
+					<template slot="label">
+						<span>URL foto -</span>
+						<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
+					</template>
+					<b-form-input id="picture" :state="pictureState" v-model="picture" type="url"></b-form-input>
+				</b-form-group>
+				<b-form-group label="Género" class="mt-4">
 					<b-form-radio-group
 						buttons
-						:stacked="windowWidth < 595 ? true : false"
 						button-variant="outline-atlas2"
-						v-model="selectedUserType"
-						:options="userTypes"
-						name="userTypes"
+						v-model="selectedGender"
+						:options="genders"
+						name="genders"
 					/>
 				</b-form-group>
+				<template v-if="backoffice || (editProfile && getLoggedUserId !== -1)">
+					<b-form-group
+						label="Tipo de utilizador"
+						class="mt-4"
+						v-if="getUserById(getLoggedUserId).profileId === 3"
+					>
+						<b-form-radio-group
+							buttons
+							:stacked="windowWidth < 595 ? true : false"
+							button-variant="outline-atlas2"
+							v-model="selectedUserType"
+							:options="userTypes"
+							name="userTypes"
+						/>
+					</b-form-group>
+				</template>
 			</template>
-			<hr>
-			<h5>
-				Interesses -
-				<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
-			</h5>
-			<b-form-group label="Tags" label-for="filterTag">
-				<b-form-input
-					id="filterTag"
-					v-model="filterTags"
-					type="text"
-					maxlength="50"
-					placeholder="Filtrar tags..."
-				></b-form-input>
-				<b-form-checkbox-group
-					v-model="selectedTags"
-					name="tags"
-					:options="getFilteredTags"
-					:stacked="true"
-					style="overflow-y: scroll; max-height: 200px;"
-					class="mt-2 px-1"
-				></b-form-checkbox-group>
-			</b-form-group>
-			<b-form-group label="Cursos" class="mt-4">
-				<b-form-checkbox-group
-					v-model="selectedCourses"
-					name="courses"
-					:options="courses"
-					:stacked="true"
-					class="px-1"
-				></b-form-checkbox-group>
-			</b-form-group>
+			<template v-if="!editProfile">
+				<template v-if="!editProfile && !editInterests">
+					<hr>
+					<h5>
+						Interesses -
+						<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
+					</h5>
+				</template>
+				<b-form-group label="Tags" label-for="filterTag">
+					<b-form-input
+						id="filterTag"
+						v-model="filterTags"
+						type="text"
+						maxlength="50"
+						placeholder="Filtrar tags..."
+					></b-form-input>
+					<b-form-checkbox-group
+						v-model="selectedTags"
+						name="tags"
+						:options="getFilteredTags"
+						:stacked="true"
+						style="overflow-y: scroll; max-height: 200px;"
+						class="mt-2 px-1"
+					></b-form-checkbox-group>
+				</b-form-group>
+				<b-form-group label="Cursos" class="mt-4">
+					<b-form-checkbox-group
+						v-model="selectedCourses"
+						name="courses"
+						:options="courses"
+						:stacked="true"
+						class="px-1"
+					></b-form-checkbox-group>
+				</b-form-group>
+			</template>
 			<button
 				class="btn btn-atlas1 col-12 mt-2"
 				type="submit"
-			>{{ !edit ? (backoffice && !edit ? "Adicionar utilizador" : "Criar conta") : "Editar perfil" }}</button>
+			>{{ !editInterests ? (!editProfile ? (backoffice && !editProfile ? "Adicionar utilizador" : "Criar conta") : "Editar perfil") : "Editar interesses" }}</button>
 		</b-form>
 		<vue-snotify></vue-snotify>
 	</div>
@@ -149,7 +155,7 @@ import { mapGetters } from "vuex"
 
 export default {
 	name: "FormCreateAccount",
-	props: ["backoffice", "edit"],
+	props: ["backoffice", "editProfile", "editInterests"],
 	data() {
 		return {
 			name: "",
@@ -191,136 +197,184 @@ export default {
 			})
 		})
 
-		if (this.edit) {
-			this.name = this.edit.name
-			this.username = this.edit.username
-			this.password = this.edit.password
-			this.confirmPassword = this.edit.password
-			this.email = this.edit.email
-			this.picture = this.edit.picture
-			this.selectedGender = this.edit.gender
-			this.selectedUserType = this.edit.profileId
+		if (this.editProfile) {
+			this.name = this.editProfile.name
+			this.username = this.editProfile.username
+			this.password = this.editProfile.password
+			this.confirmPassword = this.editProfile.password
+			this.email = this.editProfile.email
+			this.picture = this.editProfile.picture
+			this.selectedGender = this.editProfile.gender
+			this.selectedUserType = this.editProfile.profileId
+		}
+
+		if (this.editInterests) {
 			this.filterTags = ""
-			this.selectedTags = this.edit.interests.tags
-			this.selectedCourses = this.edit.interests.courses
+			this.selectedTags = this.editInterests.interests.tags
+			this.selectedCourses = this.editInterests.interests.courses
 		}
 	},
 	methods: {
-		createAccount() {
+		submitForm() {
 			this.attemptSubmit = true
+			if (!this.backoffice && !this.editProfile && !this.editInterests) {
+				this.signUp()
+			} else if (!this.editProfile && !this.editInterests) {
+				this.createAccount()
+			} else if (!this.editInterests) {
+				this.editAccount()
+			} else {
+				this.methodEditInterests()
+			}
+		},
+		signUp() {
 			if (
 				this.nameState &&
 				this.usernameState &&
 				this.passwordState &&
-				((this.confirmPasswordState && !this.backoffice) ||
-					this.backoffice) &&
-				this.emailState
+				this.confirmPasswordState &&
+				this.emailState &&
+				this.pictureState
 			) {
-				if (!this.backoffice && !this.edit) {
-					this.$store.dispatch("signUp", {
-						id: this.getLastUserId + 1,
-						profileId: 1,
-						username: this.username,
-						password: this.password,
-						email: this.email,
-						name: this.name,
-						picture: !this.picture
-							? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
-							: this.picture,
-						gender: this.selectedGender,
-						accountCreation: {
-							date: this.$moment().format("YYYY-MM-DD"),
-							hour: this.$moment().format("HH:mm")
-						},
-						interests: {
-							tags: this.selectedTags,
-							courses: this.selectedCourses
-						}
-					})
-					this.$router.push({ name: "login" })
-				} else if (!this.edit) {
-					this.$store.dispatch("createAccount", {
-						id: this.getLastUserId + 1,
-						profileId: this.selectedUserType,
-						username: this.username,
-						password: this.password,
-						email: this.email,
-						name: this.name,
-						picture: !this.picture
-							? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
-							: this.picture,
-						gender: this.selectedGender,
-						accountCreation: {
-							date: this.$moment().format("YYYY-MM-DD"),
-							hour: this.$moment().format("HH:mm")
-						},
-						interests: {
-							tags: this.selectedTags,
-							courses: this.selectedCourses
-						}
-					})
-
-					this.$snotify.success("Utilizador adicionado", "", {
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					})
-				} else {
-					this.$store.dispatch("editUserById", {
-						id: this.edit.id,
-						profileId: this.selectedUserType,
-						username: this.username,
-						password: this.password,
-						email: this.email,
-						name: this.name,
-						picture: !this.picture
-							? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
-							: this.picture,
-						gender: this.selectedGender,
-						accountCreation: {
-							date: this.edit.accountCreation.date,
-							hour: this.edit.accountCreation.hour
-						},
-						interests: {
-							tags: this.selectedTags,
-							courses: this.selectedCourses
-						}
-					})
-
-					this.$snotify.success("Perfil editado", "", {
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					})
-				}
-
-				// clears form
-				this.name = ""
-				this.username = ""
-				this.password = ""
-				this.confirmPassword = ""
-				this.email = ""
-				this.picture = ""
-				this.selectedGender = 1
-				this.selectedUserType = 1
-				this.attemptSubmit = false
-				this.filterTags = ""
-				this.selectedTags = []
-				this.selectedCourses = []
-			} else {
-				this.$snotify.error(
-					"Preencha todos os campos corretamente",
-					"",
-					{
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
+				this.$store.dispatch("signUp", {
+					id: this.getLastUserId + 1,
+					profileId: 1,
+					username: this.username,
+					password: this.password,
+					email: this.email,
+					name: this.name,
+					picture: !this.picture
+						? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
+						: this.picture,
+					gender: this.selectedGender,
+					accountCreation: {
+						date: this.$moment().format("YYYY-MM-DD"),
+						hour: this.$moment().format("HH:mm")
+					},
+					interests: {
+						tags: this.selectedTags,
+						courses: this.selectedCourses
 					}
-				)
+				})
+				this.$router.push({ name: "login" })
+			} else {
+				this.notifyError()
 			}
+		},
+		createAccount() {
+			if (
+				this.nameState &&
+				this.usernameState &&
+				this.passwordState &&
+				this.emailState &&
+				this.pictureState
+			) {
+				this.$store.dispatch("createAccount", {
+					id: this.getLastUserId + 1,
+					profileId: this.selectedUserType,
+					username: this.username,
+					password: this.password,
+					email: this.email,
+					name: this.name,
+					picture: !this.picture
+						? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
+						: this.picture,
+					gender: this.selectedGender,
+					accountCreation: {
+						date: this.$moment().format("YYYY-MM-DD"),
+						hour: this.$moment().format("HH:mm")
+					},
+					interests: {
+						tags: this.selectedTags,
+						courses: this.selectedCourses
+					}
+				})
+
+				this.$snotify.success("Utilizador adicionado", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
+				this.clearForm()
+			} else {
+				this.notifyError()
+			}
+		},
+		editAccount() {
+			if (
+				this.nameState &&
+				this.usernameState &&
+				this.passwordState &&
+				this.confirmPasswordState &&
+				this.emailState &&
+				this.pictureState
+			) {
+				this.$router.replace({
+					name: "profile",
+					params: { username: this.username }
+				})
+				this.$store.dispatch("editUserById", {
+					id: this.editProfile.id,
+					profileId: this.selectedUserType,
+					username: this.username,
+					password: this.password,
+					email: this.email,
+					name: this.name,
+					picture: !this.picture
+						? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
+						: this.picture,
+					gender: this.selectedGender
+				})
+
+				this.$snotify.success("Perfil editado", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
+			} else {
+				this.notifyError()
+			}
+		},
+		methodEditInterests() {
+			this.$store.dispatch("editUserInterestsById", {
+				id: this.editInterests.id,
+				interests: {
+					tags: this.selectedTags,
+					courses: this.selectedCourses
+				}
+			})
+
+			this.$snotify.success("Interesses editados", "", {
+				timeout: 2000,
+				showProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true
+			})
+		},
+		notifyError() {
+			this.$snotify.error("Preencha todos os campos corretamente", "", {
+				timeout: 2000,
+				showProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true
+			})
+		},
+		clearForm() {
+			this.attemptSubmit = false
+			this.name = ""
+			this.username = ""
+			this.password = ""
+			this.confirmPassword = ""
+			this.email = ""
+			this.picture = ""
+			this.selectedGender = 1
+			this.selectedUserType = 1
+			this.attemptSubmit = false
+			this.filterTags = ""
+			this.selectedTags = []
+			this.selectedCourses = []
 		},
 		handleResize() {
 			this.windowWidth = window.innerWidth
@@ -370,7 +424,7 @@ export default {
 			}
 		},
 		usernameState() {
-			if (!this.edit) {
+			if (!this.editProfile) {
 				if (!this.username && !this.attemptSubmit) {
 					return null
 				} else if (!this.username && this.attemptSubmit) {
@@ -395,7 +449,7 @@ export default {
 					return false
 				} else if (
 					this.getUserByUsername(this.username) !==
-						this.getUserById(this.edit.id) &&
+						this.getUserById(this.editProfile.id) &&
 					this.getUserByUsername(this.username)
 				) {
 					return false
@@ -461,7 +515,7 @@ export default {
 			}
 		},
 		emailState() {
-			if (!this.edit) {
+			if (!this.editProfile) {
 				if (!this.email && !this.attemptSubmit) {
 					return null
 				} else if (!this.email && this.attemptSubmit) {
@@ -478,7 +532,7 @@ export default {
 					return false
 				} else if (
 					this.getUserByEmail(this.email) !==
-						this.getUserById(this.edit.id) &&
+						this.getUserById(this.editProfile.id) &&
 					this.getUserByEmail(this.email)
 				) {
 					return false

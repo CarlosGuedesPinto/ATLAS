@@ -92,11 +92,11 @@ export default new Vuex.Store({
             return state.events
         },
         getEventsByAuthorId: state => authorId => {
-            let eventsByAuthorId = []
+            let events = []
             state.events.forEach(event => {
-                if (event.authorId === authorId) eventsByAuthorId.push(event)
+                if (event.authorId === authorId) events.push(event)
             })
-            return eventsByAuthorId
+            return events
         },
         getLastEventId: state => {
             let lastId = 0
@@ -165,9 +165,19 @@ export default new Vuex.Store({
                     user.email = payload.email
                     user.name = payload.name
                     user.picture = payload.picture
+                }
+            })
+        },
+        EDIT_USER_INTERESTS_BY_ID(state, payload) {
+            state.users.forEach(user => {
+                if (user.id === payload.id) {
                     user.interests = payload.interests
                 }
             })
+        },
+        REMOVE_USER_BY_ID(state, payload) {
+            let index = state.users.findIndex(user => user.id === payload)
+            state.users.splice(index, 1)
         },
         SET_COURSES(state, payload) {
             state.courses = payload
@@ -258,6 +268,15 @@ export default new Vuex.Store({
         createAccount(context, payload) {
             context.commit("CREATED_ACCOUNT", payload)
         },
+        editUserById(context, payload) {
+            context.commit("EDIT_USER_BY_ID", payload)
+        },
+        editUserInterestsById(context, payload) {
+            context.commit("EDIT_USER_INTERESTS_BY_ID", payload)
+        },
+        removeUserById(context, payload) {
+            context.commit("REMOVE_USER_BY_ID", payload)
+        },
         setCourses(context, payload) {
             context.commit("SET_COURSES", payload)
         },
@@ -299,9 +318,6 @@ export default new Vuex.Store({
         },
         createEventDiscussion(context, payload) {
             context.commit("CREATE_EVENT_DISCUSSION", payload)
-        },
-        editUserById(context, payload) {
-            context.commit("EDIT_USER_BY_ID", payload)
         }
     }
 })

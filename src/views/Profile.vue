@@ -2,14 +2,23 @@
 	<div>
 		<div>
 			<TitleAtlas>
-				Perfil - @{{ user.name }}
+				Perfil - {{ user.name }}
 				<button
 					class="btn btn-atlas2"
-					@click="modal.active = true"
-					v-if="getLoggedUserId === user.id || getLoggedUserId === 3"
+					@click="modalProfile = true"
+					v-if="btnConditions()"
 				>
 					<i class="fa fa-cog" aria-hidden="true"></i>
 				</button>
+				<template v-if="getLoggedUserId !== -1">
+					<button
+						class="btn btn-danger ml-2"
+						@click="btnRemoveClicked()"
+						v-if="getUserById(getLoggedUserId).profileId === 3 && user.id !== getLoggedUserId"
+					>
+						<i class="fa fa-times" aria-hidden="true"></i>
+					</button>
+				</template>
 			</TitleAtlas>
 			<div class="row">
 				<div class="ml-auto mr-auto mb-2 col-lg-3 col-md-4 col-6 text-center">
@@ -30,22 +39,39 @@
 			</div>
 		</div>
 		<div class="mt-5">
-			<TitleAtlas>Interesses</TitleAtlas>
-			<vs-list>
+			<TitleAtlas>
+				Interesses
+				<button
+					class="btn btn-atlas2"
+					@click="modalInterests = true"
+					v-if="btnConditions()"
+				>
+					<i class="fa fa-cog" aria-hidden="true"></i>
+				</button>
+			</TitleAtlas>
+			<vs-list v-if="interestedTags().length || interestedCourses().length">
 				<vs-list-item
 					icon="local_offer"
 					:title="interestedTags().length > 1 ? 'Tags' : 'Tag'"
 					:subtitle="interestedTags().join(' ')"
+					v-if="interestedTags().length"
 				></vs-list-item>
 				<vs-list-item
 					icon="school"
 					:title="interestedCourses().length > 1 ? 'Cursos' : 'Curso'"
 					:subtitle="interestedCourses().join(',')"
+					v-if="interestedCourses().length"
 				></vs-list-item>
 			</vs-list>
+			<p
+				v-else
+			>Recomendamos selecionar tags e cursos de interesse, para que possamos mostrar-lhe os eventos de seu gosto.</p>
 		</div>
-		<vs-popup title="Editar perfil" :active.sync="modal.active">
-			<FormCreateAccount :edit="user"></FormCreateAccount>
+		<vs-popup title="Editar perfil" :active.sync="modalProfile">
+			<FormCreateAccount :editProfile="user"></FormCreateAccount>
+		</vs-popup>
+		<vs-popup title="Editar interesses" :active.sync="modalInterests">
+			<FormCreateAccount :editInterests="user"></FormCreateAccount>
 		</vs-popup>
 	</div>
 </template>
@@ -57,11 +83,22 @@ import FormCreateAccount from "@/components/FormCreateAccount.vue"
 
 export default {
 	components: { TitleAtlas, FormCreateAccount },
+	created() {
+		this.$store.subscribe(mutation => {
+			switch (mutation.type) {
+				case "EDIT_USER_BY_ID":
+					this.modalProfile = false
+					break
+				case "EDIT_USER_INTERESTS_BY_ID":
+					this.modalInterests = false
+					break
+			}
+		})
+	},
 	data() {
 		return {
-			modal: {
-				active: false
-			}
+			modalProfile: false,
+			modalInterests: false
 		}
 	},
 	methods: {
@@ -88,6 +125,55 @@ export default {
 				coursesNames.push(this.getCourseById(course).name)
 			)
 			return coursesNames
+		},
+		btnConditions() {
+			if (this.getLoggedUserId !== -1) {
+				if (this.getUserById(this.getLoggedUserId).profileId === 3) {
+					return true
+				}
+			}
+			if (this.getLoggedUserId === this.user.id) {
+				return true
+			}
+			return false
+		},
+		btnRemoveClicked() {
+			let events = this.getEventsByAuthorId(this.user.id)
+			if (events.length) {
+				this.$vs.dialog({
+					type: "confirm",
+					color: "danger",
+					title: "Impossível remover utilizador",
+					acceptText: "Entendido",
+					cancelText: "",
+					text: `O utilizador ${
+						this.user.username
+					} não pode ser removido, uma vez que tem ${
+						events.length
+					} eventos criados.`
+				})
+			} else {
+				this.$vs.dialog({
+					type: "confirm",
+					color: "danger",
+					title: "Remover utilizador?",
+					acceptText: "Remover",
+					cancelText: "Cancelar",
+					text: `O utilizador ${
+						this.user.username
+					} será removido para sempre.`,
+					accept: () => {
+						this.$store.dispatch("removeUserById", this.user.id)
+						this.$snotify.success("Utilizador removido", "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+						this.$router.push({ name: "home" })
+					}
+				})
+			}
 		}
 	},
 	computed: {
@@ -95,7 +181,9 @@ export default {
 			"getUserByUsername",
 			"getTagById",
 			"getCourseById",
-			"getLoggedUserId"
+			"getLoggedUserId",
+			"getUserById",
+			"getEventsByAuthorId"
 		]),
 		user() {
 			return this.getUserByUsername(this.$route.params.username)
