@@ -3,7 +3,10 @@
 		<div>
 			<TitleAtlas>{{ event.name }}</TitleAtlas>
 			<div class="row">
-				<div class="ml-auto mr-auto mb-2" :class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-4 col-md-5 col-6' : 'col-lg-6 col-12'">
+				<div
+					class="ml-auto mr-auto mb-2"
+					:class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-4 col-md-5 col-6' : 'col-lg-6 col-12'"
+				>
 					<img :src="event.picture.poster.url" class="img-fluid img-thumbnail">
 				</div>
 				<div :class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-8 col-12' : 'col-12'">
@@ -26,8 +29,13 @@
 							{{ event.hourStart }} - {{ event.hourEnd }}
 						</div>
 						<div>
-							<i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
-							<router-link :to="{name: 'profile', params: { username: getUserById(event.authorId).username }}" class="text-atlas2">&nbsp;{{ getUserById(event.authorId).name }}</router-link>
+							<router-link
+								:to="{name: 'profile', params: { username: getUserById(event.authorId).username }}"
+								class="text-atlas2"
+							>
+								<i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
+								&nbsp;@{{ getUserById(event.authorId).username }}
+							</router-link>
 						</div>
 						<div>
 							<i class="fa fa-users text-atlas1" aria-hidden="true"></i>
@@ -39,9 +47,7 @@
 						</div>
 						<div>
 							<i class="fa fa-graduation-cap text-atlas1" aria-hidden="true"></i>
-							<template v-for="courseId in event.coursesIds">
-								{{ getCourseById(courseId).name}}
-							</template>
+							<template v-for="courseId in event.coursesIds">{{ getCourseById(courseId).name}}</template>
 						</div>
 					</div>
 					<hr class="bg-atlas1">

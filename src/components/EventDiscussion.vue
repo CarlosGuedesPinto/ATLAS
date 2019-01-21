@@ -28,12 +28,19 @@
 				</div>
 				<div class="row mt-4">
 					<div class="ml-3">
-						<i class="fa fa-user text-atlas1" aria-hidden="true"></i>
-						<small>&nbsp;{{ getUserById(discussion.authorId).username }}</small>
+						<router-link
+							:to="{name: 'profile', params: { username: getUserById(discussion.authorId).username } }"
+							class="text-white"
+						>
+							<i class="fa fa-user text-atlas1" aria-hidden="true"></i>
+							<small>
+								@{{ getUserById(discussion.authorId).username }}
+							</small>
+						</router-link>
 					</div>
 					<div class="ml-3">
 						<i class="fa fa-comments text-atlas1" aria-hidden="true"></i>
-						<small>&nbsp;3 respostas</small>
+						<small>&nbsp;{{ discussion.answers.length }} {{ discussion.answers.length === 1 ? 'resposta' : 'respostas' }}</small>
 					</div>
 				</div>
 			</div>

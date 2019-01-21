@@ -26,23 +26,23 @@ export default {
             discussions: [
                 {
                     id: 1, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
-                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [], answers: []
                 },
                 {
                     id: 2, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
-                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [], answers: []
                 },
                 {
                     id: 3, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
-                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [], answers: []
                 },
                 {
                     id: 4, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
-                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [], answers: []
                 },
                 {
                     id: 5, authorId: 3, category: "Dúvida", title: "Poderemos levar os nossos computadores para o evento?", content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
-                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: []
+                    upvotes: 0, downvotes: 0, date: "2019-01-13", hour: "16:15", usersVoted: [], answers: []
                 },
             ]
         },

@@ -136,7 +136,29 @@ export default new Vuex.Store({
         },
         getEnrollmentsByEventId: state => eventId => {
             return state.enrollments.filter(enrollment => enrollment.eventId === eventId)
-        }
+        },
+        getLastAnswerIdByEventIdDiscussionId: state => (eventId, discussionId) => {
+            let lastId = 0
+            if (state.events.length) {
+                state.events.forEach(event => {
+                    if (event.id === eventId && event.discussions.length) {
+                        event.discussions.forEach(discussion => {
+                            if (discussion.id === discussionId) {
+                                if (discussion.answers) {
+                                    discussion.answers.forEach(answer => {
+                                        if (answer.id >= lastId) {
+                                            lastId = answer.id
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                    }
+
+                })
+            }
+            return lastId
+        },
     },
     mutations: {
         SET_USERS(state, payload) {
@@ -250,6 +272,17 @@ export default new Vuex.Store({
         CREATE_EVENT_DISCUSSION(state, payload) {
             let index = state.events.findIndex(event => event.id === payload.eventId)
             state.events[index].discussions.push(payload.discussion)
+        },
+        ADD_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.eventId) {
+                    event.discussions.forEach(discussion => {
+                        if (discussion.id === payload.discussionId) {
+                            discussion.answers.push(payload.answer)
+                        }
+                    })
+                }
+            })
         }
     },
     actions: {
@@ -318,6 +351,9 @@ export default new Vuex.Store({
         },
         createEventDiscussion(context, payload) {
             context.commit("CREATE_EVENT_DISCUSSION", payload)
+        },
+        addDiscussionAnswerByEventIdDiscussionId(context, payload) {
+            context.commit("ADD_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID", payload)
         }
     }
 })
