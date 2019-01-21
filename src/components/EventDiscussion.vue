@@ -22,7 +22,7 @@
 						:to="{ name: 'eventDiscussion', params: { id: $route.params.id, discussionId: discussion.id } }"
 						class="text-white"
 					>
-						<b class="text-atlas1">[{{ discussion.category }}]</b>
+						<b class="text-atlas3">[{{ discussion.category }}]</b>
 						{{ discussion.title }}
 					</router-link>
 				</div>
@@ -41,6 +41,14 @@
 					<div class="ml-3">
 						<i class="fa fa-comments text-atlas1" aria-hidden="true"></i>
 						<small>&nbsp;{{ discussion.answers.length }} {{ discussion.answers.length === 1 ? 'resposta' : 'respostas' }}</small>
+					</div>
+					<div class="ml-3">
+						<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
+						<small>&nbsp;{{ $moment(discussion.moment).format("LL") }}</small>
+					</div>
+					<div class="ml-3">
+						<i class="fa fa-clock text-atlas1" aria-hidden="true"></i>
+						<small>&nbsp;{{ $moment(discussion.moment).format("HH:mm") }}</small>
 					</div>
 				</div>
 			</div>

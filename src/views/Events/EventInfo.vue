@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div>
-			<TitleAtlas>{{ event.name }}</TitleAtlas>
+			<TitleAtlas><b class="text-atlas2">[{{ event.category }}]</b> {{ event.name }}</TitleAtlas>
 			<div class="row">
 				<div
 					class="ml-auto mr-auto mb-2"
@@ -98,22 +98,32 @@
 		-->
 		<div class="mt-5">
 			<TitleAtlas>
-				Discussão
+				Discussões
 				<button class="btn btn-atlas2" @click="modal = true" v-if="getLoggedUserId !== -1">
 					<i class="fa fa-plus" aria-hidden="true"></i>
 				</button>
 			</TitleAtlas>
-			<EventDiscussion
-				v-for="discussion in getDiscussionsSelectedPage"
-				:key="discussion.id"
-				:discussion="discussion"
-				class="mb-1"
-			/>
-			<div class="mt-3" v-if="event.discussions.length > discussionsPerPage">
-				<vs-pagination :total="totalPages" v-model="currentPage"/>
-			</div>
+			<template v-if="event.discussions.length">
+				<EventDiscussion
+					v-for="discussion in getDiscussionsSelectedPage"
+					:key="discussion.id"
+					:discussion="discussion"
+					class="mb-1"
+				/>
+				<div class="mt-3" v-if="event.discussions.length > discussionsPerPage">
+					<vs-pagination :total="totalPages" v-model="currentPage"/>
+				</div>
+			</template>
+			<p v-else>Este evento ainda não possui nenhuma discussão.</p>
 		</div>
-		<b-modal title="Editar discussão" header-bg-variant="atlas1" header-text-variant="white" :centered="true" v-model="modal" :hide-footer="true">
+		<b-modal
+			title="Editar discussão"
+			header-bg-variant="atlas1"
+			header-text-variant="white"
+			:centered="true"
+			v-model="modal"
+			:hide-footer="true"
+		>
 			<FormDiscussion :eventId="this.event.id"/>
 		</b-modal>
 		<div class="mt-5">

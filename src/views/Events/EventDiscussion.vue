@@ -1,12 +1,12 @@
 <template>
 	<div>
-		<TitleAtlas>
-			<router-link
-				:to="{name: 'eventsInfo', params: { id: event.id }}"
-				class="text-atlas2"
-			>{{ event.name }}</router-link>&nbsp;/
-			<span class="text-atlas2">[{{ discussion.category }}]</span>
-			&nbsp;{{ discussion.title }}
+		<TitleAtlas class="mb-0">
+			<router-link :to="{name: 'eventsInfo', params: { id: event.id }}" class="text-atlas2">
+				<b>[{{ event.category }}]</b>
+				{{ event.name }}
+			</router-link>&nbsp;/
+			<b class="text-atlas3">[{{ discussion.category }}]</b>
+			{{ discussion.title }}
 			<button
 				class="btn btn-atlas2"
 				@click="modal = true"
@@ -18,7 +18,32 @@
 				<i class="fa fa-times" aria-hidden="true"></i>
 			</button>
 		</TitleAtlas>
-		<EventDiscussionAnswer :answer="{authorId: discussion.authorId, content: discussion.content}"/>
+		<div class="bg-white p-2 border-bottom border-left border-right rounded-bottom mb-3">
+			<div class="row">
+				<div class="ml-3">
+					<router-link
+						:to="{name: 'profile', params: { username: getUserById(discussion.authorId).username } }"
+						class="text-atlas2"
+					>
+						<i class="fa fa-user text-atlas1" aria-hidden="true"></i>
+						<small>&nbsp;@{{ getUserById(discussion.authorId).username }}</small>
+					</router-link>
+				</div>
+				<div class="ml-3">
+					<i class="fa fa-comments text-atlas1" aria-hidden="true"></i>
+					<small>&nbsp;{{ discussion.answers.length }} {{ discussion.answers.length === 1 ? 'resposta' : 'respostas' }}</small>
+				</div>
+				<div class="ml-3">
+					<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
+					<small>&nbsp;{{ $moment(discussion.moment).format("LL") }}</small>
+				</div>
+				<div class="ml-3">
+					<i class="fa fa-clock text-atlas1" aria-hidden="true"></i>
+					<small>&nbsp;{{ $moment(discussion.moment).format("HH:mm") }}</small>
+				</div>
+			</div>
+		</div>
+		<EventDiscussionAnswer :answer="{id: 0, authorId: discussion.authorId, content: discussion.content}"/>
 		<EventDiscussionAnswer v-for="answer in discussion.answers" :key="answer.id" :answer="answer"/>
 		<b-form @submit.prevent="addAnswer()">
 			<b-form-group label="Responder" class="mt-4">

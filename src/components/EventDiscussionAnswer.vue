@@ -8,34 +8,69 @@
 						<br>
 						<span class="mt-2 text-atlas2">@{{ user.username }}</span>
 					</router-link>
-
 					<button class="btn btn-atlas1 col-12" id="profile-name">{{ getProfileName() }}</button>
 				</div>
 				<div class="col-xl-9 col-md-9 col-12">
 					<div class="bg-white border rounded pl-3 pr-1 py-2" style="height: 100%;">
-						<div class="row px-3 py-1">{{ answer.content }}</div>
+						<template v-if="answer.id !== 0">
+							<small>
+								<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
+								{{ $moment(answer.moment).format("LL") }}
+								<i
+									class="fa fa-clock text-atlas1 ml-2"
+									aria-hidden="true"
+								></i>
+								{{ $moment(answer.moment).format("HH:mm") }}
+								<button
+									class="btn btn-danger float-right"
+									v-if="btnRemoveConditions()"
+								>
+									<i class="fa fa-times" aria-hidden="true"></i>
+								</button>
+							</small>
+							<hr class="my-1">
+						</template>
+
+						<div class="row px-3">{{ answer.content }}</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="bg-white border rounded discussion" v-else>
-			<div class="col-12 mt-2">
-				<router-link :to="{name:'profile', params: { username: user.username } }">
-					<img
-						:src="user.picture"
-						alt
-						class="rounded-circle img-fluid"
-						style="width: 35px; height: 35px;"
-					>
-				</router-link>&nbsp;por
-				<router-link
-					:to="{name:'profile', params: { username: user.username } }"
-					class="text-atlas2"
-				>@{{ user.username }}</router-link>
-				/ {{ answer.moment.format("LL") }}
-				/ {{ answer.moment.format("HH:mm") }}
-			</div>
-			<hr>
+			<template v-if="answer.id !== 0">
+				<div class="col-12 mt-2">
+					<small>
+						<router-link :to="{name:'profile', params: { username: user.username } }">
+							<img
+								:src="user.picture"
+								alt
+								class="rounded-circle img-fluid"
+								style="width: 35px; height: 35px;"
+							>
+						</router-link>&nbsp;
+						<router-link
+							:to="{name:'profile', params: { username: user.username } }"
+							class="text-atlas2"
+						>@{{ user.username }}</router-link>/
+						<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
+						{{ $moment(answer.moment).format("LL") }}
+						/
+						<i
+							class="fa fa-clock text-atlas1"
+							aria-hidden="true"
+						></i>
+						{{ $moment(answer.moment).format("HH:mm") }}
+						<button
+							class="btn btn-danger float-right"
+							v-if="btnRemoveConditions()"
+						>
+							<i class="fa fa-times" aria-hidden="true"></i>
+						</button>
+					</small>
+				</div>
+				<hr class="my-1">
+			</template>
+
 			<div class="col-12 mt-2">{{ answer.content }}</div>
 		</div>
 		<hr>
@@ -69,10 +104,21 @@ export default {
 				case 3:
 					return "Administrador"
 			}
+		},
+		btnRemoveConditions() {
+			if (this.getLoggedUserId !== -1 && this.answer.id !== 0) {
+				if (
+					this.getLoggedUserId === this.answer.authorId ||
+					this.getUserById(this.getLoggedUserId).profileId === 3
+				) {
+					return true
+				}
+			}
+			return false
 		}
 	},
 	computed: {
-		...mapGetters(["getUserById"]),
+		...mapGetters(["getUserById", "getLoggedUserId"]),
 		user() {
 			return this.getUserById(this.answer.authorId)
 		}

@@ -5,7 +5,7 @@
 		</router-link>
 		<div class="bg-atlas2 py-2 col-lg-9 col-6">
 			<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
-				<h5 class="text-white">{{ event.name }}</h5>
+				<h5 class="text-white"><b class="text-atlas1" style="font-weight: bold;">[{{ event.category }}]</b> {{ event.name }}</h5>
 			</router-link>
 			<div class="text-atlas3 event-card-body">
 				<div class="float-left mb-3">{{ getEventShortDescription(event.id) }}</div>
@@ -27,7 +27,7 @@
 							<router-link
 								:to="{name: 'profile', params: { username: getUserById(event.authorId).username }}"
 								class="text-atlas3"
-							>&nbsp;{{ getUserById(event.authorId).name }}</router-link>
+							>&nbsp;@{{ getUserById(event.authorId).username }}</router-link>
 						</div>
 						<div class="mx-3">
 							<i class="fa fa-users text-atlas1" aria-hidden="true"></i>

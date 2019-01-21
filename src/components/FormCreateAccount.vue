@@ -352,6 +352,7 @@ export default {
 				closeOnClick: true,
 				pauseOnHover: true
 			})
+			this.filterTags = ""
 		},
 		notifyError() {
 			this.$snotify.error("Preencha todos os campos corretamente", "", {

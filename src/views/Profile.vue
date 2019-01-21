@@ -29,6 +29,7 @@
 					<vs-list>
 						<vs-list-item icon="person" title="Nome" :subtitle="user.name"></vs-list-item>
 						<vs-list-item icon="email" title="Email" :subtitle="user.email"></vs-list-item>
+						<vs-list-item icon="public" title="Nome de utilizador" :subtitle="'@' + user.username"></vs-list-item>
 						<vs-list-item
 							icon="date_range"
 							title="Registo"
@@ -42,7 +43,7 @@
 			<TitleAtlas>
 				Interesses
 				<button class="btn btn-atlas2" @click="modalInterests = true" v-if="btnConditions()">
-					<i class="fa fa-cog" aria-hidden="true"></i>
+					<i class="fa fa-edit" aria-hidden="true"></i>
 				</button>
 			</TitleAtlas>
 			<vs-list v-if="interestedTags().length || interestedCourses().length">
@@ -63,6 +64,11 @@
 				v-else
 			>Recomendamos selecionar tags e cursos de interesse, para que possamos mostrar-lhe os eventos de seu gosto.</p>
 		</div>
+		<div class="mt-5">
+			<TitleAtlas>Eventos inscrito</TitleAtlas>
+		</div>
+
+
 		<b-modal
 			title="Editar perfil"
 			header-bg-variant="atlas1"
