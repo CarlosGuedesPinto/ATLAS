@@ -71,11 +71,7 @@
 			<div class="pt-5">
 				<TitleAtlas>Sugestões</TitleAtlas>
 				<Carousel :margin="30" :nav="false" :responsive="carouselResponsivity">
-					<EventCard
-						v-for="event in getEvents"
-						:key="event.id"
-						:event="event"
-					/>
+					<EventCard v-for="event in getEvents" :key="event.id" :event="event"/>
 				</Carousel>
 			</div>
 			<div class="pt-5">
@@ -303,9 +299,11 @@ export default {
 
 				if (this.course) {
 					result =
-						this.getCourseById(event.courseId)
-							.name.toLowerCase()
-							.includes(this.course.toLowerCase()) && result
+						event.coursesIds.some(course =>
+							this.getCourseById(course)
+								.name.toLowerCase()
+								.includes(this.course.toLowerCase())
+						) && result
 				}
 
 				if (this.classroom) {

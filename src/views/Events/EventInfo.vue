@@ -57,15 +57,11 @@
 							<i class="fa fa-graduation-cap text-atlas1" aria-hidden="true"></i>&nbsp;
 							<span v-for="(course, index) in event.coursesIds" :key="'course_' + course">
 								<router-link
-									:to="{name: 'events', query: { cursos: getCourseById(course).name } }"
+									:to="{name: 'events', query: { curso: getCourseById(course).name } }"
 									class="text-atlas2"
 								>{{ getCourseById(course).name }}</router-link>
 								<span v-if="index < event.coursesIds.length - 1"> / </span>
 							</span>
-
-							<!--
-							{{ getEventCourses().join(", ") }}
-							-->
 						</div>
 					</div>
 					<hr class="bg-atlas1">
