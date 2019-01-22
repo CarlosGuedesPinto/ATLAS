@@ -22,7 +22,6 @@
 								v-if="index <= 2"
 								:key="'event_' + event.id + 'tag_' + eventTag"
 								:to="{name: 'events', query: {tags: getTagById(eventTag).name}}"
-								replace
 							>{{ "#" + getTagById(eventTag).name + " " }}</router-link>
 							<span v-else-if="index === 3" :key="index">e mais {{ event.tags.length - 3 }} [...]</span>
 						</template>
@@ -31,7 +30,7 @@
 					<div class="row">
 						<div class="col-6">
 							<i class="fa fa-map-marker-alt text-atlas1" aria-hidden="true"></i>
-							<router-link class="text-atlas3 ml-1" :to="{ name: 'events', query: { sala: event.classroom } }" replace>{{ event.classroom }}</router-link>
+							<router-link class="text-atlas3 ml-1" :to="{ name: 'events', query: { sala: event.classroom } }">{{ event.classroom }}</router-link>
 						</div>
 						<div class="col-6">
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
@@ -59,7 +58,7 @@
 import { mapGetters } from "vuex"
 
 export default {
-	props: ["to", "event", "ended"],
+	props: ["event", "ended"],
 	created() {
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()

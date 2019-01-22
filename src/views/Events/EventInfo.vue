@@ -21,7 +21,7 @@
 					<div>
 						<div>
 							<i class="fa fa-map-marker-alt text-atlas1" aria-hidden="true"></i>
-							{{ event.classroom }}
+							<router-link class="text-atlas2 ml-1" :to="{name: 'events', query: { sala: event.classroom } }">{{ event.classroom }}</router-link>
 						</div>
 						<div>
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>

@@ -19,7 +19,6 @@
 							v-for="eventTag in event.tags"
 							:to="{name: 'events', query: {tags: getTagById(eventTag).name}}"
 							:key="'event_' + event.id + 'tag_' + eventTag"
-							replace
 						>{{ "#" + getTagById(eventTag).name + " " }}</router-link>
 					</div>
 					<div class="float-right row">
@@ -28,7 +27,6 @@
 							<router-link
 								class="text-atlas3 ml-1"
 								:to="{ name: 'events', query: { sala: event.classroom } }"
-								replace
 							>{{ event.classroom }}</router-link>
 						</div>
 						<div class="ml-3">
@@ -57,7 +55,7 @@
 import { mapGetters } from "vuex"
 
 export default {
-	props: ["to", "event"],
+	props: ["event"],
 	data() {
 		return {
 			someDate: "2019-01-13"

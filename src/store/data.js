@@ -2,26 +2,8 @@ let moment = require("moment")
 
 export default {
     users: [
-        { 
-            id: 1,
-            profileId: 3,
-            name: "Administrador",
-            username: "admin",
-            password: "12345",
-            email: "admin@atlas.pt",
-            picture: "https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif",
-            gender: 1,
-            accountCreation: {
-                date: "2019-01-01",
-                hour: "00:00"
-            },
-            interests: {
-                tags: [],
-                courses: []
-            }
-        },
         {
-            id: 2,
+            id: 1,
             profileId: 3,
             name: "ESMAD",
             username: "ESMAD",
@@ -108,7 +90,7 @@ export default {
                 tags: [1, 2, 9, 10],
                 courses: [6]
             }
-        },
+        }
     ],
     courses: [
         { id: 1, name: "Design - Ramo Design Gráfico e Publicidade", abbreviation: "DGRAF" },
@@ -130,7 +112,9 @@ export default {
         { id: 8, name: "tipografia" },
         { id: 9, name: "javascript" },
         { id: 10, name: "jogos" },
-        { id: 11, name: "animação" }
+        { id: 11, name: "animação" },
+        { id: 12, name: "empresas" },
+        { id: 13, name: "emprego" }
     ],
     events: [
         {
@@ -221,7 +205,7 @@ export default {
         },
         {
             id: 3,
-            authorId: 2,
+            authorId: 1,
             name: "MAD Summer School",
             category: "Workshop",
             tags: [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -250,6 +234,51 @@ export default {
             },
             paid: true,
             paymentPrice: 150,
+            discussions: [
+                {
+                    id: 1,
+                    authorId: 3,
+                    category: "Dúvida",
+                    title: "Poderemos levar os nossos computadores para o evento?",
+                    content: "Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom. Seria bom.",
+                    upvotes: 0,
+                    downvotes: 0,
+                    usersVoted: [],
+                    answers: [],
+                    moment: moment("2018-11-13 12:00")
+                }
+            ]
+        },
+        {
+            id: 4,
+            authorId: 1,
+            name: "Plug-in 2ª edição",
+            category: "Evento",
+            tags: [1, 2, 5, 6, 9, 10, 12, 13],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "B201",
+            coursesIds: [4, 6, 7],
+            hourStart: "15:00",
+            hourEnd: "17:30",
+            dateStart: "2019-01-16",
+            durationDays: 1,
+            dateEnd: "2019-01-16",
+            picture: {
+                thumbnail: "https://i.imgur.com/QrOapdW.jpg",
+                poster: {
+                    url: "https://i.imgur.com/BHNjDpS.png",
+                    orientation: "Vertical"
+                },
+                gallery: [
+                    "https://scontent.fopo2-1.fna.fbcdn.net/v/t1.0-9/50244730_2220767381529220_3203617720994103296_o.jpg?_nc_cat=109&_nc_ht=scontent.fopo2-1.fna&oh=5a80a02bc63c8a64fcb4f5118071acf8&oe=5CB9C682",
+                    "https://scontent.fopo2-1.fna.fbcdn.net/v/t1.0-9/50049692_2220767251529233_9118216488531001344_o.jpg?_nc_cat=105&_nc_ht=scontent.fopo2-1.fna&oh=001c6e224284cfc5d2843d459b5966e0&oe=5CCD979B",
+                    "https://scontent.fopo2-2.fna.fbcdn.net/v/t1.0-9/49947180_2220767121529246_6480262088022294528_o.jpg?_nc_cat=110&_nc_ht=scontent.fopo2-2.fna&oh=ed8c441996dde5d105f4f686402b84b8&oe=5CBC5045",
+                    "https://scontent.fopo2-2.fna.fbcdn.net/v/t1.0-9/50095590_2220766448195980_5291964234878418944_o.jpg?_nc_cat=106&_nc_ht=scontent.fopo2-2.fna&oh=f088495e047a74cb1ec16049366a04e5&oe=5CB4EF66",
+                    "https://scontent.fopo2-2.fna.fbcdn.net/v/t1.0-9/50059431_2220766241529334_3964258473520136192_o.jpg?_nc_cat=106&_nc_ht=scontent.fopo2-2.fna&oh=11442ee38fa122f1988e67ce462efc9b&oe=5CB2CC6C"
+                ]
+            },
+            paid: false,
+            paymentPrice: 0,
             discussions: [
                 {
                     id: 1,

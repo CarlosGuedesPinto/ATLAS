@@ -39,7 +39,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="mt-5">
+		<div class="mt-5" v-if="user.profileId !== 3">
 			<TitleAtlas>
 				Interesses
 				<button class="btn btn-atlas2" @click="modalInterests = true" v-if="btnConditions()">
@@ -52,7 +52,8 @@
 					:title="interestedTags().length > 1 ? 'Tags' : 'Tag'"
 					:subtitle="interestedTags().join(' ')"
 					v-if="interestedTags().length"
-				></vs-list-item>
+				>
+				</vs-list-item>
 				<vs-list-item
 					icon="school"
 					:title="interestedCourses().length > 1 ? 'Cursos' : 'Curso'"
@@ -64,10 +65,38 @@
 				v-else
 			>Recomendamos selecionar tags e cursos de interesse, para que possamos mostrar-lhe os eventos de seu gosto.</p>
 		</div>
-		<div class="mt-5">
-			<TitleAtlas>Eventos inscrito</TitleAtlas>
+
+		<div class="mt-5" v-if="user.profileId !== 1">
+			<TitleAtlas>Eventos criados - {{ getEventsByAuthorId(user.id).length }}</TitleAtlas>
+			<template v-if="windowWidth >= 768">
+				<EventListItem
+					v-for="event in getEventsByAuthorId(user.id)"
+					:key="'event_' + event.id"
+					:event="event"
+					class="mb-1"
+				/>
+			</template>
+			<template v-else>
+				<EventCard
+					v-for="event in getEventsByAuthorId(user.id)"
+					:key="'event_' + event.id"
+					:event="event"
+					class="mb-1"
+				/>
+			</template>
 		</div>
 
+		<b-modal
+			title="Editar interesses"
+			header-bg-variant="atlas1"
+			header-text-variant="white"
+			:centered="true"
+			v-model="modalInterests"
+			:hide-footer="true"
+			v-if="user.profileId !== 3"
+		>
+			<FormCreateAccount :editInterests="user"></FormCreateAccount>
+		</b-modal>
 
 		<b-modal
 			title="Editar perfil"
@@ -79,16 +108,6 @@
 		>
 			<FormCreateAccount :editProfile="user"></FormCreateAccount>
 		</b-modal>
-		<b-modal
-			title="Editar interesses"
-			header-bg-variant="atlas1"
-			header-text-variant="white"
-			:centered="true"
-			v-model="modalInterests"
-			:hide-footer="true"
-		>
-			<FormCreateAccount :editInterests="user"></FormCreateAccount>
-		</b-modal>
 	</div>
 </template>
 
@@ -96,9 +115,11 @@
 import { mapGetters } from "vuex"
 import TitleAtlas from "@/components/TitleAtlas.vue"
 import FormCreateAccount from "@/components/FormCreateAccount.vue"
+import EventListItem from "@/components/EventListItem.vue"
+import EventCard from "@/components/EventCard.vue"
 
 export default {
-	components: { TitleAtlas, FormCreateAccount },
+	components: { TitleAtlas, FormCreateAccount, EventListItem, EventCard },
 	created() {
 		this.$store.subscribe(mutation => {
 			switch (mutation.type) {
@@ -110,14 +131,20 @@ export default {
 					break
 			}
 		})
+		window.addEventListener("resize", this.handleResize)
+		this.handleResize()
 	},
 	data() {
 		return {
 			modalProfile: false,
-			modalInterests: false
+			modalInterests: false,
+			windowWidth: 0
 		}
 	},
 	methods: {
+		handleResize() {
+			this.windowWidth = window.innerWidth
+		},
 		getProfileName() {
 			switch (this.user.profileId) {
 				case 1:

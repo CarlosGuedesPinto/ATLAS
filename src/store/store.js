@@ -96,6 +96,18 @@ export default new Vuex.Store({
             state.events.forEach(event => {
                 if (event.authorId === authorId) events.push(event)
             })
+
+            if (events.length) {
+                events.sort((a, b) => {
+                    if (moment(a.dateStart).isAfter(b.dateStart)) {
+                        return 1
+                    } else if (moment(a.dateStart).isBefore(b.dateStart)) {
+                        return -1
+                    }
+                    return 0
+                })
+            }
+
             return events
         },
         getLastEventId: state => {
@@ -122,7 +134,7 @@ export default new Vuex.Store({
         getEventClassrooms: state => {
             let classrooms = []
             state.events.forEach(event => {
-                if(classrooms.indexOf(event.classroom) === -1) classrooms.push(event.classroom)
+                if (classrooms.indexOf(event.classroom) === -1) classrooms.push(event.classroom)
             })
             return classrooms
         },
