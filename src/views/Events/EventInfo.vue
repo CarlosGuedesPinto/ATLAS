@@ -1,7 +1,10 @@
 <template>
 	<div>
 		<div>
-			<TitleAtlas><b class="text-atlas2">[{{ event.category }}]</b> {{ event.name }}</TitleAtlas>
+			<TitleAtlas>
+				<b class="text-atlas2">[{{ event.category }}]</b>
+				{{ event.name }}
+			</TitleAtlas>
 			<div class="row">
 				<div
 					class="ml-auto mr-auto mb-2"
@@ -43,11 +46,26 @@
 						</div>
 						<div>
 							<i class="fa fa-tags text-atlas1" aria-hidden="true"></i>
-							<template v-for="tag in event.tags">&nbsp;#{{ getTagById(tag).name }}</template>
+							<router-link
+								v-for="tag in event.tags"
+								:key="'tag_' + tag"
+								:to="{name: 'events', query: { tags: getTagById(tag).name } }"
+								class="text-atlas2"
+							> #{{ getTagById(tag).name }}</router-link>
 						</div>
 						<div>
-							<i class="fa fa-graduation-cap text-atlas1" aria-hidden="true"></i>
-							<template v-for="courseId in event.coursesIds">{{ getCourseById(courseId).name}}</template>
+							<i class="fa fa-graduation-cap text-atlas1" aria-hidden="true"></i>&nbsp;
+							<span v-for="(course, index) in event.coursesIds" :key="'course_' + course">
+								<router-link
+									:to="{name: 'events', query: { cursos: getCourseById(course).name } }"
+									class="text-atlas2"
+								>{{ getCourseById(course).name }}</router-link>
+								<span v-if="index < event.coursesIds.length - 1"> / </span>
+							</span>
+
+							<!--
+							{{ getEventCourses().join(", ") }}
+							-->
 						</div>
 					</div>
 					<hr class="bg-atlas1">
@@ -220,6 +238,22 @@ export default {
 			} else {
 				return this.event.discussions
 			}
+		}
+	},
+	methods: {
+		getEventTags() {
+			let tags = []
+			this.event.tags.forEach(tag => {
+				tags.push("#" + this.getTagById(tag).name)
+			})
+			return tags
+		},
+		getEventCourses() {
+			let courses = []
+			this.event.coursesIds.forEach(course => {
+				courses.push(this.getCourseById(course).name)
+			})
+			return courses
 		}
 	}
 }

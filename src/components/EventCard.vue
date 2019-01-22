@@ -10,7 +10,12 @@
 				</router-link>
 				<div class="text-atlas3 event-card-body">
 					<div class="mb-2">
-						<template v-for="eventTag in event.tags">{{ "#" + getTagById(eventTag).name + " " }}</template>
+						<template v-for="(eventTag, index) in event.tags">
+							<template v-if="index <= 3">
+								{{ "#" + getTagById(eventTag).name + " " }}
+							</template>
+							<span v-else-if="index === 4" :key="index">e mais {{ event.tags.length - 4 }} [...]</span>
+						</template>
 						<div v-if="ended">{{ getEventShortDescription(event.id) }}</div>
 					</div>
 					<div class="row">
