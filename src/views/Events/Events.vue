@@ -220,6 +220,22 @@ export default {
 			}
 		}
 	},
+	beforeRouteUpdate(to, from, next) {
+		if(to.name === "events" && to.query) {
+			if (to.query.tags) {
+				let tags = to.query.tags.split("_")
+				let tagIds = []
+				tags.forEach(tag => tagIds.push(this.getTagByName(tag).id))
+				this.selectedTags = tagIds
+				this.searchCollapse = true
+			}
+			if (to.query.sala) {
+				this.classroom = to.query.sala
+				this.searchCollapse = true
+			}
+		}
+		next()
+	},
 	data() {
 		return {
 			name: "",
