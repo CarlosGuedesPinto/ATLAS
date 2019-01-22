@@ -190,7 +190,7 @@
 						<option value="B309">B309</option>
 						<option value="B310">B310</option>
 						<option value="B311">B311</option>
-						<option value="59">B312</option>
+						<option value="B312">B312</option>
 					</optgroup>
 				</b-form-select>
 			</b-form-group>

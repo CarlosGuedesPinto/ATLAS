@@ -17,11 +17,11 @@
 					<b-form-input id="dateEnd" v-model="dateEnd" type="date"></b-form-input>
 				</b-form-group>
 				<b-form-group :label="windowWidth >= 992 ? '&nbsp;' : ''" class="col-lg-3 col-12">
-					<button class="btn btn-atlas1 col-12" @click="tagsCollapse = !tagsCollapse">
-						<i class="fa" :class="!tagsCollapse ? 'fa-arrow-down' : 'fa-arrow-up'" aria-hidden="true"></i> Pesquisa avançada
+					<button class="btn btn-atlas1 col-12" @click="searchCollapse = !searchCollapse">
+						<i class="fa" :class="!searchCollapse ? 'fa-arrow-down' : 'fa-arrow-up'" aria-hidden="true"></i> Pesquisa avançada
 					</button>
 				</b-form-group>
-				<b-collapse id="tagsCollapse" class="col-12 mb-3" v-model="tagsCollapse">
+				<b-collapse id="searchCollapse" class="col-12 mb-3" v-model="searchCollapse">
 					<b-card>
 						<div class="row">
 							<b-form-group label="Tags" label-for="filterTag" class="col-12">
@@ -49,13 +49,59 @@
 							>
 								<b-form-input id="course" v-model="course" type="text" maxlength="50"></b-form-input>
 							</b-form-group>
-							<b-form-group
-								label="Sala"
-								label-for="classroom"
-								class="col-lg-6 col-sm-6 col-12"
-								@input="getUrlQuery"
-							>
-								<b-form-input id="classroom" v-model="classroom" type="text" maxlength="50"></b-form-input>
+							<b-form-group label="Sala" class="col-lg-6 col-sm-6 col-12">
+								<b-form-select v-model="classroom">
+									<option value>Selecione uma sala</option>
+									<template v-if="classrooms.length">
+										<option value="Auditório">Auditório</option>
+										<optgroup label="Piso 0" v-if="classroomFloorCondition('Piso 0')">
+											<option
+												value="Anfiteatro Joaquim Ribeiro"
+												v-if="classrooms.some(classroom => classroom === 'Anfiteatro Joaquim Ribeiro')"
+											>Anfiteatro Joaquim Ribeiro</option>
+											<option value="B102" v-if="classrooms.some(classroom => classroom === 'B102')">B102</option>
+											<option value="B103A" v-if="classrooms.some(classroom => classroom === 'B103A')">B103A</option>
+											<option value="B103B" v-if="classrooms.some(classroom => classroom === 'B103B')">B103B</option>
+											<option value="B104" v-if="classrooms.some(classroom => classroom === 'B104')">B104</option>
+											<option value="B105" v-if="classrooms.some(classroom => classroom === 'B105')">B105</option>
+											<option value="B106" v-if="classrooms.some(classroom => classroom === 'B106')">B106</option>
+											<option value="B107" v-if="classrooms.some(classroom => classroom === 'B107')">B107</option>
+											<option value="B108" v-if="classrooms.some(classroom => classroom === 'B108')">B108</option>
+											<option value="B109" v-if="classrooms.some(classroom => classroom === 'B109')">B109</option>
+											<option value="B110" v-if="classrooms.some(classroom => classroom === 'B110')">B110</option>
+											<option value="B111" v-if="classrooms.some(classroom => classroom === 'B111')">B111</option>
+											<option value="B112" v-if="classrooms.some(classroom => classroom === 'B112')">B112</option>
+										</optgroup>
+										<optgroup label="Piso 1" v-if="classroomFloorCondition('Piso 1')">
+											<option value="B201" v-if="classrooms.some(classroom => classroom === 'B201')">B201</option>
+											<option value="B202" v-if="classrooms.some(classroom => classroom === 'B202')">B202</option>
+											<option value="B203" v-if="classrooms.some(classroom => classroom === 'B203')">B203</option>
+											<option value="B204" v-if="classrooms.some(classroom => classroom === 'B204')">B204</option>
+											<option value="B205" v-if="classrooms.some(classroom => classroom === 'B205')">B205</option>
+											<option value="B206" v-if="classrooms.some(classroom => classroom === 'B206')">B206</option>
+											<option value="B207" v-if="classrooms.some(classroom => classroom === 'B207')">B207</option>
+											<option value="B208" v-if="classrooms.some(classroom => classroom === 'B208')">B208</option>
+											<option value="B209" v-if="classrooms.some(classroom => classroom === 'B209')">B209</option>
+											<option value="B210" v-if="classrooms.some(classroom => classroom === 'B210')">B210</option>
+											<option value="B211" v-if="classrooms.some(classroom => classroom === 'B211')">B211</option>
+											<option value="B212" v-if="classrooms.some(classroom => classroom === 'B212')">B212</option>
+										</optgroup>
+										<optgroup label="Piso 2" v-if="classroomFloorCondition('Piso 2')">
+											<option value="B301" v-if="classrooms.some(classroom => classroom === 'B301')">B301</option>
+											<option value="B302" v-if="classrooms.some(classroom => classroom === 'B302')">B302</option>
+											<option value="B303" v-if="classrooms.some(classroom => classroom === 'B303')">B303</option>
+											<option value="B304" v-if="classrooms.some(classroom => classroom === 'B304')">B304</option>
+											<option value="B305" v-if="classrooms.some(classroom => classroom === 'B305')">B305</option>
+											<option value="B306" v-if="classrooms.some(classroom => classroom === 'B306')">B306</option>
+											<option value="B307" v-if="classrooms.some(classroom => classroom === 'B307')">B307</option>
+											<option value="B308" v-if="classrooms.some(classroom => classroom === 'B308')">B308</option>
+											<option value="B309" v-if="classrooms.some(classroom => classroom === 'B309')">B309</option>
+											<option value="B310" v-if="classrooms.some(classroom => classroom === 'B310')">B310</option>
+											<option value="B311" v-if="classrooms.some(classroom => classroom === 'B311')">B311</option>
+											<option value="B312" v-if="classrooms.some(classroom => classroom === 'B312')">B312</option>
+										</optgroup>
+									</template>
+								</b-form-select>
 							</b-form-group>
 						</div>
 					</b-card>
@@ -149,6 +195,8 @@ export default {
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()
 
+		this.classrooms = this.getEventClassrooms
+
 		this.getTotalPages()
 
 		let query = this.$route.query
@@ -160,15 +208,15 @@ export default {
 				let tagIds = []
 				tags.forEach(tag => tagIds.push(this.getTagByName(tag).id))
 				this.selectedTags = tagIds
-				this.tagsCollapse = true
+				this.searchCollapse = true
 			}
 			if (query.curso) {
 				this.course = query.curso
-				this.tagsCollapse = true
+				this.searchCollapse = true
 			}
 			if (query.sala) {
 				this.classroom = query.sala
-				this.tagsCollapse = true
+				this.searchCollapse = true
 			}
 		}
 	},
@@ -178,15 +226,16 @@ export default {
 			tags: "",
 			dateStart: "",
 			dateEnd: "",
-			tagsCollapse: false,
+			searchCollapse: false,
 			filterTags: "",
 			selectedTags: [],
 			course: "",
 			classroom: "",
+			classrooms: [],
 			carouselResponsivity: {
 				0: { items: 1 },
 				768: { items: 2 },
-				1200: {items: 3}
+				1200: { items: 3 }
 			},
 			windowWidth: 0,
 			totalPages: 1,
@@ -204,7 +253,8 @@ export default {
 			"getTags",
 			"getTagById",
 			"getTagByName",
-			"getCourseById"
+			"getCourseById",
+			"getEventClassrooms"
 		]),
 		getEndedEventsSelectedPage() {
 			if (this.getEndedEvents.length > this.endedEventsPerPage) {
@@ -376,7 +426,8 @@ export default {
 			this.dateEnd = ""
 			this.selectedTags = []
 			this.course = ""
-			this.tagsCollapse = false
+			this.classroom = ""
+			this.searchCollapse = false
 		},
 		getTotalPages() {
 			if (!this.filtering) {
@@ -395,6 +446,128 @@ export default {
 								this.getFilteredEvents.length /
 									this.filteredEventsPerPage
 						  ) + 1
+			}
+		},
+		classroomFloorCondition(floor) {
+			switch (floor) {
+				case "Piso 0":
+					return (
+						this.classrooms.some(
+							classroom =>
+								classroom === "Anfiteatro Joaquim Ribeiro"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B102"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B103A"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B103B"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B104"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B105"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B106"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B107"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B108"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B109"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B110"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B111"
+						) ||
+						this.classrooms.some(classroom => classroom === "B112")
+					)
+					break
+				case "Piso 1":
+					return (
+						this.classrooms.some(
+							classroom => classroom === "B201"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B202"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B203"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B204"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B205"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B206"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B207"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B208"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B209"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B210"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B211"
+						) ||
+						this.classrooms.some(classroom => classroom === "B212")
+					)
+					break
+				case "Piso 2":
+					return (
+						this.classrooms.some(
+							classroom => classroom === "B301"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B302"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B303"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B304"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B305"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B306"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B307"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B308"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B309"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B310"
+						) ||
+						this.classrooms.some(
+							classroom => classroom === "B311"
+						) ||
+						this.classrooms.some(classroom => classroom === "B312")
+					)
+					break
 			}
 		}
 	}

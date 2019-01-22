@@ -119,6 +119,13 @@ export default new Vuex.Store({
         getEventById: state => id => {
             return state.events.find(event => event.id === id)
         },
+        getEventClassrooms: state => {
+            let classrooms = []
+            state.events.forEach(event => {
+                if(classrooms.indexOf(event.classroom) === -1) classrooms.push(event.classroom)
+            })
+            return classrooms
+        },
         getEventDiscussionByEventIdDiscussionId: state => (eventId, discussionId) => {
             return state.events.find(event => event.id === eventId).discussions.find(discussion => discussion.id === discussionId)
         },

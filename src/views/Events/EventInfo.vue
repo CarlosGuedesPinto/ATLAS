@@ -25,7 +25,12 @@
 						</div>
 						<div>
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-							{{ $moment(event.dateStart).format("LL") }}
+							<span v-if="event.dateStart === event.dateEnd">
+								{{ $moment(event.dateStart).format("dddd[,] LL") }}
+							</span>
+							<span v-else>
+								{{ $moment(event.dateStart).format("dddd[,] LL") }} - {{ $moment(event.dateEnd).format("dddd[,] LL") }}
+							</span>
 						</div>
 						<div>
 							<i class="fa fa-clock text-atlas1" aria-hidden="true"></i>
