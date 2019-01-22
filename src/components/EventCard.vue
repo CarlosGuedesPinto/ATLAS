@@ -4,17 +4,21 @@
 			<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }">
 				<img :src="event.picture.thumbnail" class="card-img-top">
 			</router-link>
-			<div class="bg-atlas2 px-3 py-2 body-card">
+			<div
+				class="bg-atlas2 px-3 py-2 body-card"
+				:style="(windowWidth >= 768 && windowWidth <= 991) ? 'min-height: 150px' : ''"
+			>
 				<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
-					<h5 class="text-white m-0"><b class="text-atlas1">[{{ event.category }}]</b> {{ event.name }}</h5>
+					<h5 class="text-white m-0">
+						<b class="text-atlas1">[{{ event.category }}]</b>
+						{{ event.name }}
+					</h5>
 				</router-link>
 				<div class="text-atlas3 event-card-body">
 					<div class="mb-2">
 						<template v-for="(eventTag, index) in event.tags">
-							<template v-if="index <= 3">
-								{{ "#" + getTagById(eventTag).name + " " }}
-							</template>
-							<span v-else-if="index === 4" :key="index">e mais {{ event.tags.length - 4 }} [...]</span>
+							<template v-if="index <= 2">{{ "#" + getTagById(eventTag).name + " " }}</template>
+							<span v-else-if="index === 3" :key="index">e mais {{ event.tags.length - 3 }} [...]</span>
 						</template>
 						<div v-if="ended">{{ getEventShortDescription(event.id) }}</div>
 					</div>
@@ -50,6 +54,20 @@ import { mapGetters } from "vuex"
 
 export default {
 	props: ["to", "event", "ended"],
+	created() {
+		window.addEventListener("resize", this.handleResize)
+		this.handleResize()
+	},
+	data() {
+		return {
+			windowWidth: 0
+		}
+	},
+	methods: {
+		handleResize() {
+			this.windowWidth = window.innerWidth
+		}
+	},
 	computed: {
 		...mapGetters(["getUserById", "getTagById", "getEventShortDescription"])
 	}

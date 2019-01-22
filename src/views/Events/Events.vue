@@ -103,12 +103,23 @@
 		<div v-else class="mt-5">
 			<div v-if="getFilteredEvents.length">
 				<TitleAtlas>{{ getFilteredEvents.length === 1 ? 'Resultado' : 'Resultados' }} da pesquisa - {{ getFilteredEvents.length }}</TitleAtlas>
-				<EventListItem
-					v-for="event in getFilteredEventsSelectedPage"
-					:key="event.id"
-					:event="event"
-					class="mb-1"
-				/>
+				<template v-if="windowWidth >= 768">
+					<EventListItem
+						v-for="event in getFilteredEventsSelectedPage"
+						:key="event.id"
+						:event="event"
+						class="mb-1"
+					/>
+				</template>
+				<template v-else>
+					<EventCard
+						v-for="event in getFilteredEventsSelectedPage"
+						:key="event.id"
+						:event="event"
+						class="mb-1"
+					/>
+				</template>
+
 				<vs-pagination
 					:total="totalPages"
 					v-model="currentPage"
@@ -175,8 +186,7 @@ export default {
 			carouselResponsivity: {
 				0: { items: 1 },
 				768: { items: 2 },
-				992: { items: 3 },
-				1200: { items: 4 }
+				1200: {items: 3}
 			},
 			windowWidth: 0,
 			totalPages: 1,
@@ -365,6 +375,7 @@ export default {
 			this.dateStart = ""
 			this.dateEnd = ""
 			this.selectedTags = []
+			this.course = ""
 			this.tagsCollapse = false
 		},
 		getTotalPages() {
