@@ -215,7 +215,7 @@ export default {
             hourStart: "09:00",
             hourEnd: "17:00",
             dateStart: "2019-07-10",
-            durationDays: 10,
+            durationDays: 11,
             dateEnd: "2019-07-20",
             picture: {
                 thumbnail: "https://i.imgur.com/fHhVNur.jpg",

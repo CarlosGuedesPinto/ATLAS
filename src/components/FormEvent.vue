@@ -1,13 +1,13 @@
 <template>
 	<div>
-		<b-form @submit.prevent="addEvent()">
+		<b-form @submit.prevent="!edit ? addEvent() : editEvent()">
 			<b-form-group
 				label="Nome"
 				label-for="name"
 				:invalid-feedback="nameInvalidFeedback"
 				:valid-feedback="nameValidFeedback"
 				:state="nameState"
-				class="mt-4"
+				:class="!edit ? 'mt-4' : ''"
 			>
 				<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
 			</b-form-group>
@@ -55,12 +55,7 @@
 				:state="hourStartState"
 				:invalid-feedback="hourStartInvalidFeedback"
 			>
-				<b-form-input
-					id="hourStart"
-					:state="hourStartState"
-					type="time"
-					v-model="hourStart"
-				></b-form-input>
+				<b-form-input id="hourStart" :state="hourStartState" type="time" v-model="hourStart"></b-form-input>
 			</b-form-group>
 			<b-form-group
 				label="Hora de fim"
@@ -68,12 +63,7 @@
 				:state="hourEndState"
 				:invalid-feedback="hourEndInvalidFeedback"
 			>
-				<b-form-input
-					id="hourEnd"
-					:state="hourEndState"
-					type="time"
-					v-model="hourEnd"
-				></b-form-input>
+				<b-form-input id="hourEnd" :state="hourEndState" type="time" v-model="hourEnd"></b-form-input>
 			</b-form-group>
 			<b-form-group
 				label="Data de início"
@@ -92,7 +82,7 @@
 			<b-form-group label="Duração (dias)" v-if="dateStart">
 				<button class="btn btn-atlas2" @click.prevent="duration--" :disabled="duration === 1">-</button>
 				<span class="mx-3">{{ duration }}</span>
-				<button class="btn btn-atlas2" @click.prevent="duration++" :disabled="duration === 3">+</button>
+				<button class="btn btn-atlas2" @click.prevent="duration++" :disabled="duration === 11">+</button>
 			</b-form-group>
 			<transition name="fade">
 				<b-form-group
@@ -105,7 +95,6 @@
 						id="dateEnd"
 						:state="dateStartState"
 						type="date"
-						class="col-lg-4 col-md-5 col-sm-6 col-12"
 						:disabled="true"
 						:value="dateEnd"
 					></b-form-input>
@@ -128,13 +117,7 @@
 					v-if="selectedPayment"
 					:invalid-feedback="priceInvalidFeedback"
 				>
-					<b-form-input
-						id="price"
-						:state="priceState"
-						type="number"
-						class="col-lg-4 col-md-5 col-sm-6 col-12"
-						v-model="price"
-					></b-form-input>
+					<b-form-input id="price" :state="priceState" type="number" v-model="price"></b-form-input>
 				</b-form-group>
 			</transition>
 			<b-form-group
@@ -340,7 +323,7 @@ export default {
 				value: course.id
 			})
 		})
-		if(this.edit) {
+		if (this.edit) {
 			this.name = this.edit.name
 			this.selectedCategory = this.edit.category
 			this.selectedTags = this.edit.tags
@@ -356,9 +339,12 @@ export default {
 			this.thumbnail = this.edit.picture.thumbnail
 			this.poster = this.edit.picture.poster.url
 			this.posterOrientation = this.edit.picture.poster.orientation
-			this.selectedGallery = this.edit.picture.gallery.length > 0 ? true : false
+			this.selectedGallery =
+				this.edit.picture.gallery.length > 0 ? true : false
 			this.photoQuantity = this.edit.picture.gallery.length
-			this.photos = this.edit.picture.gallery
+			this.photos = this.edit.picture.gallery.length
+				? this.edit.picture.gallery
+				: ["", ""]
 		}
 	},
 	methods: {
@@ -429,6 +415,7 @@ export default {
 				)
 			}
 		},
+		editEvent() {},
 		decreasePhotoQuantity() {
 			this.photos.pop()
 			this.photoQuantity--
@@ -541,7 +528,7 @@ export default {
 			}
 		},
 		hourStartState() {
-			if(!this.hourStart && !this.attemptSubmit) {
+			if (!this.hourStart && !this.attemptSubmit) {
 				return null
 			} else if (!this.hourStart && this.attemptSubmit) {
 				return false
@@ -557,7 +544,7 @@ export default {
 			}
 		},
 		hourEndState() {
-			if(!this.hourEnd && !this.attemptSubmit) {
+			if (!this.hourEnd && !this.attemptSubmit) {
 				return null
 			} else if (!this.hourEnd && this.attemptSubmit) {
 				return false
@@ -573,16 +560,26 @@ export default {
 			}
 		},
 		dateStartState() {
-			let dateStart = new Date(this.dateStart)
-			dateStart.setDate(dateStart.getDate() + 1)
-			if (!this.dateStart && !this.attemptSubmit) {
-				return null
-			} else if (!this.dateStart && this.attemptSubmit) {
-				return false
-			} else if (dateStart < this.getTodays()) {
-				return false
+			if (!edit) {
+				let dateStart = new Date(this.dateStart)
+				dateStart.setDate(dateStart.getDate() + 1)
+				if (!this.dateStart && !this.attemptSubmit) {
+					return null
+				} else if (!this.dateStart && this.attemptSubmit) {
+					return false
+				} else if (dateStart < this.getTodays()) {
+					return false
+				} else {
+					return true
+				}
 			} else {
-				return true
+				if (!this.dateStart && !this.attemptSubmit) {
+					return null
+				} else if (!this.dateStart && this.attemptSubmit) {
+					return false
+				} else {
+					return true
+				}
 			}
 		},
 		dateStartInvalidFeedback() {
@@ -640,80 +637,86 @@ export default {
 			}
 		},
 		classroomState() {
-			if(!this.classroom && !this.attemptSubmit) {
+			if (!this.classroom && !this.attemptSubmit) {
 				return null
-			} else if(!this.classroom && this.attemptSubmit) {
+			} else if (!this.classroom && this.attemptSubmit) {
 				return false
 			} else {
 				return true
 			}
 		},
 		classroomInvalidFeedback() {
-			if(!this.classroom && this.attemptSubmit) {
+			if (!this.classroom && this.attemptSubmit) {
 				return "Selecione uma sala"
 			} else {
 				return null
 			}
 		},
 		coursesState() {
-			if(!this.selectedCourses.length && !this.attemptSubmit) {
+			if (!this.selectedCourses.length && !this.attemptSubmit) {
 				return null
-			} else if(!this.selectedCourses.length && this.attemptSubmit) {
+			} else if (!this.selectedCourses.length && this.attemptSubmit) {
 				return false
 			} else {
 				return true
 			}
 		},
 		coursesInvalidFeedback() {
-			if(!this.selectedCourses.length && this.attemptSubmit) {
+			if (!this.selectedCourses.length && this.attemptSubmit) {
 				return "Selecione pelo menos um curso"
 			} else {
 				return null
 			}
 		},
 		thumbnailState() {
-			if(!this.thumbnail && !this.attemptSubmit) {
+			if (!this.thumbnail && !this.attemptSubmit) {
 				return null
-			} else if(!this.thumbnail && this.attemptSubmit) {
+			} else if (!this.thumbnail && this.attemptSubmit) {
 				return false
 			} else {
 				return true
 			}
 		},
 		thumbnailInvalidFeedback() {
-			if(!this.thumbnail && this.attemptSubmit) {
+			if (!this.thumbnail && this.attemptSubmit) {
 				return "Introduza o URL da miniatura"
 			} else {
 				return null
 			}
 		},
 		posterState() {
-			if(!this.poster && !this.attemptSubmit) {
+			if (!this.poster && !this.attemptSubmit) {
 				return null
-			} else if(!this.poster && this.attemptSubmit) {
+			} else if (!this.poster && this.attemptSubmit) {
 				return false
 			} else {
 				return true
 			}
 		},
 		posterInvalidFeedback() {
-			if(!this.poster && this.attemptSubmit) {
+			if (!this.poster && this.attemptSubmit) {
 				return "Introduza o URL do poster"
 			} else {
 				return null
 			}
 		},
 		galleryState() {
-			if(!this.photos.length && !this.attemptSubmit) {
+			if (!this.photos.length && !this.attemptSubmit) {
 				return null
-			} else if(!this.photos.every(photo => photo.length > 0) && !this.attemptSubmit) {
+			} else if (
+				!this.photos.every(photo => photo.length > 0) &&
+				!this.attemptSubmit
+			) {
 				return false
 			} else {
 				return true
 			}
 		},
 		galleryInvalidFeedback() {
-			if(!this.photos.every(photo => photo.length > 0) && !this.attemptSubmit) {
+			if (
+				!this.photos.every(photo => photo.length > 0) &&
+				!this.attemptSubmit
+			) {
 				return "Introduza as fotografias"
 			} else {
 				return null
