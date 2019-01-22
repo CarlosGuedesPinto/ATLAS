@@ -415,7 +415,64 @@ export default {
 				)
 			}
 		},
-		editEvent() {},
+		editEvent() {
+			this.attemptSubmit = true
+			if (
+				this.nameState &&
+				this.tagsState &&
+				this.descriptionState &&
+				this.dateStartState &&
+				this.hourStartState &&
+				this.hourEndState &&
+				(!this.selectedPayment ||
+					(this.selectedPayment && this.priceState)) &&
+				this.classroomState &&
+				this.coursesState &&
+				this.thumbnailState &&
+				this.posterState &&
+				this.galleryState
+			) {
+				if (!this.selectedGallery) {
+					this.photos = []
+				}
+				this.$store.dispatch("editEventById", {
+					id: this.edit.id,
+					event: {
+						name: this.name,
+						category: this.selectedCategory,
+						tags: this.selectedTags,
+						description: this.description,
+						classroom: this.classroom,
+						coursesIds: this.selectedCourses,
+						hourStart: this.hourStart,
+						hourEnd: this.hourEnd,
+						dateStart: this.dateStart,
+						durationDays: this.duration,
+						dateEnd: this.dateEnd,
+						paymentPrice: this.price,
+						picture: {
+							thumbnail: this.thumbnail,
+							poster: {
+								orientation: this.posterOrientation,
+								url: this.poster
+							},
+							gallery: this.photos
+						}
+					}
+				})
+			} else {
+				this.$snotify.error(
+					"Preencha todos os campos corretamente",
+					"",
+					{
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					}
+				)
+			}
+		},
 		decreasePhotoQuantity() {
 			this.photos.pop()
 			this.photoQuantity--
@@ -560,7 +617,7 @@ export default {
 			}
 		},
 		dateStartState() {
-			if (!edit) {
+			if (!this.edit) {
 				let dateStart = new Date(this.dateStart)
 				dateStart.setDate(dateStart.getDate() + 1)
 				if (!this.dateStart && !this.attemptSubmit) {

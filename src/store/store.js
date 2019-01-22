@@ -261,6 +261,25 @@ export default new Vuex.Store({
         ADD_EVENT(state, payload) {
             state.events.push(payload)
         },
+        EDIT_EVENT_BY_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.id) {
+                    event.name = payload.event.name
+                    event.category = payload.event.selectedCategory
+                    event.tags = payload.event.selectedTags
+                    event.description = payload.event.description
+                    event.classroom = payload.event.classroom
+                    event.coursesIds = payload.event.selectedCourses
+                    event.hourStart = payload.event.hourStart
+                    event.hourEnd = payload.event.hourEnd
+                    event.dateStart = payload.event.dateStart
+                    event.durationDays = payload.event.duration
+                    event.dateEnd = payload.event.dateEnd
+                    event.paymentPrice = payload.event.price
+                    event.picture = payload.event.picture
+                }
+            })
+        },
         SET_ENROLLMENTS(state, payload) {
             state.enrollments = payload
         },
@@ -333,7 +352,7 @@ export default new Vuex.Store({
                     event.discussions.forEach(discussion => {
                         if (discussion.id === payload.discussionId) {
                             discussion.answers.forEach((answer, index) => {
-                                if(answer.id === payload.answerId) {
+                                if (answer.id === payload.answerId) {
                                     discussion.answers.splice(index, 1)
                                 }
                             })
@@ -397,6 +416,9 @@ export default new Vuex.Store({
         },
         addEvent(context, payload) {
             context.commit("ADD_EVENT", payload)
+        },
+        editEventById(context, payload) {
+            context.commit("EDIT_EVENT_BY_ID", payload)
         },
         setEnrollments(context, payload) {
             context.commit("SET_ENROLLMENTS", payload)
