@@ -5,18 +5,31 @@
 		</router-link>
 		<div class="bg-atlas2 py-2 col-lg-9 col-6">
 			<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
-				<h5 class="text-white"><b class="text-atlas1" style="font-weight: bold;">[{{ event.category }}]</b> {{ event.name }}</h5>
+				<h5 class="text-white">
+					<b class="text-atlas1" style="font-weight: bold;">[{{ event.category }}]</b>
+					{{ event.name }}
+				</h5>
 			</router-link>
 			<div class="text-atlas3 event-card-body">
 				<div class="float-left mb-3">{{ getEventShortDescription(event.id) }}</div>
 				<div>
 					<div class="float-left">
-						<template v-for="eventTag in event.tags">{{ "#" + getTagById(eventTag).name + " " }}</template>
+						<router-link
+							class="text-atlas3"
+							v-for="eventTag in event.tags"
+							:to="{name: 'events', query: {tags: getTagById(eventTag).name}}"
+							:key="'event_' + event.id + 'tag_' + eventTag"
+							replace
+						>{{ "#" + getTagById(eventTag).name + " " }}</router-link>
 					</div>
 					<div class="float-right row">
 						<div class="ml-3">
 							<i class="fa fa-map-marker-alt text-atlas1" aria-hidden="true"></i>
-							{{ event.classroom }}
+							<router-link
+								class="text-atlas3 ml-1"
+								:to="{ name: 'events', query: { sala: event.classroom } }"
+								replace
+							>{{ event.classroom }}</router-link>
 						</div>
 						<div class="ml-3">
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
