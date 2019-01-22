@@ -265,17 +265,17 @@ export default new Vuex.Store({
             state.events.forEach(event => {
                 if (event.id === payload.id) {
                     event.name = payload.event.name
-                    event.category = payload.event.selectedCategory
-                    event.tags = payload.event.selectedTags
+                    event.category = payload.event.category
+                    event.tags = payload.event.tags
                     event.description = payload.event.description
                     event.classroom = payload.event.classroom
-                    event.coursesIds = payload.event.selectedCourses
+                    event.coursesIds = payload.event.coursesIds
                     event.hourStart = payload.event.hourStart
                     event.hourEnd = payload.event.hourEnd
                     event.dateStart = payload.event.dateStart
-                    event.durationDays = payload.event.duration
+                    event.durationDays = payload.event.durationDays
                     event.dateEnd = payload.event.dateEnd
-                    event.paymentPrice = payload.event.price
+                    event.paymentPrice = payload.event.paymentPrice
                     event.picture = payload.event.picture
                 }
             })

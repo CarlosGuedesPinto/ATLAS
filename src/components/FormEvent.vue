@@ -435,6 +435,7 @@ export default {
 				if (!this.selectedGallery) {
 					this.photos = []
 				}
+				
 				this.$store.dispatch("editEventById", {
 					id: this.edit.id,
 					event: {
