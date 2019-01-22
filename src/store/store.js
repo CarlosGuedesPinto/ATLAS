@@ -326,6 +326,21 @@ export default new Vuex.Store({
                     })
                 }
             })
+        },
+        REMOVE_EVENT_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID_ANSWER_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.eventId) {
+                    event.discussions.forEach(discussion => {
+                        if (discussion.id === payload.discussionId) {
+                            discussion.answers.forEach((answer, index) => {
+                                if(answer.id === payload.answerId) {
+                                    discussion.answers.splice(index, 1)
+                                }
+                            })
+                        }
+                    })
+                }
+            })
         }
     },
     actions: {
@@ -403,6 +418,9 @@ export default new Vuex.Store({
         },
         addDiscussionAnswerByEventIdDiscussionId(context, payload) {
             context.commit("ADD_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID", payload)
+        },
+        removeEventDiscussionAnswerByEventIdDiscussionIdAnswerId(context, payload) {
+            context.commit("REMOVE_EVENT_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID_ANSWER_ID", payload)
         }
     }
 })

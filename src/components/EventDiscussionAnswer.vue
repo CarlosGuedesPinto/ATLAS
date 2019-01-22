@@ -24,6 +24,7 @@
 								<button
 									class="btn btn-danger float-right"
 									v-if="btnRemoveConditions()"
+									@click="btnRemoveClicked()"
 								>
 									<i class="fa fa-times" aria-hidden="true"></i>
 								</button>
@@ -63,6 +64,7 @@
 						<button
 							class="btn btn-danger float-right"
 							v-if="btnRemoveConditions()"
+							@click="btnRemoveClicked()"
 						>
 							<i class="fa fa-times" aria-hidden="true"></i>
 						</button>
@@ -115,6 +117,29 @@ export default {
 				}
 			}
 			return false
+		},
+		btnRemoveClicked() {
+			this.$vs.dialog({
+				type: "confirm",
+				color: "danger",
+				title: "Apagar resposta?",
+				acceptText: "Apagar",
+				cancelText: "Cancelar",
+				text: "Esta reposta será apagada.",
+				accept: () => {
+					this.$store.dispatch("removeEventDiscussionAnswerByEventIdDiscussionIdAnswerId", {
+						eventId: parseInt(this.$route.params.id),
+						discussionId: parseInt(this.$route.params.discussionId),
+						answerId: this.answer.id
+					})
+					this.$snotify.success("Resposta apagada", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				}
+			})
 		}
 	},
 	computed: {

@@ -64,7 +64,7 @@ export default {
 			let user = this.getUserByUsername(this.username)
 			if (user && user.password === this.password) {
 				this.$store.dispatch("userLoggedIn", user.id)
-				this.$router.push({ name: "home" })
+				this.$router.replace({ name: "home" })
 			} else if (!this.username || !this.password) {
 				this.$snotify.error("Preencha todos os campos", "", {
 					timeout: 2000,

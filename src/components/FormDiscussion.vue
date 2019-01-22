@@ -25,7 +25,10 @@
 		>
 			<b-form-textarea id="text" v-model="text" :rows="3" :max-rows="6" :state="textState"></b-form-textarea>
 		</b-form-group>
-		<button type="submit" class="btn btn-atlas1 col-12">{{ !edit ? "Criar discussão" : "Editar discussão" }}</button>
+		<button
+			type="submit"
+			class="btn btn-atlas1 col-12"
+		>{{ !edit ? "Criar discussão" : "Editar discussão" }}</button>
 	</b-form>
 </template>
 
@@ -39,6 +42,15 @@ export default {
 			this.title = this.edit.title
 			this.selectedCategory = this.edit.category
 			this.text = this.edit.content
+		}
+		if (this.getLoggedUserId !== -1) {
+			if (
+				this.getLoggedUserId ===
+					this.getEventById(this.eventId).authorId ||
+				this.getUserById(this.getLoggedUserId).profileId === 3
+			) {
+				this.categories.push("Anúncio")
+			}
 		}
 	},
 	data() {
@@ -59,8 +71,8 @@ export default {
 					discussion: {
 						id: this.getLastDiscussionIdByEventId(this.eventId) + 1,
 						authorId: this.getLoggedUserId,
-                        title: this.title,
-						category: this.selectedCategory,                        
+						title: this.title,
+						category: this.selectedCategory,
 						content: this.text,
 						upvotes: 0,
 						downvotes: 0,
@@ -89,19 +101,22 @@ export default {
 					}
 				)
 			}
-        },
-        editDiscussion() {
-            this.attemptSubmit = true
+		},
+		editDiscussion() {
+			this.attemptSubmit = true
 			if (this.titleState && this.textState) {
-				this.$store.dispatch("editEventDiscussionByEventIdDiscussionId", {
-                    eventId: this.eventId,
-                    discussionId: this.edit.id,
-					discussion: {
-						title: this.title,
-						category: this.selectedCategory,
-						content: this.text,
+				this.$store.dispatch(
+					"editEventDiscussionByEventIdDiscussionId",
+					{
+						eventId: this.eventId,
+						discussionId: this.edit.id,
+						discussion: {
+							title: this.title,
+							category: this.selectedCategory,
+							content: this.text
+						}
 					}
-                })
+				)
 
 				this.$snotify.success("Discussão editada", "", {
 					timeout: 2000,
@@ -121,7 +136,7 @@ export default {
 					}
 				)
 			}
-        },
+		},
 		resetFormCreateDiscussion() {
 			this.attemptSubmit = false
 			this.title = ""
@@ -130,7 +145,12 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(["getLastDiscussionIdByEventId", "getLoggedUserId"]),
+		...mapGetters([
+			"getLastDiscussionIdByEventId",
+			"getLoggedUserId",
+			"getEventById",
+			"getUserById"
+		]),
 		titleState() {
 			if (!this.title && !this.attemptSubmit) {
 				return null

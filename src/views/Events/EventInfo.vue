@@ -4,6 +4,14 @@
 			<TitleAtlas>
 				<b class="text-atlas2">[{{ event.category }}]</b>
 				{{ event.name }}
+				<template v-if="btnConditions()">
+					<button class="btn btn-atlas2" @click="modalEdit = true">
+						<i class="fa fa-edit" aria-hidden="true"></i>
+					</button>
+					<button class="btn btn-danger ml-2" @click="btnRemoveClicked()">
+						<i class="fa fa-times" aria-hidden="true"></i>
+					</button>
+				</template>
 			</TitleAtlas>
 			<div class="row">
 				<div
@@ -21,16 +29,19 @@
 					<div>
 						<div>
 							<i class="fa fa-map-marker-alt text-atlas1" aria-hidden="true"></i>
-							<router-link class="text-atlas2 ml-1" :to="{name: 'events', query: { sala: event.classroom } }">{{ event.classroom }}</router-link>
+							<router-link
+								class="text-atlas2 ml-1"
+								:to="{name: 'events', query: { sala: event.classroom } }"
+							>{{ event.classroom }}</router-link>
 						</div>
 						<div>
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-							<span v-if="event.dateStart === event.dateEnd">
-								{{ $moment(event.dateStart).format("dddd[,] LL") }}
-							</span>
-							<span v-else>
-								{{ $moment(event.dateStart).format("dddd[,] LL") }} - {{ $moment(event.dateEnd).format("dddd[,] LL") }}
-							</span>
+							<span
+								v-if="event.dateStart === event.dateEnd"
+							>{{ $moment(event.dateStart).format("dddd[,] LL") }}</span>
+							<span
+								v-else
+							>{{ $moment(event.dateStart).format("dddd[,] LL") }} - {{ $moment(event.dateEnd).format("dddd[,] LL") }}</span>
 						</div>
 						<div>
 							<i class="fa fa-clock text-atlas1" aria-hidden="true"></i>
@@ -65,8 +76,13 @@
 									:to="{name: 'events', query: { curso: getCourseById(course).name } }"
 									class="text-atlas2"
 								>{{ getCourseById(course).name }}</router-link>
-								<span v-if="index < event.coursesIds.length - 1"> / </span>
+								<span v-if="index < event.coursesIds.length - 1">/</span>
 							</span>
+						</div>
+						<div v-if="event.paid">
+							<i class="fa fa-sign-in-alt text-atlas1" aria-hidden="true"></i>
+							&nbsp;
+							Preço de inscrição {{ event.paymentPrice }} €
 						</div>
 					</div>
 					<hr class="bg-atlas1">
@@ -136,7 +152,7 @@
 			<p v-else>Este evento ainda não possui nenhuma discussão.</p>
 		</div>
 		<b-modal
-			title="Editar discussão"
+			title="Adicionar discussão"
 			header-bg-variant="atlas1"
 			header-text-variant="white"
 			:centered="true"
@@ -148,6 +164,16 @@
 		<div class="mt-5">
 			<TitleAtlas>Comentários</TitleAtlas>
 		</div>
+		<b-modal
+			title="Editar evento"
+			header-bg-variant="atlas1"
+			header-text-variant="white"
+			:centered="true"
+			v-model="modalEdit"
+			:hide-footer="true"
+		>
+			<FormEvent :edit="event"></FormEvent>
+		</b-modal>
 	</div>
 </template>
 
@@ -156,12 +182,19 @@ import TitleAtlas from "@/components/TitleAtlas.vue"
 import Carousel from "vue-owl-carousel"
 import EventDiscussion from "@/components/EventDiscussion.vue"
 import FormDiscussion from "@/components/FormDiscussion.vue"
+import FormEvent from "@/components/FormEvent.vue"
 
 import { mapGetters } from "vuex"
 
 export default {
 	name: "EventInfoView",
-	components: { TitleAtlas, Carousel, EventDiscussion, FormDiscussion },
+	components: {
+		TitleAtlas,
+		Carousel,
+		EventDiscussion,
+		FormDiscussion,
+		FormEvent
+	},
 	created() {
 		this.event = this.getEventById(parseInt(this.$route.params.id))
 		this.enrollments = this.getEnrollmentsByEventId(this.event.id)
@@ -188,6 +221,7 @@ export default {
 	data() {
 		return {
 			event: {},
+			modalEdit: false,
 			carouselResponsivity: {
 				0: { items: 1 },
 				768: { items: 2 }
@@ -255,6 +289,17 @@ export default {
 				courses.push(this.getCourseById(course).name)
 			})
 			return courses
+		},
+		btnConditions() {
+			if (this.getLoggedUserId !== -1) {
+				if (
+					this.getLoggedUserId === this.event.authorId ||
+					this.getUserById(this.getLoggedUserId).profileId === 3
+				) {
+					return true
+				}
+			}
+			return false
 		}
 	}
 }

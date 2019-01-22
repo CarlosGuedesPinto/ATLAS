@@ -5,7 +5,7 @@
 				<b>[{{ event.category }}]</b>
 				{{ event.name }}
 			</router-link>&nbsp;/
-			<b class="text-atlas3">[{{ discussion.category }}]</b>
+			<b class="text-atlas3" :class="discussion.category === 'Anúncio' ? 'bg-atlas2 p-1 rounded' : ''">[{{ discussion.category }}]</b>
 			{{ discussion.title }}
 			<button
 				class="btn btn-atlas2"
@@ -111,7 +111,10 @@ export default {
 			discussion: {},
 			author: {},
 			answer: "",
-			modal: false
+			modal: false,
+			totalPages: 1,
+			currentPage: 1,
+			answersPerPage: 10
 		}
 	},
 	computed: {

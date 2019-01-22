@@ -59,7 +59,6 @@
 					id="hourStart"
 					:state="hourStartState"
 					type="time"
-					class="col-xl-2 col-lg-3 col-sm-4 col-12"
 					v-model="hourStart"
 				></b-form-input>
 			</b-form-group>
@@ -73,7 +72,6 @@
 					id="hourEnd"
 					:state="hourEndState"
 					type="time"
-					class="col-xl-2 col-lg-3 col-sm-4 col-12"
 					v-model="hourEnd"
 				></b-form-input>
 			</b-form-group>
@@ -88,7 +86,6 @@
 					:state="dateStartState"
 					v-model="dateStart"
 					type="date"
-					class="col-lg-4 col-md-5 col-sm-6 col-12"
 					:min="getTodays()"
 				></b-form-input>
 			</b-form-group>
@@ -283,6 +280,7 @@
 import { mapGetters } from "vuex"
 
 export default {
+	props: ["edit"],
 	data() {
 		return {
 			name: "",
@@ -342,6 +340,26 @@ export default {
 				value: course.id
 			})
 		})
+		if(this.edit) {
+			this.name = this.edit.name
+			this.selectedCategory = this.edit.category
+			this.selectedTags = this.edit.tags
+			this.description = this.edit.description
+			this.hourStart = this.edit.hourStart
+			this.hourEnd = this.edit.hourEnd
+			this.duration = this.edit.durationDays
+			this.dateStart = this.edit.dateStart
+			this.selectedPayment = this.edit.paid
+			this.price = this.edit.paymentPrice
+			this.classroom = this.edit.classroom
+			this.selectedCourses = this.edit.coursesIds
+			this.thumbnail = this.edit.picture.thumbnail
+			this.poster = this.edit.picture.poster.url
+			this.posterOrientation = this.edit.picture.poster.orientation
+			this.selectedGallery = this.edit.picture.gallery.length > 0 ? true : false
+			this.photoQuantity = this.edit.picture.gallery.length
+			this.photos = this.edit.picture.gallery
+		}
 	},
 	methods: {
 		handleResize() {

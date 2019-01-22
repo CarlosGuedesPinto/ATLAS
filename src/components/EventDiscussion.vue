@@ -22,7 +22,10 @@
 						:to="{ name: 'eventDiscussion', params: { id: $route.params.id, discussionId: discussion.id } }"
 						class="text-white"
 					>
-						<b class="text-atlas3">[{{ discussion.category }}]</b>
+						<b
+							class="text-atlas3"
+							:class="discussion.category === 'Anúncio' ? 'bg-atlas1 p-1 rounded' : ''"
+						>[{{ discussion.category }}]</b>
 						{{ discussion.title }}
 					</router-link>
 				</div>
@@ -33,9 +36,7 @@
 							class="text-white"
 						>
 							<i class="fa fa-user text-atlas1" aria-hidden="true"></i>
-							<small>
-								@{{ getUserById(discussion.authorId).username }}
-							</small>
+							<small>@{{ getUserById(discussion.authorId).username }}</small>
 						</router-link>
 					</div>
 					<div class="ml-3">
