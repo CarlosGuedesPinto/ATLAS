@@ -166,8 +166,26 @@ export default {
 			switch (this.name) {
 				case "users":
 					this.$router.push({
-						name: "backofficeUserInfo",
+						name: "profile",
 						params: { username: event.username }
+					})
+					break
+				case "tags":
+					this.$router.push({
+						name: "events",
+						query: { tags: this.getTagNameById(event.id) }
+					})
+					break
+				case "courses":
+					this.$router.push({
+						name: "events",
+						query: { curso: this.getCourseById(event.id).name }
+					})
+					break
+				case "events":
+					this.$router.push({
+						name: "eventsInfo",
+						params: { id: event.id }
 					})
 					break
 				default:
@@ -229,3 +247,9 @@ export default {
 	}
 }
 </script>
+
+<style>
+tr:hover {
+	cursor: pointer;
+}
+</style>
