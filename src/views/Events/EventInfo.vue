@@ -53,12 +53,20 @@
 								class="text-atlas2"
 							>
 								<i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
-								&nbsp;@{{ getUserById(event.authorId).username }}
+								@{{ getUserById(event.authorId).username }}
 							</router-link>
 						</div>
 						<div>
-							<i class="fa fa-users text-atlas1" aria-hidden="true"></i>
-							53 vão
+							<i class="fa fa-users text-atlas1 mr-1" aria-hidden="true"></i>
+							<template
+								v-if="!event.enrollments.length"
+							>{{ event.enrollments.length }} {{ $moment(event.dateEnd + ' ' + event.hourEnd).isBefore($moment()) ? 'foram' : (event.enrollments.length === 1 ? 'vai' : 'vão')}}</template>
+							<a
+								href
+								class="text-atlas2"
+								@click.prevent="modalEnrollments = true"
+								v-else
+							>{{ event.enrollments.length }} {{ $moment(event.dateEnd + ' ' + event.hourEnd).isBefore($moment()) ? 'foram' : (event.enrollments.length === 1 ? 'vai' : 'vão')}}</a>
 						</div>
 						<div>
 							<i class="fa fa-tags text-atlas1" aria-hidden="true"></i>
@@ -67,42 +75,37 @@
 								:key="'tag_' + tag"
 								:to="{name: 'events', query: { tags: getTagById(tag).name } }"
 								class="text-atlas2"
-							>#{{ getTagById(tag).name }}</router-link>
+							> #{{ getTagById(tag).name }}</router-link>
 						</div>
 						<div>
-							<i class="fa fa-graduation-cap text-atlas1" aria-hidden="true"></i>&nbsp;
+							<i class="fa fa-graduation-cap text-atlas1 mr-1" aria-hidden="true"></i>
 							<span v-for="(course, index) in event.coursesIds" :key="'course_' + course">
 								<router-link
 									:to="{name: 'events', query: { curso: getCourseById(course).name } }"
 									class="text-atlas2"
 								>{{ getCourseById(course).name }}</router-link>
-								<span v-if="index < event.coursesIds.length - 1">/</span>
+								<span v-if="index < event.coursesIds.length - 1"> / </span>
 							</span>
 						</div>
 						<div v-if="event.paid">
 							<i class="fa fa-sign-in-alt text-atlas1" aria-hidden="true"></i>
-							&nbsp;
 							Preço de inscrição {{ event.paymentPrice }} €
 						</div>
 					</div>
 					<template v-if="$moment(event.dateEnd).isAfter($moment())">
 						<hr class="bg-atlas1">
-						<div class="row container">
-							<button
-								class="btn btn-atlas2 px-5 col-md-5 col-12 mx-1 mr-auto ml-auto mt-2"
-								style="border-radius: 2em;"
-								:disabled="!btnsEventConditions()"
-							>
-								<i class="fa fa-star"></i> Com interesse
-							</button>
-							<button
-								class="btn btn-atlas2 px-5 col-md-5 col-12 mx-1 mr-auto ml-auto mt-2"
-								style="border-radius: 2em;"
-								:disabled="!btnsEventConditions()"
-							>
-								<i class="fa fa-sign-in-alt text-teca4"></i> Inscrever-me
-							</button>
-						</div>
+						<button
+							class="btn btn-atlas2 px-5 col-12 mr-auto ml-auto mt-2"
+							style="border-radius: 2em;"
+							:disabled="btnEnrollmentConditions()"
+							@click="btnEnrollmentClicked()"
+						>
+							<i
+								class="fa text-teca4"
+								:class="!event.enrollments.some(enrollment => enrollment.userId === getLoggedUserId) ? 'fa-sign-in-alt' : 'fa-sign-out-alt'"
+							></i>
+							{{ !event.enrollments.some(enrollment => enrollment.userId === getLoggedUserId) ? 'Inscrever-me' : 'Desinscrever-me' }}
+						</button>
 					</template>
 				</div>
 			</div>
@@ -173,7 +176,65 @@
 				/>
 			</template>
 		</div>
+		<b-modal
+			:title="`Utilizadores inscritos - ${event.enrollments.length}`"
+			header-bg-variant="atlas1"
+			header-text-variant="white"
+			:centered="true"
+			v-model="modalEnrollments"
+			:hide-footer="true"
+			@hidden="enrollmentsFilter = ''"
+		>
+			<b-form-input
+				id="enrollmentsFilter"
+				v-model="enrollmentsFilter"
+				placeholder="Filtrar por utilizador..."
+				type="text"
+			></b-form-input>
+			<hr>
+			<div v-for="(enrollment, index) in getFilteredEnrollments" :key="'enrollment_' + enrollment.userId">
+				<div class="text-center">
+					<router-link
+						class="text-atlas2 ml-2"
+						:to="{name: 'profile', params: { username: getUserById(enrollment.userId).username } }"
+					>
+						<img
+							:src="getUserById(enrollment.userId).picture"
+							alt
+							class="rounded-circle img-thumbnail img-fluid"
+							style="height: 100px; width: 100px;"
+						>
+					</router-link>
+					<br v-if="windowWidth < 520">
+					<router-link
+						class="text-atlas2 ml-2"
+						:to="{name: 'profile', params: { username: getUserById(enrollment.userId).username } }"
+					>@{{ getUserById(enrollment.userId).username }}</router-link>
+					/ {{ $moment(enrollment.moment).format("LLL") }}
+				</div>
 
+				<template v-if="btnConditions()" class="text-center">
+					<div class="row mt-2">
+						<button
+							class="btn btn-atlas2 col-12 col-sm-6 ml-auto"
+							v-if="event.paid"
+							@click="!enrollment.paid ? enrollment.paid = true : enrollment.paid = false"
+						>
+							<i class="fa" :class="!enrollment.paid ? 'fa-check' : 'fa-times'" aria-hidden="true"></i>
+							{{ !enrollment.paid ? 'Validar pagamento' : 'Remover pagamento' }}
+						</button>
+						<button
+							class="btn btn-danger col-12 col-sm-6 mr-auto"
+							@click="btnRemoveEnrollmentClicked(enrollment.userId)"
+							:disabled="enrollment.paid"
+						>
+							<i class="fa fa-trash" aria-hidden="true"></i> Remover inscrição
+						</button>
+					</div>
+				</template>
+				<hr v-if="index !== event.enrollments.length - 1">
+			</div>
+		</b-modal>
 		<b-modal
 			title="Adicionar discussão"
 			header-bg-variant="atlas1"
@@ -235,7 +296,8 @@ export default {
 		return {
 			modalEdit: false,
 			slide: 0,
-			enrollments: [],
+			modalEnrollments: false,
+			enrollmentsFilter: "",
 			modal: false,
 			currentPage: 1,
 			discussionsPerPage: 5,
@@ -310,6 +372,13 @@ export default {
 
 			events.length = events.length > 3 ? 3 : events.length
 			return events
+		},
+		getFilteredEnrollments() {
+			if (!this.enrollmentsFilter) return this.event.enrollments
+
+			return this.event.enrollments.filter(enrollment =>
+				this.getUserById(enrollment.userId).username.toLowerCase().includes(this.enrollmentsFilter.toLowerCase())
+			)
 		}
 	},
 	methods: {
@@ -362,16 +431,91 @@ export default {
 				}
 			})
 		},
-		btnsEventConditions() {
+		btnEnrollmentConditions() {
 			if (this.getLoggedUserId !== -1) {
 				if (
 					this.getLoggedUserId !== this.event.authorId ||
 					this.getUserById(this.getLoggedUserId).profileId !== 3
 				) {
-					return true
+					return false
 				}
 			}
-			return false
+			return true
+		},
+		btnEnrollmentClicked() {
+			if (
+				!this.event.enrollments.some(
+					enrollment => enrollment.userId === this.getLoggedUserId
+				)
+			) {
+				this.$store.dispatch("addEventEnrollmentByEventId", {
+					eventId: this.event.id,
+					enrollment: {
+						userId: this.getLoggedUserId,
+						moment: this.$moment(),
+						paid: false
+					}
+				})
+				if (this.event.paid) {
+					this.$vs.dialog({
+						type: "confirm",
+						color: "primary",
+						title: "Efetuar pagamento",
+						acceptText: "Entendido",
+						cancelText: "",
+						text: `Dirija-se junto ao proponente de evento para efetuar o pagamento da inscrição (${
+							this.event.paymentPrice
+						} €).`,
+						accept: () => {
+							this.$snotify.success("Inscrição efetuada", "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+						},
+						cancel: () => {
+							this.$snotify.success("Inscrição efetuada", "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+						}
+					})
+				} else {
+					this.$snotify.success("Inscrição efetuada", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				}
+			} else {
+				this.$store.dispatch("removeEventEnrollmentByEventIdUserId", {
+					eventId: this.event.id,
+					userId: this.getLoggedUserId
+				})
+				this.$snotify.success("Inscrição removida", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
+			}
+		},
+		btnValidatePaymentClicked(userId) {},
+		btnRemoveEnrollmentClicked(userId) {
+			this.$store.dispatch("removeEventEnrollmentByEventIdUserId", {
+				eventId: this.event.id,
+				userId: userId
+			})
+			this.$snotify.success("Inscrição removida", "", {
+				timeout: 2000,
+				showProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true
+			})
 		}
 	}
 }

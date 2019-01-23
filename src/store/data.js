@@ -163,6 +163,12 @@ export default {
                     answers: [],
                     moment: moment("2018-11-18 11:33")
                 }
+            ],
+            enrollments: [
+                {userId: 3, paid: false},
+                {userId: 4, paid: false},
+                {userId: 5, paid: false},
+                {userId: 6, paid: false}
             ]
         },
         {
@@ -206,6 +212,12 @@ export default {
                     answers: [],
                     moment: moment("2018-11-13 12:00")
                 }
+            ],
+            enrollments: [
+                {userId: 3, paid: false},
+                {userId: 4, paid: false},
+                {userId: 5, paid: false},
+                {userId: 6, paid: false}
             ]
         },
         {
@@ -252,6 +264,10 @@ export default {
                     answers: [],
                     moment: moment("2018-11-13 12:00")
                 }
+            ],
+            enrollments: [
+                {userId: 3, paid: false},
+                {userId: 4, paid: false}
             ]
         },
         {
@@ -297,6 +313,10 @@ export default {
                     answers: [],
                     moment: moment("2018-11-13 12:00")
                 }
+            ],
+            enrollments: [
+                {userId: 3, paid: false},
+                {userId: 5, paid: false}
             ]
         },
         {
@@ -323,7 +343,12 @@ export default {
             },
             paid: false,
             paymentPrice: 0,
-            discussions: []
+            discussions: [],
+            enrollments: [
+                {userId: 3, paid: false},
+                {userId: 4, paid: false},
+                {userId: 5, paid: false}
+            ]
         },
         {
             id: 6,
@@ -349,7 +374,11 @@ export default {
             },
             paid: false,
             paymentPrice: 0,
-            discussions: []
+            discussions: [],
+            enrollments: [
+                {userId: 3, paid: false},
+                {userId: 4, paid: false}
+            ]
         },
         {
             id: 7,
@@ -375,7 +404,13 @@ export default {
             },
             paid: false,
             paymentPrice: 0,
-            discussions: []
+            discussions: [],
+            enrollments: [
+                {userId: 3, paid: false},
+                {userId: 4, paid: false},
+                {userId: 5, paid: false},
+                {userId: 6, paid: false}
+            ]
         },
         {
             id: 8,
@@ -388,7 +423,7 @@ export default {
             coursesIds: [1, 2, 3, 4, 5, 6, 7],
             hourStart: "10:00",
             hourEnd: "17:30",
-            dateStart: "2018-09-26",
+            dateStart: "2018-09-23",
             durationDays: 2,
             dateEnd: "2018-09-27",
             picture: {
@@ -401,10 +436,40 @@ export default {
             },
             paid: false,
             paymentPrice: 0,
-            discussions: []
+            discussions: [],
+            enrollments: [
+                {userId: 3, paid: false},
+                {userId: 4, paid: false},
+                {userId: 5, paid: false},
+                {userId: 6, paid: false}
+            ]
+        },
+        {
+            id: 9,
+            authorId: 1,
+            name: "Sessão de Abertura 2017/2018",
+            category: "Meeting",
+            tags: [18],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "Auditório",
+            coursesIds: [1, 2, 3, 4, 5, 6, 7],
+            hourStart: "10:00",
+            hourEnd: "17:30",
+            dateStart: "2019-01-23",
+            durationDays: 1,
+            dateEnd: "2019-01-23",
+            picture: {
+                thumbnail: "https://i.imgur.com/CouF1Kf.jpg",
+                poster: {
+                    url: "https://i.imgur.com/peCcoab.jpg",
+                    orientation: "Vertical"
+                },
+                gallery: ["https://i.imgur.com/O7a483t.png"]
+            },
+            paid: false,
+            paymentPrice: 0,
+            discussions: [],
+            enrollments: []
         }
-    ],
-    enrollments: [
-        { id: 1, eventId: 2, userId: 3, paidEvent: false, date: "2019-01-11", hour: "12:28" }
     ]
 }

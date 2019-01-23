@@ -30,11 +30,14 @@
 					<div class="row">
 						<div class="col-6">
 							<i class="fa fa-map-marker-alt text-atlas1" aria-hidden="true"></i>
-							<router-link class="text-atlas3 ml-1" :to="{ name: 'events', query: { sala: event.classroom } }">{{ event.classroom }}</router-link>
+							<router-link
+								class="text-atlas3 ml-1"
+								:to="{ name: 'events', query: { sala: event.classroom } }"
+							>{{ event.classroom }}</router-link>
 						</div>
 						<div class="col-6">
 							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-							{{ event.dateStart | moment("from", "now") }}
+							{{ (event.dateStart + " " + event.hourStart) | moment("from", "now") }}
 						</div>
 					</div>
 					<div>
@@ -46,7 +49,7 @@
 					</div>
 					<div>
 						<i class="fa fa-users text-atlas1" aria-hidden="true"></i>
-						21 vão
+						{{ event.enrollments.length }} {{ $moment(event.dateEnd + ' ' + event.hourEnd).isBefore($moment()) ? 'foram' : (event.enrollments.length === 1 ? 'vai' : 'vão')}}
 					</div>
 				</div>
 			</div>

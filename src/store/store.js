@@ -14,8 +14,7 @@ export default new Vuex.Store({
         loggedUserId: -1,
         courses: [],
         tags: [],
-        events: [],
-        enrollments: []
+        events: []
     },
     getters: {
         getUserById: state => id => {
@@ -128,6 +127,11 @@ export default new Vuex.Store({
             events.sort(sortByDateStartCrescent)
             return events
         },
+        getTodayEvents: state => {
+            let events = state.events.filter(event => moment(moment().format("YYYY-MM-DD")).isBetween(event.dateStart, event.dateEnd, null, '[]'))
+            events.sort(sortByDateStartCrescent)
+            return events
+        },
         getEventById: state => id => {
             return state.events.find(event => event.id === id)
         },
@@ -137,6 +141,48 @@ export default new Vuex.Store({
                 result = (event.tags.some(eventTag => idsTags.some(tag => tag === eventTag)) || event.coursesIds.some(eventCourse => idsCourses.some(course => course === eventCourse))) && result
                 return result
             })
+        },
+        getNextEventsByIdsTagsIdsCourses: state => (idsTags, idsCourses) => {
+            let events = state.events.filter(event => {
+                let result = true
+                result = (event.tags.some(eventTag => idsTags.some(tag => tag === eventTag)) || event.coursesIds.some(eventCourse => idsCourses.some(course => course === eventCourse))) && result
+                return result
+            }).filter(event => moment(event.dateEnd).isAfter(moment()))
+
+            events.sort(sortByDateStartCrescent)
+            return events
+        },
+        getTopUsersEnrolledEvents: state => {
+            let users = []
+
+            state.users.forEach(user => {
+                state.events.forEach(event => {
+                    event.enrollments.forEach(enrollment => {
+                        if (user.id === enrollment.userId) {
+
+                            if (!users.some(user => user.id === enrollment.userId)) {
+                                users.push({
+                                    id: user.id,
+                                    amount: 1
+                                })
+                            } else {
+                                users.find(user => user.id === enrollment.userId).amount++
+                            }
+                        }
+                    })
+                })
+            })
+
+            users.sort((a, b) => {
+                if (a.amount > b.amount) {
+                    return -1
+                } else if (a.amount < b.amount) {
+                    return 1
+                }
+                return 0
+            })
+
+            return users
         },
         getEventClassrooms: state => {
             let classrooms = []
@@ -159,9 +205,6 @@ export default new Vuex.Store({
                 })
             }
             return lastId
-        },
-        getEnrollmentsByEventId: state => eventId => {
-            return state.enrollments.filter(enrollment => enrollment.eventId === eventId)
         },
         getLastAnswerIdByEventIdDiscussionId: state => (eventId, discussionId) => {
             let lastId = 0
@@ -286,8 +329,23 @@ export default new Vuex.Store({
                 }
             })
         },
-        SET_ENROLLMENTS(state, payload) {
-            state.enrollments = payload
+        ADD_EVENT_ENROLLMENT_BY_EVENT_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.eventId) {
+                    event.enrollments.push(payload.enrollment)
+                }
+            })
+        },
+        REMOVE_EVENT_ENROLLMENT_BY_EVENT_ID_USER_ID(state, payload) {
+            state.events.forEach(event => {
+                if (event.id === payload.eventId) {
+                    event.enrollments.forEach((enrollment, index) => {
+                        if (enrollment.userId === payload.userId) {
+                            event.enrollments.splice(index, 1)
+                        }
+                    })
+                }
+            })
         },
         UPVOTE_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
@@ -433,8 +491,11 @@ export default new Vuex.Store({
         removeEventById(context, payload) {
             context.commit("REMOVE_EVENT_BY_ID", payload)
         },
-        setEnrollments(context, payload) {
-            context.commit("SET_ENROLLMENTS", payload)
+        addEventEnrollmentByEventId(context, payload) {
+            context.commit("ADD_EVENT_ENROLLMENT_BY_EVENT_ID", payload)
+        },
+        removeEventEnrollmentByEventIdUserId(context, payload) {
+            context.commit("REMOVE_EVENT_ENROLLMENT_BY_EVENT_ID_USER_ID", payload)
         },
         upvoteEventDiscussionByEventIdDiscussionId(context, payload) {
             context.commit("UPVOTE_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID", payload)

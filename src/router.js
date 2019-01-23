@@ -5,7 +5,7 @@ import HomeView from "@/views/Home.vue"
 import EventsView from "@/views/Events/Events.vue"
 import EventInfoView from "@/views/Events/EventInfo.vue"
 import EventDiscussionView from "@/views/Events/EventDiscussion.vue"
-import AboutView from "@/views/About.vue"
+import UsersView from "@/views/Users.vue"
 import LoginView from "@/views/Login.vue"
 import SignUpView from "@/views/SignUp.vue"
 import ProfileView from "@/views/Profile.vue"
@@ -15,7 +15,6 @@ import BackofficeUsersView from "@/views/Backoffice/Users.vue"
 import BackofficeTagsView from "@/views/Backoffice/Tags.vue"
 import BackofficeCoursesView from "@/views/Backoffice/Courses.vue"
 import BackofficeEventsView from "@/views/Backoffice/Events.vue"
-import NotFound from "@/views/NotFound.vue"
 
 Vue.use(Router)
 
@@ -57,9 +56,9 @@ const router = new Router({
           component: EventDiscussionView
         },
         {
-          path: "sobre",
-          name: "about",
-          component: AboutView
+          path: "utilizadores",
+          name: "users",
+          component: UsersView
         },
         {
           path: "iniciar-sessao",
@@ -135,7 +134,7 @@ const router = new Router({
     },
     {
       path: "*",
-      component: NotFound
+      redirect: { name: 'home' }
     }
   ],
   scrollBehavior(to, from, savedPosition) {

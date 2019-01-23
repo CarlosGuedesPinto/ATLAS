@@ -57,7 +57,7 @@
 				<vs-list-item
 					icon="school"
 					:title="interestedCourses().length > 1 ? 'Cursos' : 'Curso'"
-					:subtitle="interestedCourses().join(',')"
+					:subtitle="interestedCourses().join(', ')"
 					v-if="interestedCourses().length"
 				></vs-list-item>
 			</vs-list>

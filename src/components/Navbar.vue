@@ -19,10 +19,10 @@
 							:class="{'active-route': isActive('events')}"
 						>Eventos</router-link>
 						<router-link
-							:to="{name: 'about'}"
+							:to="{name: 'users'}"
 							class="nav-link"
-							:class="{'active-route': isActive('about')}"
-						>Sobre</router-link>
+							:class="{'active-route': isActive('users')}"
+						>Utilizadores</router-link>
 					</b-navbar-nav>
 
 					<b-navbar-nav class="ml-auto">
@@ -46,7 +46,7 @@
 									<span
 										class="ml-2"
 										style="color: white;"
-									>{{ getUserById(getLoggedUserId).username[0].toUpperCase() + getUserById(getLoggedUserId).username.substr(1, getUserById(getLoggedUserId).username.length - 1) }}</span>
+									>@{{ getUserById(getLoggedUserId).username }}</span>
 								</template>
 								<template v-if="getUserById(getLoggedUserId).profileId !== 1">
 									<router-link :to="{name: 'backoffice'}" class="dropdown-item">Painel de controlo</router-link>
