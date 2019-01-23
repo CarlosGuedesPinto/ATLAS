@@ -91,10 +91,10 @@ export default {
 	cursor: pointer;
 }
 .nav-link:hover {
-	color: #008fc1 !important;
+	color: #0087CA !important;
 }
 .active-route {
-	color: #008fc1 !important;
+	color: #0087CA !important;
 }
 #nav-user-logged:hover {
 	text-decoration: none !important;

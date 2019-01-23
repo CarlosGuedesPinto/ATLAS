@@ -12,11 +12,9 @@ import ProfileView from "@/views/Profile.vue"
 import BackofficeView from "@/views/Backoffice/Backoffice.vue"
 import BackofficeHomeView from "@/views/Backoffice/Home.vue"
 import BackofficeUsersView from "@/views/Backoffice/Users.vue"
-import BackofficeUserInfoView from "@/views/Backoffice/UserInfo.vue"
 import BackofficeTagsView from "@/views/Backoffice/Tags.vue"
 import BackofficeCoursesView from "@/views/Backoffice/Courses.vue"
 import BackofficeEventsView from "@/views/Backoffice/Events.vue"
-import BackofficeEventInfoView from "@/views/Backoffice/EventInfo.vue"
 import NotFound from "@/views/NotFound.vue"
 
 Vue.use(Router)
@@ -110,14 +108,6 @@ const router = new Router({
           }
         },
         {
-          path: "utilizador/:username",
-          name: "backofficeUserInfo",
-          component: BackofficeUserInfoView,
-          meta: {
-            authorizedProfiles: [3]
-          }
-        },
-        {
           path: "categorias-tags",
           name: "backofficeTags",
           component: BackofficeTagsView,
@@ -140,28 +130,14 @@ const router = new Router({
           meta: {
             authorizedProfiles: [2, 3]
           }
-        },
-        {
-          path: "evento/:id",
-          name: "backofficeEventInfo",
-          component: BackofficeEventInfoView,
-          meta: {
-            authorizedProfiles: [2, 3]
-          }
-        },
+        }
       ]
     },
     {
       path: "*",
       component: NotFound
     }
-  ],
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    }
-    return { x: 0, y: 0 }
-  }
+  ]
 })
 
 import store from "@/store/store.js"

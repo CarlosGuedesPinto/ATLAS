@@ -115,9 +115,9 @@
 		</Panel>
 		<div v-if="!filtering">
 			<div class="pt-5">
-				<TitleAtlas>Sugestões</TitleAtlas>
+				<TitleAtlas>Próximos eventos</TitleAtlas>
 				<Carousel :margin="30" :nav="false" :responsive="carouselResponsivity">
-					<EventCard v-for="event in getEvents" :key="event.id" :event="event"/>
+					<EventCard v-for="event in getNextEvents" :key="event.id" :event="event"/>
 				</Carousel>
 			</div>
 			<div class="pt-5">
@@ -270,7 +270,8 @@ export default {
 			"getTagById",
 			"getTagByName",
 			"getCourseById",
-			"getEventClassrooms"
+			"getEventClassrooms",
+			"getNextEvents"
 		]),
 		getEndedEventsSelectedPage() {
 			if (this.getEndedEvents.length > this.endedEventsPerPage) {

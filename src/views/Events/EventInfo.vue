@@ -35,7 +35,7 @@
 							>{{ event.classroom }}</router-link>
 						</div>
 						<div>
-							<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
+							<i class="fa fa-calendar-alt text-atlas1 mr-1" aria-hidden="true"></i>
 							<span
 								v-if="event.dateStart === event.dateEnd"
 							>{{ $moment(event.dateStart).format("dddd[,] LL") }}</span>
@@ -67,7 +67,7 @@
 								:key="'tag_' + tag"
 								:to="{name: 'events', query: { tags: getTagById(tag).name } }"
 								class="text-atlas2"
-							> #{{ getTagById(tag).name }}</router-link>
+							>#{{ getTagById(tag).name }}</router-link>
 						</div>
 						<div>
 							<i class="fa fa-graduation-cap text-atlas1" aria-hidden="true"></i>&nbsp;
@@ -85,26 +85,31 @@
 							Preço de inscrição {{ event.paymentPrice }} €
 						</div>
 					</div>
-					<hr class="bg-atlas1">
-					<div class="row container">
-						<button
-							class="btn btn-atlas2 px-5 col-md-5 col-12 mx-1 mr-auto ml-auto mt-2"
-							style="border-radius: 2em;"
-						>
-							<i class="fa fa-star"></i> Com interesse
-						</button>
-						<button
-							class="btn btn-atlas2 px-5 col-md-5 col-12 mx-1 mr-auto ml-auto mt-2"
-							style="border-radius: 2em;"
-						>
-							<i class="fa fa-sign-in-alt text-teca4"></i> Inscrever-me
-						</button>
-					</div>
+					<template v-if="$moment(event.dateEnd).isAfter($moment())">
+						<hr class="bg-atlas1">
+						<div class="row container">
+							<button
+								class="btn btn-atlas2 px-5 col-md-5 col-12 mx-1 mr-auto ml-auto mt-2"
+								style="border-radius: 2em;"
+								:disabled="!btnsEventConditions()"
+							>
+								<i class="fa fa-star"></i> Com interesse
+							</button>
+							<button
+								class="btn btn-atlas2 px-5 col-md-5 col-12 mx-1 mr-auto ml-auto mt-2"
+								style="border-radius: 2em;"
+								:disabled="!btnsEventConditions()"
+							>
+								<i class="fa fa-sign-in-alt text-teca4"></i> Inscrever-me
+							</button>
+						</div>
+					</template>
 				</div>
 			</div>
 		</div>
-		<div class="mt-5" v-if="event.picture.gallery">
+		<div class="mt-5" v-if="event.picture.gallery.length">
 			<TitleAtlas>Galeria</TitleAtlas>
+			<!--
 			<Carousel
 				:margin="30"
 				:nav="false"
@@ -114,23 +119,20 @@
 			>
 				<img
 					v-for="(picture, index) in event.picture.gallery"
-					:key="event.id + '_picture_' + index"
+					:key="event.id + '_picture_' + index + '_' + picture"
 					:src="picture"
 					alt
 				>
 			</Carousel>
+			-->
+			<b-carousel id="picturesCarousel" controls :interval="4000" v-model="slide">
+				<b-carousel-slide
+					v-for="picture in event.picture.gallery"
+					:key="event.id + '_picture_' + picture"
+					:img-src="picture"
+				></b-carousel-slide>
+			</b-carousel>
 		</div>
-		<!--
-		<div class="mt-5" v-if="enrollments">
-			<TitleAtlas>Inscrições - {{ enrollments.length }}</TitleAtlas>
-			<Carousel :margin="30" :nav="false" :center="true" :autoplay="true">
-				<template v-for="enrollment in enrollments">
-					<img :src="getUserById(enrollment.userId).picture" alt="" class="rounded-circle" :key="enrollment.id">
-					<p :key="enrollment.id + 'name'">{{ getUserById(enrollment.userId).username }}</p>
-				</template>
-			</Carousel>
-		</div>
-		-->
 		<div class="mt-5">
 			<TitleAtlas>
 				Discussões
@@ -151,6 +153,27 @@
 			</template>
 			<p v-else>Este evento ainda não possui nenhuma discussão.</p>
 		</div>
+
+		<div class="mt-5">
+			<TitleAtlas>Eventos relacionados</TitleAtlas>
+			<template v-if="windowWidth >= 768">
+				<EventListItem
+					v-for="sugestedEvent in getSugestedEvents"
+					:key="'sugested_event_' + sugestedEvent.id"
+					:event="sugestedEvent"
+					class="mb-1"
+				/>
+			</template>
+			<template v-else>
+				<EventCard
+					v-for="sugestedEvent in getSugestedEvents"
+					:key="'sugested_event_' + sugestedEvent.id"
+					:event="sugestedEvent"
+					class="mb-1"
+				/>
+			</template>
+		</div>
+
 		<b-modal
 			title="Adicionar discussão"
 			header-bg-variant="atlas1"
@@ -161,9 +184,6 @@
 		>
 			<FormDiscussion :eventId="this.event.id"/>
 		</b-modal>
-		<div class="mt-5">
-			<TitleAtlas>Comentários</TitleAtlas>
-		</div>
 		<b-modal
 			title="Editar evento"
 			header-bg-variant="atlas1"
@@ -183,6 +203,8 @@ import Carousel from "vue-owl-carousel"
 import EventDiscussion from "@/components/EventDiscussion.vue"
 import FormDiscussion from "@/components/FormDiscussion.vue"
 import FormEvent from "@/components/FormEvent.vue"
+import EventListItem from "@/components/EventListItem.vue"
+import EventCard from "@/components/EventCard.vue"
 
 import { mapGetters } from "vuex"
 
@@ -193,44 +215,31 @@ export default {
 		Carousel,
 		EventDiscussion,
 		FormDiscussion,
-		FormEvent
+		FormEvent,
+		EventListItem,
+		EventCard
 	},
 	created() {
-		this.event = this.getEventById(parseInt(this.$route.params.id))
-		this.enrollments = this.getEnrollmentsByEventId(this.event.id)
-		this.totalPages =
-			this.event.discussions.length <= this.discussionsPerPage
-				? 1
-				: Math.floor(
-						this.event.discussions.length / this.discussionsPerPage
-				  ) + 1
-
 		this.$store.subscribe(mutation => {
+			if (mutation.type === "EDIT_EVENT_BY_ID") {
+				this.modalEdit = false
+			}
 			if (mutation.type === "CREATE_EVENT_DISCUSSION") {
-				this.totalPages =
-					this.event.discussions.length <= this.discussionsPerPage
-						? 1
-						: Math.floor(
-								this.event.discussions.length /
-									this.discussionsPerPage
-						  ) + 1
 				this.modal = false
 			}
 		})
+		window.addEventListener("resize", this.handleResize)
+		this.handleResize()
 	},
 	data() {
 		return {
-			event: {},
 			modalEdit: false,
-			carouselResponsivity: {
-				0: { items: 1 },
-				768: { items: 2 }
-			},
+			slide: 0,
 			enrollments: [],
 			modal: false,
-			totalPages: 1,
 			currentPage: 1,
-			discussionsPerPage: 5
+			discussionsPerPage: 5,
+			windowWidth: 0
 		}
 	},
 	computed: {
@@ -240,9 +249,19 @@ export default {
 			"getUserById",
 			"getEnrollmentsByEventId",
 			"getLoggedUserId",
-			"getCourseById"
+			"getCourseById",
+			"getEventsByIdsTagsIdsCourses"
 		]),
-
+		event() {
+			return this.getEventById(parseInt(this.$route.params.id))
+		},
+		totalPages() {
+			return this.event.discussions.length <= this.discussionsPerPage
+				? 1
+				: Math.floor(
+						this.event.discussions.length / this.discussionsPerPage
+				  ) + 1
+		},
 		getDiscussionsByPopularity() {
 			return this.event.discussions.sort((a, b) => {
 				if (a.upvotes - a.downvotes < b.upvotes - b.downvotes) {
@@ -273,9 +292,30 @@ export default {
 			} else {
 				return this.event.discussions
 			}
+		},
+		getSugestedEvents() {
+			let events = this.getEventsByIdsTagsIdsCourses(
+				this.event.tags,
+				this.event.coursesIds
+			)
+
+			let index = events.findIndex(event => event === this.event)
+			if (index !== -1) {
+				events.splice(index, 1)
+			}
+
+			events.sort((a, b) => {
+				return 0.5 - Math.random()
+			})
+
+			events.length = events.length > 3 ? 3 : events.length
+			return events
 		}
 	},
 	methods: {
+		handleResize() {
+			this.windowWidth = window.innerWidth
+		},
 		getEventTags() {
 			let tags = []
 			this.event.tags.forEach(tag => {
@@ -295,6 +335,38 @@ export default {
 				if (
 					this.getLoggedUserId === this.event.authorId ||
 					this.getUserById(this.getLoggedUserId).profileId === 3
+				) {
+					return true
+				}
+			}
+			return false
+		},
+		btnRemoveClicked() {
+			this.$vs.dialog({
+				type: "confirm",
+				color: "danger",
+				title: "Remover evento?",
+				acceptText: "Remover",
+				cancelText: "Cancelar",
+				text:
+					"Este evento e todos os dados a este associado serão removidos para sempre.",
+				accept: () => {
+					this.$store.dispatch("removeEventById", this.event.id)
+					this.$snotify.success("Evento removido", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+					this.$router.replace({ name: "events" })
+				}
+			})
+		},
+		btnsEventConditions() {
+			if (this.getLoggedUserId !== -1) {
+				if (
+					this.getLoggedUserId !== this.event.authorId ||
+					this.getUserById(this.getLoggedUserId).profileId !== 3
 				) {
 					return true
 				}

@@ -253,7 +253,10 @@
 				</b-card>
 			</transition-group>
 
-			<button class="btn btn-atlas1 col-12 mt-2" type="submit">Adicionar evento</button>
+			<button
+				class="btn btn-atlas1 col-12 mt-2"
+				type="submit"
+			>{{ !edit ? "Adicionar evento" : "Editar evento" }}</button>
 		</b-form>
 		<vue-snotify></vue-snotify>
 	</div>
@@ -264,6 +267,31 @@ import { mapGetters } from "vuex"
 
 export default {
 	props: ["edit"],
+	watch: {
+		edit: function(newVal, oldVal) {
+			this.name = newVal.name
+			this.selectedCategory = newVal.category
+			this.selectedTags = newVal.tags
+			this.description = newVal.description
+			this.hourStart = newVal.hourStart
+			this.hourEnd = newVal.hourEnd
+			this.duration = newVal.durationDays
+			this.dateStart = newVal.dateStart
+			this.selectedPayment = newVal.paid
+			this.price = newVal.paymentPrice
+			this.classroom = newVal.classroom
+			this.selectedCourses = newVal.coursesIds
+			this.thumbnail = newVal.picture.thumbnail
+			this.poster = newVal.picture.poster.url
+			this.posterOrientation = newVal.picture.poster.orientation
+			this.selectedGallery =
+				newVal.picture.gallery.length > 0 ? true : false
+			this.photoQuantity = newVal.picture.gallery.length
+			this.photos = newVal.picture.gallery.length
+				? newVal.picture.gallery
+				: ["", ""]
+		}
+	},
 	data() {
 		return {
 			name: "",
@@ -402,6 +430,13 @@ export default {
 
 				// clears form
 				this.clearForm()
+
+				this.$snotify.success("Evento adicionado", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
 			} else {
 				this.$snotify.error(
 					"Preencha todos os campos corretamente",
@@ -435,7 +470,7 @@ export default {
 				if (!this.selectedGallery) {
 					this.photos = []
 				}
-				
+
 				this.$store.dispatch("editEventById", {
 					id: this.edit.id,
 					event: {
@@ -460,6 +495,12 @@ export default {
 							gallery: this.photos
 						}
 					}
+				})
+				this.$snotify.success("Evento editado", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
 				})
 			} else {
 				this.$snotify.error(

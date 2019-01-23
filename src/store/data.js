@@ -114,7 +114,12 @@ export default {
         { id: 10, name: "jogos" },
         { id: 11, name: "animação" },
         { id: 12, name: "empresas" },
-        { id: 13, name: "emprego" }
+        { id: 13, name: "emprego" },
+        { id: 14, name: "segurança" },
+        { id: 15, name: "criptografia" },
+        { id: 16, name: "marketing" },
+        { id: 17, name: "administração" },
+        { id: 18, name: "esmad" },
     ],
     events: [
         {
@@ -293,6 +298,110 @@ export default {
                     moment: moment("2018-11-13 12:00")
                 }
             ]
+        },
+        {
+            id: 5,
+            authorId: 1,
+            name: "Segurança em Ambientes Web",
+            category: "Seminário",
+            tags: [1, 2, 14, 15],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "B201",
+            coursesIds: [6],
+            hourStart: "09:30",
+            hourEnd: "11:00",
+            dateStart: "2018-11-30",
+            durationDays: 1,
+            dateEnd: "2018-11-30",
+            picture: {
+                thumbnail: "https://i.imgur.com/9JhwodB.jpg",
+                poster: {
+                    url: "https://www.esmad.ipp.pt/noticias/seminario-seguranca-em-ambientes-web-1/image_preview",
+                    orientation: "Horizontal"
+                },
+                gallery: []
+            },
+            paid: false,
+            paymentPrice: 0,
+            discussions: []
+        },
+        {
+            id: 6,
+            authorId: 1,
+            name: "Desenvolvimento Seguro de Aplicações",
+            category: "Seminário",
+            tags: [1, 2, 14, 15],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "B201",
+            coursesIds: [6],
+            hourStart: "09:30",
+            hourEnd: "11:30",
+            dateStart: "2018-11-16",
+            durationDays: 1,
+            dateEnd: "2018-11-16",
+            picture: {
+                thumbnail: "https://i.imgur.com/U3WyMVC.jpg",
+                poster: {
+                    url: "https://i.imgur.com/U3WyMVC.jpg",
+                    orientation: "Horizontal"
+                },
+                gallery: []
+            },
+            paid: false,
+            paymentPrice: 0,
+            discussions: []
+        },
+        {
+            id: 7,
+            authorId: 1,
+            name: "Criação de um Plano de Marketing Digital",
+            category: "Seminário",
+            tags: [16, 17],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "B201",
+            coursesIds: [6],
+            hourStart: "11:00",
+            hourEnd: "13:00",
+            dateStart: "2018-10-30",
+            durationDays: 1,
+            dateEnd: "2018-10-30",
+            picture: {
+                thumbnail: "https://i.imgur.com/Amc1z6X.jpg",
+                poster: {
+                    url: "https://i.imgur.com/Amc1z6X.jpg",
+                    orientation: "Horizontal"
+                },
+                gallery: []
+            },
+            paid: false,
+            paymentPrice: 0,
+            discussions: []
+        },
+        {
+            id: 8,
+            authorId: 1,
+            name: "Sessão de Abertura 2017/2018",
+            category: "Meeting",
+            tags: [18],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "Auditório",
+            coursesIds: [1, 2, 3, 4, 5, 6, 7],
+            hourStart: "10:00",
+            hourEnd: "17:30",
+            dateStart: "2018-09-26",
+            durationDays: 2,
+            dateEnd: "2018-09-27",
+            picture: {
+                thumbnail: "https://i.imgur.com/CouF1Kf.jpg",
+                poster: {
+                    url: "https://i.imgur.com/peCcoab.jpg",
+                    orientation: "Vertical"
+                },
+                gallery: ["https://i.imgur.com/O7a483t.png"]
+            },
+            paid: false,
+            paymentPrice: 0,
+            discussions: []
         }
     ],
     enrollments: [

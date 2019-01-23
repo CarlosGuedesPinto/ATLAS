@@ -379,16 +379,6 @@ export default {
 		},
 		handleResize() {
 			this.windowWidth = window.innerWidth
-		},
-		verifyImgExists(url, callback) {
-			let img = new Image()
-			img.onerror = function() {
-				callback(false)
-			}
-			img.onload = function() {
-				callback(true)
-			}
-			img.src = url
 		}
 	},
 	computed: {
@@ -552,24 +542,17 @@ export default {
 			}
 		},
 		pictureState() {
-			/*
-			if (!this.picture) {
+			if (!this.picture && !this.attemptSubmit) {
 				return null
-			} else if (this.picture) {
-				let pictureLoaded = false
-				this.verifyImgExists(this.picture, result => {
-					pictureLoaded = result
-				})
-				return pictureLoaded
+			} else if (!this.picture && this.attemptSubmit) {
+				return false
 			} else {
 				return true
 			}
-			*/
-			return true
 		},
 		pictureInvalidFeedback() {
-			if (this.picture && !this.pictureLoaded) {
-				return "Imagem inválida"
+			if (!this.picture && this.attemptSubmit) {
+				return "Introduza o URL da foto de perfil"
 			} else {
 				return null
 			}

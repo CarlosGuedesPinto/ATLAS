@@ -98,14 +98,7 @@ export default new Vuex.Store({
             })
 
             if (events.length) {
-                events.sort((a, b) => {
-                    if (moment(a.dateStart).isAfter(b.dateStart)) {
-                        return 1
-                    } else if (moment(a.dateStart).isBefore(b.dateStart)) {
-                        return -1
-                    }
-                    return 0
-                })
+                events.sort(sortByDateStartCrescent)
             }
 
             return events
@@ -126,10 +119,24 @@ export default new Vuex.Store({
             return description.length <= 100 ? description : description.substr(0, description.indexOf(" ", 250)) + "..."
         },
         getEndedEvents: state => {
-            return state.events.filter(event => moment().diff(event.dateEnd, "days") > 0)
+            let events = state.events.filter(event => moment().diff(event.dateEnd, "days") > 0)
+            events.sort(sortByDateStartDecrescent)
+            return events
+        },
+        getNextEvents: state => {
+            let events = state.events.filter(event => moment().diff(event.dateEnd, "days") <= 0)
+            events.sort(sortByDateStartCrescent)
+            return events
         },
         getEventById: state => id => {
             return state.events.find(event => event.id === id)
+        },
+        getEventsByIdsTagsIdsCourses: state => (idsTags, idsCourses) => {
+            return state.events.filter(event => {
+                let result = true
+                result = (event.tags.some(eventTag => idsTags.some(tag => tag === eventTag)) || event.coursesIds.some(eventCourse => idsCourses.some(course => course === eventCourse))) && result
+                return result
+            })
         },
         getEventClassrooms: state => {
             let classrooms = []
@@ -177,14 +184,13 @@ export default new Vuex.Store({
                 })
             }
             return lastId
-        },
+        }
     },
     mutations: {
         SET_USERS(state, payload) {
             state.users = payload
         },
         USER_LOGGED_IN(state, payload) {
-            //state.users.find(user => user.id === payload.id).lastLogin = payload.lastLogin
             state.loggedUserId = payload
         },
         USER_LOGGED_OUT(state) {
@@ -324,6 +330,10 @@ export default new Vuex.Store({
                 }
             })
         },
+        REMOVE_EVENT_BY_ID(state, payload) {
+            let index = state.events.findIndex(event => event.id === payload)
+            state.events.splice(index, 1)
+        },
         REMOVE_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
                 if (event.id === payload.eventId) {
@@ -420,6 +430,9 @@ export default new Vuex.Store({
         editEventById(context, payload) {
             context.commit("EDIT_EVENT_BY_ID", payload)
         },
+        removeEventById(context, payload) {
+            context.commit("REMOVE_EVENT_BY_ID", payload)
+        },
         setEnrollments(context, payload) {
             context.commit("SET_ENROLLMENTS", payload)
         },
@@ -446,3 +459,21 @@ export default new Vuex.Store({
         }
     }
 })
+
+function sortByDateStartCrescent(a, b) {
+    if (moment(a.dateStart).isAfter(b.dateStart)) {
+        return 1
+    } else if (moment(a.dateStart).isBefore(b.dateStart)) {
+        return -1
+    }
+    return 0
+}
+
+function sortByDateStartDecrescent(a, b) {
+    if (moment(a.dateStart).isAfter(b.dateStart)) {
+        return -1
+    } else if (moment(a.dateStart).isBefore(b.dateStart)) {
+        return 1
+    }
+    return 0
+}
