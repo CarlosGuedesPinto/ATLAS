@@ -5,7 +5,6 @@ import HomeView from "@/views/Home.vue"
 import EventsView from "@/views/Events/Events.vue"
 import EventInfoView from "@/views/Events/EventInfo.vue"
 import EventDiscussionView from "@/views/Events/EventDiscussion.vue"
-import UsersView from "@/views/Users.vue"
 import LoginView from "@/views/Login.vue"
 import SignUpView from "@/views/SignUp.vue"
 import ProfileView from "@/views/Profile.vue"
@@ -54,11 +53,6 @@ const router = new Router({
           path: "evento/:id/discussao/:discussionId",
           name: "eventDiscussion",
           component: EventDiscussionView
-        },
-        {
-          path: "utilizadores",
-          name: "users",
-          component: UsersView
         },
         {
           path: "iniciar-sessao",

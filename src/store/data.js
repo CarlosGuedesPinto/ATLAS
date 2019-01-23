@@ -165,10 +165,10 @@ export default {
                 }
             ],
             enrollments: [
-                {userId: 3, paid: false},
-                {userId: 4, paid: false},
-                {userId: 5, paid: false},
-                {userId: 6, paid: false}
+                { userId: 3, paid: false, moment: moment("2018-11-19 10:10") },
+                { userId: 4, paid: false, moment: moment("2018-11-19 11:10") },
+                { userId: 5, paid: false, moment: moment("2018-11-19 12:10") },
+                { userId: 6, paid: false, moment: moment("2018-11-19 13:10") }
             ]
         },
         {
@@ -214,10 +214,10 @@ export default {
                 }
             ],
             enrollments: [
-                {userId: 3, paid: false},
-                {userId: 4, paid: false},
-                {userId: 5, paid: false},
-                {userId: 6, paid: false}
+                { userId: 3, paid: false, moment: moment("2018-12-10 13:10") },
+                { userId: 4, paid: false, moment: moment("2018-12-10 14:10") },
+                { userId: 5, paid: false, moment: moment("2018-12-10 15:10") },
+                { userId: 6, paid: false, moment: moment("2018-12-10 16:10") }
             ]
         },
         {
@@ -266,8 +266,8 @@ export default {
                 }
             ],
             enrollments: [
-                {userId: 3, paid: false},
-                {userId: 4, paid: false}
+                { userId: 3, paid: false, moment: moment("2019-01-10 13:20") },
+                { userId: 4, paid: false, moment: moment("2019-01-11 22:10") }
             ]
         },
         {
@@ -315,8 +315,8 @@ export default {
                 }
             ],
             enrollments: [
-                {userId: 3, paid: false},
-                {userId: 5, paid: false}
+                { userId: 3, paid: false, moment: moment("2019-01-15 13:10") },
+                { userId: 5, paid: false, moment: moment("2019-01-15 14:10") }
             ]
         },
         {
@@ -345,9 +345,9 @@ export default {
             paymentPrice: 0,
             discussions: [],
             enrollments: [
-                {userId: 3, paid: false},
-                {userId: 4, paid: false},
-                {userId: 5, paid: false}
+                { userId: 3, paid: false, moment: moment("2018-11-29 13:10") },
+                { userId: 4, paid: false, moment: moment("2018-11-29 14:10") },
+                { userId: 5, paid: false, moment: moment("2018-11-29 15:10") }
             ]
         },
         {
@@ -376,8 +376,8 @@ export default {
             paymentPrice: 0,
             discussions: [],
             enrollments: [
-                {userId: 3, paid: false},
-                {userId: 4, paid: false}
+                { userId: 3, paid: false, moment: moment("2018-11-15 15:10") },
+                { userId: 4, paid: false, moment: moment("2018-11-15 16:10") }
             ]
         },
         {
@@ -406,10 +406,10 @@ export default {
             paymentPrice: 0,
             discussions: [],
             enrollments: [
-                {userId: 3, paid: false},
-                {userId: 4, paid: false},
-                {userId: 5, paid: false},
-                {userId: 6, paid: false}
+                { userId: 3, paid: false, moment: moment("2018-10-29 13:10") },
+                { userId: 4, paid: false, moment: moment("2018-10-29 14:10") },
+                { userId: 5, paid: false, moment: moment("2018-10-29 15:10") },
+                { userId: 6, paid: false, moment: moment("2018-10-29 16:10") }
             ]
         },
         {
@@ -438,38 +438,11 @@ export default {
             paymentPrice: 0,
             discussions: [],
             enrollments: [
-                {userId: 3, paid: false},
-                {userId: 4, paid: false},
-                {userId: 5, paid: false},
-                {userId: 6, paid: false}
+                { userId: 3, paid: false, moment: moment("2018-09-20 13:10") },
+                { userId: 4, paid: false, moment: moment("2018-09-20 14:10") },
+                { userId: 5, paid: false, moment: moment("2018-09-20 15:10") },
+                { userId: 6, paid: false, moment: moment("2018-09-20 16:10") }
             ]
-        },
-        {
-            id: 9,
-            authorId: 1,
-            name: "Sessão de Abertura 2017/2018",
-            category: "Meeting",
-            tags: [18],
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            classroom: "Auditório",
-            coursesIds: [1, 2, 3, 4, 5, 6, 7],
-            hourStart: "10:00",
-            hourEnd: "17:30",
-            dateStart: "2019-01-23",
-            durationDays: 1,
-            dateEnd: "2019-01-23",
-            picture: {
-                thumbnail: "https://i.imgur.com/CouF1Kf.jpg",
-                poster: {
-                    url: "https://i.imgur.com/peCcoab.jpg",
-                    orientation: "Vertical"
-                },
-                gallery: ["https://i.imgur.com/O7a483t.png"]
-            },
-            paid: false,
-            paymentPrice: 0,
-            discussions: [],
-            enrollments: []
         }
     ]
 }

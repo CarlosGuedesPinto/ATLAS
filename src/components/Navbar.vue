@@ -18,11 +18,6 @@
 							class="nav-link"
 							:class="{'active-route': isActive('events')}"
 						>Eventos</router-link>
-						<router-link
-							:to="{name: 'users'}"
-							class="nav-link"
-							:class="{'active-route': isActive('users')}"
-						>Utilizadores</router-link>
 					</b-navbar-nav>
 
 					<b-navbar-nav class="ml-auto">

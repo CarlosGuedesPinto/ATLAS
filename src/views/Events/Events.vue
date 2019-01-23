@@ -116,9 +116,14 @@
 		<div v-if="!filtering">
 			<div class="pt-5">
 				<TitleAtlas>Próximos eventos</TitleAtlas>
-				<Carousel :margin="30" :nav="false" :responsive="carouselResponsivity">
-					<EventCard v-for="event in getNextEvents" :key="event.id" :event="event"/>
-				</Carousel>
+				<template v-if="windowWidth >= 768">
+					<EventListItem v-for="event in getNextEvents" :key="event.id" :event="event"/>
+				</template>
+				<template v-else>
+					<Carousel :margin="30" :nav="false" :responsive="carouselResponsivity">
+						<EventCard v-for="event in getNextEvents" :key="event.id" :event="event"/>
+					</Carousel>
+				</template>
 			</div>
 			<div class="pt-5">
 				<TitleAtlas>Eventos anteriores</TitleAtlas>
@@ -221,7 +226,7 @@ export default {
 		}
 	},
 	beforeRouteUpdate(to, from, next) {
-		if(to.name === "events" && to.query) {
+		if (to.name === "events" && to.query) {
 			if (to.query.tags) {
 				let tags = to.query.tags.split("_")
 				let tagIds = []

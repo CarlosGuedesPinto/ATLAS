@@ -41,6 +41,13 @@ export default new Vuex.Store({
         getUsers: state => {
             return state.users
         },
+        getUserEnrollmentsByUserId: state => userId => {
+            let events = state.events.filter(event =>
+                event.enrollments.some(enrollment => enrollment.userId === userId)
+            )
+            events.sort(sortByDateStartDecrescent)
+            return events
+        },
         getCourses: state => {
             return state.courses
         },

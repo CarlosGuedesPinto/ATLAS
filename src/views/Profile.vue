@@ -52,8 +52,7 @@
 					:title="interestedTags().length > 1 ? 'Tags' : 'Tag'"
 					:subtitle="interestedTags().join(' ')"
 					v-if="interestedTags().length"
-				>
-				</vs-list-item>
+				></vs-list-item>
 				<vs-list-item
 					icon="school"
 					:title="interestedCourses().length > 1 ? 'Cursos' : 'Curso'"
@@ -61,11 +60,8 @@
 					v-if="interestedCourses().length"
 				></vs-list-item>
 			</vs-list>
-			<p
-				v-else
-			>Recomendamos selecionar tags e cursos de interesse, para que possamos mostrar-lhe os eventos de seu gosto.</p>
+			<p v-else>Nenhum interesse selecionado.</p>
 		</div>
-
 		<div class="mt-5" v-if="user.profileId !== 1">
 			<TitleAtlas>Eventos criados - {{ getEventsByAuthorId(user.id).length }}</TitleAtlas>
 			<template v-if="windowWidth >= 768">
@@ -84,6 +80,28 @@
 					class="mb-1"
 				/>
 			</template>
+		</div>
+		<div v-if="user.profileId !== 3 && getUserEnrollmentsByUserId(user.id).length" class="mt-5">
+			<TitleAtlas>Eventos inscrito - {{ getUserEnrollmentsByUserId(user.id).length }}</TitleAtlas>
+			<template v-if="windowWidth >= 768">
+				<EventListItem
+					v-for="event in getEventsBySelectedPage"
+					:key="event.id"
+					:event="event"
+					class="mb-1"
+				/>
+			</template>
+			<template v-else>
+				<EventCard
+					v-for="event in getEventsBySelectedPage"
+					:key="event.id"
+					:event="event"
+					class="mb-1"
+				/>
+			</template>
+			<div class="mt-3" v-if="getUserEnrollmentsByUserId(user.id).length > eventsPerPage">
+				<vs-pagination :total="totalPages" v-model="currentPage"/>
+			</div>
 		</div>
 
 		<b-modal
@@ -138,7 +156,9 @@ export default {
 		return {
 			modalProfile: false,
 			modalInterests: false,
-			windowWidth: 0
+			windowWidth: 0,
+			eventsPerPage: 5,
+			currentPage: 1
 		}
 	},
 	methods: {
@@ -226,10 +246,33 @@ export default {
 			"getCourseById",
 			"getLoggedUserId",
 			"getUserById",
-			"getEventsByAuthorId"
+			"getEventsByAuthorId",
+			"getUserEnrollmentsByUserId"
 		]),
 		user() {
 			return this.getUserByUsername(this.$route.params.username)
+		},
+		totalPages() {
+			return this.getUserEnrollmentsByUserId(this.user.id).length <=
+				this.eventsPerPage
+				? 1
+				: Math.floor(
+						this.getUserEnrollmentsByUserId(this.user.id).length /
+							this.eventsPerPage
+				  ) + 1
+		},
+		getEventsBySelectedPage() {
+			if (
+				this.getUserEnrollmentsByUserId(this.user.id).length >
+				this.eventsPerPage
+			) {
+				return this.getUserEnrollmentsByUserId(this.user.id).slice(
+					(this.currentPage - 1) * this.eventsPerPage,
+					this.eventsPerPage * this.currentPage
+				)
+			} else {
+				return this.getUserEnrollmentsByUserId(this.user.id)
+			}
 		}
 	}
 }

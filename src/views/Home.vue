@@ -11,7 +11,7 @@
 				</Carousel>
 			</template>
 		</div>
-		<div v-if="getLoggedUserId !== -1" class="mt-5">
+		<div v-if="getLoggedUserId !== -1" :class="getTodayEvents.length ? 'mt-5' : ''">
 			<template
 				v-if="getNextEventsByIdsTagsIdsCourses(getUserById(getLoggedUserId).interests.tags, getUserById(getLoggedUserId).interests.courses).length"
 			>
@@ -43,7 +43,7 @@
 				</template>
 			</template>
 		</div>
-		<div class="mt-5" v-else>
+		<div :class="getTodayEvents.length ? 'mt-5' : ''" v-else>
 			<TitleAtlas>Próximos eventos</TitleAtlas>
 			<template v-for="event in getNextEvents">
 				<template v-if="$moment(event.dateStart).isAfter($moment())">
@@ -57,25 +57,32 @@
 			</template>
 		</div>
 		<div class="mt-5" v-if="getTopUsersEnrolledEvents.length">
-			<TitleAtlas>TOP {{ getTopUsersEnrolledEvents.length >= 5 ? "5" : getTopUsersEnrolledEvents.length }} utilizadores que mais frequentam eventos</TitleAtlas>
+			<TitleAtlas>TOP {{ getTopUsersEnrolledEvents.length >= 4 ? "4" : getTopUsersEnrolledEvents.length }} inscrições em eventos</TitleAtlas>
 			<div class="row text-center">
-				<div v-for="(user, index) in getTopUsersEnrolledEvents" class="col-lg-3 col-md-6 col-12" :key="'user_' + user.id">
-					<div v-if="index <= 4">
-						<img
-							:src="getUserById(user.id).picture"
-							alt
-							class="rounded-circle img-thumbnail"
-							style="max-width: 200px; max-height: 200px;"
+				<div
+					v-for="(user, index) in getTopUsersEnrolledEvents"
+					class="col-lg-3 col-md-6 col-12 mb-4"
+					:key="'user_' + user.id"
+				>
+					<template v-if="index <= 3" class="mt-5">
+						<router-link
+							class="text-atlas2"
+							:to="{ name: 'profile', params: { username: getUserById(user.id).username } }"
 						>
-						<br>
+							<img
+								:src="getUserById(user.id).picture"
+								class="rounded-circle img-thumbnail"
+								style="max-width: 200px; max-height: 200px;"
+							>
+						</router-link>
+						<h5>{{ user.amount }} inscrições</h5>
 						<div>
-							<span>{{ index + 1 }} {{ getUserById(user.id).gender === 1 ? "º" : "ª" }} - </span>
 							<router-link
 								class="text-atlas2"
 								:to="{ name: 'profile', params: { username: getUserById(user.id).username } }"
 							>@{{ getUserById(user.id).username }}</router-link>
 						</div>
-					</div>
+					</template>
 				</div>
 			</div>
 		</div>
