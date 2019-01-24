@@ -20,4 +20,7 @@ export default {
 .view {
 	margin-top: 100px;
 }
+tr:hover {
+	cursor: pointer;
+}
 </style>

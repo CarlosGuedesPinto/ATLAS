@@ -156,6 +156,23 @@ import { mapGetters } from "vuex"
 export default {
 	name: "FormCreateAccount",
 	props: ["backoffice", "editProfile", "editInterests"],
+	watch: {
+		editProfile: function(newVal, oldVal) {
+			this.name = newVal.name
+			this.username = newVal.username
+			this.password = newVal.password
+			this.confirmPassword = newVal.password
+			this.email = newVal.email
+			this.picture = newVal.picture
+			this.selectedGender = newVal.gender
+			this.selectedUserType = newVal.profileId
+		},
+		editInterests: function(newVal, oldVal) {
+			this.filterTags = ""
+			this.selectedTags = newVal.interests.tags
+			this.selectedCourses = newVal.interests.courses
+		},
+	},
 	data() {
 		return {
 			name: "",

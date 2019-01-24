@@ -425,7 +425,7 @@ export default {
             hourEnd: "17:30",
             dateStart: "2018-09-23",
             durationDays: 2,
-            dateEnd: "2018-09-27",
+            dateEnd: "2018-09-24",
             picture: {
                 thumbnail: "https://i.imgur.com/CouF1Kf.jpg",
                 poster: {
@@ -433,6 +433,38 @@ export default {
                     orientation: "Vertical"
                 },
                 gallery: ["https://i.imgur.com/O7a483t.png"]
+            },
+            paid: false,
+            paymentPrice: 0,
+            discussions: [],
+            enrollments: [
+                { userId: 3, paid: false, moment: moment("2018-09-20 13:10") },
+                { userId: 4, paid: false, moment: moment("2018-09-20 14:10") },
+                { userId: 5, paid: false, moment: moment("2018-09-20 15:10") },
+                { userId: 6, paid: false, moment: moment("2018-09-20 16:10") }
+            ]
+        },
+        {
+            id: 9,
+            authorId: 1,
+            name: "Game Over Video Game Mapping",
+            category: "Exposição",
+            tags: [5, 6, 10, 11],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "Associação de Estudantes",
+            coursesIds: [4],
+            hourStart: "10:00",
+            hourEnd: "17:30",
+            dateStart: "2018-01-24",
+            durationDays: 1,
+            dateEnd: "2018-01-24",
+            picture: {
+                thumbnail: "https://i.imgur.com/tS4md97.jpg",
+                poster: {
+                    url: "https://i.imgur.com/3b8a031.jpg",
+                    orientation: "Vertical"
+                },
+                gallery: []
             },
             paid: false,
             paymentPrice: 0,

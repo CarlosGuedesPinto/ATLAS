@@ -18,7 +18,7 @@
 					v-model="selectedCategory"
 					:options="categories"
 					name="categories"
-					:stacked="windowWidth < 850 ? true : false"
+					:stacked="windowWidth < 1000 ? true : false"
 				/>
 			</b-form-group>
 			<b-form-group label="Tags" :state="tagsState" :invalid-feedback="tagsInvalidFeedback">
@@ -128,6 +128,7 @@
 			>
 				<b-form-select v-model="classroom" :state="classroomState">
 					<option :value="null">Selecione uma sala</option>
+					<option value="Associação de Estudantes">Associação de Estudantes</option>
 					<option value="Auditório">Auditório</option>
 					<optgroup label="Piso 0">
 						<option value="Anfiteatro Joaquim Ribeiro">Anfiteatro Joaquim Ribeiro</option>
@@ -301,7 +302,8 @@ export default {
 				"Seminário",
 				"Workshop",
 				"Conferência",
-				"Meeting"
+				"Meeting",
+				"Exposição"
 			],
 			selectedTags: [],
 			tags: [],

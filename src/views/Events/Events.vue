@@ -53,7 +53,14 @@
 								<b-form-select v-model="classroom">
 									<option value>Selecione uma sala</option>
 									<template v-if="classrooms.length">
-										<option value="Auditório">Auditório</option>
+										<option
+											value="Associação de Estudantes"
+											v-if="classrooms.some(classroom => classroom === 'Associação de Estudantes')"
+										>Associação de Estudantes</option>
+										<option
+											value="Auditório"
+											v-if="classrooms.some(classroom => classroom === 'Auditório')"
+										>Auditório</option>
 										<optgroup label="Piso 0" v-if="classroomFloorCondition('Piso 0')">
 											<option
 												value="Anfiteatro Joaquim Ribeiro"
