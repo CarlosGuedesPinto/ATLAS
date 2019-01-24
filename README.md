@@ -1,4 +1,4 @@
-# <p align="center"><img src="https://i.imgur.com/ioaaQR9.png" alt="Vue logo"></p>
+# <p align="center"><img src="https://i.imgur.com/ioaaQR9.png" alt="Vue logo" width="500"></p>
 Este projeto é uma aplicação web desenvolvida ao longo do 1º semestre do 2º ano do curso de [Tecnologias e Sistemas de Informação para a Web](https://www.esmad.ipp.pt/cursos/licenciatura/400001419), na [ESMAD](https://www.esmad.ipp.pt/), para a unidade curricular de Programação Web I. A aplicação tem em foco a [Unidade de Apoio de Comunicação e Imagem da ESMAD](https://www.esmad.ipp.pt/esmad/unidades_apoio/comunicacao_desenvolvimento/cimagem), que é responsável por propor, manter e difundir a imagem institucional.
 
 ### Mockups
