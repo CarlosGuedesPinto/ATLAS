@@ -19,6 +19,12 @@
 					:class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-4 col-md-5 col-6' : 'col-lg-6 col-12'"
 				>
 					<img :src="event.picture.poster.url" class="img-fluid img-thumbnail">
+					<img
+						:src="`https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=http://localhost:8080/evento/${event.id}?inscrever=sim`"
+						alt
+						style="position: absolute; top: 5px;"
+						:style="windowWidth >= 1200 ? 'right: 310px;' : (windowWidth >= 992 ? 'right: 250px;' : (windowWidth >= 768 ? 'right: 230px;' : 'right: 200px;'))"
+					>
 				</div>
 				<div :class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-8 col-12' : 'col-12'">
 					<div>
@@ -98,7 +104,7 @@
 							class="btn btn-atlas2 px-5 col-12 mr-auto ml-auto mt-2"
 							style="border-radius: 2em;"
 							:disabled="btnEnrollmentConditions()"
-							@click="btnEnrollmentClicked()"
+							@click="enroll()"
 						>
 							<i
 								class="fa text-teca4"
@@ -284,7 +290,52 @@ export default {
 		EventListItem,
 		EventCard
 	},
+	beforeRouteUpdate(to, from, next) {
+		if (to.name === "eventsInfo" && to.query.inscrever === "sim") {
+			this.enroll()
+		}
+		next()
+	},
 	created() {
+		if (
+			this.$route.name === "eventsInfo" &&
+			this.$route.query.inscrever === "sim"
+		) {
+			if (
+				this.$moment(
+					this.event.dateEnd + " " + this.event.hourEnd
+				).isSameOrAfter(this.$moment().format("YYYY-MM-DD HH:mm"))
+			) {
+				if (
+					this.event.enrollments.some(
+						enrollment => enrollment.userId === this.getLoggedUserId
+					)
+				) {
+					this.$vs.dialog({
+						type: "confirm",
+						color: "primary",
+						title: "Já se encontra inscrito",
+						acceptText: "Entendido",
+						cancelText: "",
+						text: `Já efetuou inscrição no evento ${
+							this.event.name
+						}.`
+					})
+				} else {
+					this.enroll()
+				}
+			} else {
+				this.$vs.dialog({
+					type: "confirm",
+					color: "danger",
+					title: "Inscrições fechadas",
+					acceptText: "Entendido",
+					cancelText: "",
+					text:
+						"Este evento já ocorreu, portanto tem as inscrições fechadas."
+				})
+			}
+		}
 		this.$store.subscribe(mutation => {
 			if (mutation.type === "EDIT_EVENT_BY_ID") {
 				this.modalEdit = false
@@ -448,66 +499,114 @@ export default {
 			}
 			return true
 		},
-		btnEnrollmentClicked() {
-			if (
-				!this.event.enrollments.some(
-					enrollment => enrollment.userId === this.getLoggedUserId
-				)
-			) {
-				this.$store.dispatch("addEventEnrollmentByEventId", {
-					eventId: this.event.id,
-					enrollment: {
-						userId: this.getLoggedUserId,
-						moment: this.$moment(),
-						paid: false
+		enroll() {
+			if (this.getLoggedUserId === -1) {
+				this.$vs.dialog({
+					type: "confirm",
+					color: "primary",
+					title: "Inicie sessão",
+					acceptText: "Iniciar sessão",
+					cancelText: "Cancelar",
+					text: `Deve iniciar sessão para poder inscrever-se no evento ${
+						this.event.name
+					}.`,
+					accept: () => {
+						this.$router.push({ name: "login" })
 					}
 				})
-				if (this.event.paid) {
+			} else {
+				if (this.getUserById(this.getLoggedUserId).profileId === 3) {
 					this.$vs.dialog({
 						type: "confirm",
-						color: "primary",
-						title: "Efetuar pagamento",
+						color: "danger",
+						title: "Erro",
 						acceptText: "Entendido",
 						cancelText: "",
-						text: `Dirija-se junto ao proponente de evento para efetuar o pagamento da inscrição (${
-							this.event.paymentPrice
-						} €).`,
-						accept: () => {
-							this.$snotify.success("Inscrição efetuada", "", {
-								timeout: 2000,
-								showProgressBar: false,
-								closeOnClick: true,
-								pauseOnHover: true
-							})
-						},
-						cancel: () => {
-							this.$snotify.success("Inscrição efetuada", "", {
-								timeout: 2000,
-								showProgressBar: false,
-								closeOnClick: true,
-								pauseOnHover: true
-							})
-						}
+						text:
+							"Administradores não se podem inscrever em eventos."
 					})
 				} else {
-					this.$snotify.success("Inscrição efetuada", "", {
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					})
+					if (
+						!this.event.enrollments.some(
+							enrollment =>
+								enrollment.userId === this.getLoggedUserId
+						)
+					) {
+						this.$store.dispatch("addEventEnrollmentByEventId", {
+							eventId: this.event.id,
+							enrollment: {
+								userId: this.getLoggedUserId,
+								moment: this.$moment(),
+								paid: false
+							}
+						})
+						if (this.event.paid) {
+							this.$vs.dialog({
+								type: "confirm",
+								color: "primary",
+								title: "Efetuar pagamento",
+								acceptText: "Entendido",
+								cancelText: "",
+								text: `Dirija-se junto ao proponente de evento para efetuar o pagamento da inscrição (${
+									this.event.paymentPrice
+								} €).`,
+								accept: () => {
+									this.$snotify.success(
+										"Inscrição efetuada",
+										"",
+										{
+											timeout: 2000,
+											showProgressBar: false,
+											closeOnClick: true,
+											pauseOnHover: true
+										}
+									)
+								},
+								cancel: () => {
+									this.$snotify.success(
+										"Inscrição efetuada",
+										"",
+										{
+											timeout: 2000,
+											showProgressBar: false,
+											closeOnClick: true,
+											pauseOnHover: true
+										}
+									)
+								}
+							})
+						} else {
+							this.$vs.dialog({
+								type: "confirm",
+								color: "primary",
+								title: "Inscrição efetuada",
+								acceptText: "Entendido",
+								cancelText: "",
+								text: `A sua inscrição no evento ${
+									this.event.name
+								} foi efetuada com sucesso.`
+							})
+						}
+					} else {
+						this.$store.dispatch(
+							"removeEventEnrollmentByEventIdUserId",
+							{
+								eventId: this.event.id,
+								userId: this.getLoggedUserId
+							}
+						)
+						this.$vs.dialog({
+							type: "confirm",
+							color: "primary",
+							title: "Inscrição removida",
+							acceptText: "Entendido",
+							cancelText: "",
+							text: `A sua inscrição no evento ${
+								this.event.name
+							} foi removida com sucesso.`
+						})
+					}
 				}
-			} else {
-				this.$store.dispatch("removeEventEnrollmentByEventIdUserId", {
-					eventId: this.event.id,
-					userId: this.getLoggedUserId
-				})
-				this.$snotify.success("Inscrição removida", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
 			}
 		},
 		btnValidatePaymentClicked(userId) {},

@@ -173,9 +173,8 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.matched.some(m => m.meta.requiresNotAuth) && loggedUserId !== -1) {
     next({ name: "home" })
-  } else {
-    next()
-  }
+  } 
+  next()
 })
 
 export default router
