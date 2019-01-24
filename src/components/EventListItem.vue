@@ -8,9 +8,9 @@
 		</router-link>
 		<div class="bg-atlas2 py-2 col-xl-9 col-lg-8 col-6">
 			<router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
-				<h5 class="text-white">
-					<b class="text-atlas1" style="font-weight: bold;">[{{ event.category }}]</b>
-					{{ event.name }}
+				<h5 class="text-white atlas-bold">
+					<b class="text-atlas1">[{{ event.category }}]</b>
+					<span class="atlas-semi-bold ml-1">{{ event.name }}</span>
 				</h5>
 			</router-link>
 			<div class="text-atlas3 event-card-body">

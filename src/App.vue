@@ -132,4 +132,10 @@ export default {
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
     background-color: #00225B;
 }
+.atlas-bold {
+	font-weight: 600;
+}
+.atlas-semi-bold {
+	font-weight: 500;
+}
 </style>
