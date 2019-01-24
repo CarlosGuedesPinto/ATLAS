@@ -602,7 +602,3 @@ export default {
 	}
 }
 </script>
-
-<style lang="scss">
-@import "../../../node_modules/@voerro/vue-tagsinput/dist/style.css";
-</style>

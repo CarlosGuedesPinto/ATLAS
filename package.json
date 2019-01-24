@@ -9,7 +9,6 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "@voerro/vue-tagsinput": "^1.11.1",
     "bootstrap": "^4.1.3",
     "bootstrap-vue": "^2.0.0-rc.11",
     "express": "^4.16.4",

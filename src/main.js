@@ -7,8 +7,6 @@ import Snotify from 'vue-snotify'
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css'
 import 'material-icons/iconfont/material-icons.css'
-import VoerroTagsInput from '@voerro/vue-tagsinput'
-
 
 const moment = require("moment")
 require("moment/locale/pt")
@@ -16,8 +14,6 @@ require("moment/locale/pt")
 Vue.use(require("vue-moment"), {
     moment
 })
-Vue.component('tags-input', VoerroTagsInput)
-
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
