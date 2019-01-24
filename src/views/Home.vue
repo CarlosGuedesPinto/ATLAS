@@ -34,7 +34,7 @@
 				<template v-for="event in getNextEvents">
 					<template v-if="$moment(event.dateStart).isAfter($moment())">
 						<template v-if="windowWidth >= 768">
-							<EventListItem :key="event.id" :event="event"/>
+							<EventListItem :key="event.id" :event="event" class="mb-1"/>
 						</template>
 						<template v-else>
 							<EventCard :key="event.id" :event="event" class="mb-1"/>
@@ -48,7 +48,7 @@
 			<template v-for="event in getNextEvents">
 				<template v-if="$moment(event.dateStart).isAfter($moment())">
 					<template v-if="windowWidth >= 768">
-						<EventListItem :key="event.id" :event="event"/>
+						<EventListItem :key="event.id" :event="event" class="mb-1"/>
 					</template>
 					<template v-else>
 						<EventCard :key="event.id" :event="event" class="mb-1"/>

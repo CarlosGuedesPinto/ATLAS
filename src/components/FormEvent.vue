@@ -427,7 +427,8 @@ export default {
 						},
 						gallery: this.photos
 					},
-					discussions: []
+					discussions: [],
+					enrollments: []
 				})
 
 				// clears form

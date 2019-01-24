@@ -164,19 +164,20 @@ export default new Vuex.Store({
 
             state.users.forEach(user => {
                 state.events.forEach(event => {
-                    event.enrollments.forEach(enrollment => {
-                        if (user.id === enrollment.userId) {
-
-                            if (!users.some(user => user.id === enrollment.userId)) {
-                                users.push({
-                                    id: user.id,
-                                    amount: 1
-                                })
-                            } else {
-                                users.find(user => user.id === enrollment.userId).amount++
+                    if (event.enrollments.length) {
+                        event.enrollments.forEach(enrollment => {
+                            if (user.id === enrollment.userId) {
+                                if (!users.some(user => user.id === enrollment.userId)) {
+                                    users.push({
+                                        id: user.id,
+                                        amount: 1
+                                    })
+                                } else {
+                                    users.find(user => user.id === enrollment.userId).amount++
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
                 })
             })
 
