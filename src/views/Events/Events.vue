@@ -124,7 +124,7 @@
 			<div class="pt-5">
 				<TitleAtlas>Próximos eventos</TitleAtlas>
 				<template v-if="windowWidth >= 768">
-					<EventListItem v-for="event in getNextEvents" :key="event.id" :event="event"/>
+					<EventListItem v-for="event in getNextEvents" :key="event.id" :event="event" class="mb-1"/>
 				</template>
 				<template v-else>
 					<Carousel :margin="30" :nav="false" :responsive="carouselResponsivity">

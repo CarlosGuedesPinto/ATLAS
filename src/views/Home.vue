@@ -3,7 +3,7 @@
 		<div v-if="getTodayEvents.length">
 			<TitleAtlas>Eventos hoje</TitleAtlas>
 			<template v-if="windowWidth >= 768">
-				<EventListItem v-for="event in getTodayEvents" :key="event.id" :event="event"/>
+				<EventListItem v-for="event in getTodayEvents" :key="event.id" :event="event" class="mb-1"/>
 			</template>
 			<template v-else>
 				<Carousel :margin="30" :nav="false" :responsive="carouselResponsivity">

@@ -68,12 +68,7 @@
 				>
 					<b-form-input id="email" :state="emailState" v-model="email" type="email"></b-form-input>
 				</b-form-group>
-				<b-form-group
-					label-for="picture"
-					:invalid-feedback="pictureInvalidFeedback"
-					:state="pictureState"
-					class="mt-4"
-				>
+				<b-form-group label-for="picture" :state="pictureState" class="mt-4">
 					<template slot="label">
 						<span>URL foto -</span>
 						<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
@@ -171,7 +166,7 @@ export default {
 			this.filterTags = ""
 			this.selectedTags = newVal.interests.tags
 			this.selectedCourses = newVal.interests.courses
-		},
+		}
 	},
 	data() {
 		return {
@@ -250,8 +245,7 @@ export default {
 				this.usernameState &&
 				this.passwordState &&
 				this.confirmPasswordState &&
-				this.emailState &&
-				this.pictureState
+				this.emailState
 			) {
 				this.$store.dispatch("signUp", {
 					id: this.getLastUserId + 1,
@@ -261,7 +255,9 @@ export default {
 					email: this.email,
 					name: this.name,
 					picture: !this.picture
-						? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
+						? this.selectedGender === 1
+							? "https://i.imgur.com/uUbH9go.png"
+							: "https://i.imgur.com/moL2juW.png"
 						: this.picture,
 					gender: this.selectedGender,
 					accountCreation: {
@@ -283,8 +279,7 @@ export default {
 				this.nameState &&
 				this.usernameState &&
 				this.passwordState &&
-				this.emailState &&
-				this.pictureState
+				this.emailState
 			) {
 				this.$store.dispatch("createAccount", {
 					id: this.getLastUserId + 1,
@@ -294,7 +289,9 @@ export default {
 					email: this.email,
 					name: this.name,
 					picture: !this.picture
-						? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
+						? this.selectedGender === 1
+							? "https://i.imgur.com/uUbH9go.png"
+							: "https://i.imgur.com/moL2juW.png"
 						: this.picture,
 					gender: this.selectedGender,
 					accountCreation: {
@@ -324,8 +321,7 @@ export default {
 				this.usernameState &&
 				this.passwordState &&
 				this.confirmPasswordState &&
-				this.emailState &&
-				this.pictureState
+				this.emailState
 			) {
 				this.$router.replace({
 					name: "profile",
@@ -339,7 +335,9 @@ export default {
 					email: this.email,
 					name: this.name,
 					picture: !this.picture
-						? "https://imgix.ranker.com/user_node_img/50025/1000492230/original/brandon-stark-tv-characters-photo-u1?w=650&q=50&fm=jpg&fit=crop&crop=faces"
+						? this.selectedGender === 1
+							? "https://i.imgur.com/uUbH9go.png"
+							: "https://i.imgur.com/moL2juW.png"
 						: this.picture,
 					gender: this.selectedGender
 				})
@@ -559,19 +557,10 @@ export default {
 			}
 		},
 		pictureState() {
-			if (!this.picture && !this.attemptSubmit) {
+			if (!this.picture) {
 				return null
-			} else if (!this.picture && this.attemptSubmit) {
-				return false
 			} else {
 				return true
-			}
-		},
-		pictureInvalidFeedback() {
-			if (!this.picture && this.attemptSubmit) {
-				return "Introduza o URL da foto de perfil"
-			} else {
-				return null
 			}
 		},
 		getFilteredTags() {

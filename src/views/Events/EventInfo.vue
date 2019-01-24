@@ -92,7 +92,7 @@
 							Preço de inscrição {{ event.paymentPrice }} €
 						</div>
 					</div>
-					<template v-if="$moment(event.dateEnd).isAfter($moment())">
+					<template v-if="$moment(event.dateEnd).isSameOrAfter($moment().format('YYYY-MM-DD'))">
 						<hr class="bg-atlas1">
 						<button
 							class="btn btn-atlas2 px-5 col-12 mr-auto ml-auto mt-2"
@@ -192,7 +192,10 @@
 				type="text"
 			></b-form-input>
 			<hr>
-			<div v-for="(enrollment, index) in getFilteredEnrollments" :key="'enrollment_' + enrollment.userId">
+			<div
+				v-for="(enrollment, index) in getFilteredEnrollments"
+				:key="'enrollment_' + enrollment.userId"
+			>
 				<div class="text-center">
 					<router-link
 						class="text-atlas2 ml-2"
@@ -224,7 +227,8 @@
 							{{ !enrollment.paid ? 'Validar pagamento' : 'Remover pagamento' }}
 						</button>
 						<button
-							class="btn btn-danger col-12 col-sm-6 mr-auto"
+							class="btn btn-danger"
+							:class="event.paid ? 'col-12 col-sm-6 mr-auto' : 'col-6 ml-auto mr-3'"
 							@click="btnRemoveEnrollmentClicked(enrollment.userId)"
 							:disabled="enrollment.paid"
 						>
@@ -377,7 +381,9 @@ export default {
 			if (!this.enrollmentsFilter) return this.event.enrollments
 
 			return this.event.enrollments.filter(enrollment =>
-				this.getUserById(enrollment.userId).username.toLowerCase().includes(this.enrollmentsFilter.toLowerCase())
+				this.getUserById(enrollment.userId)
+					.username.toLowerCase()
+					.includes(this.enrollmentsFilter.toLowerCase())
 			)
 		}
 	},

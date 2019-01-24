@@ -119,7 +119,7 @@ export default {
         { id: 15, name: "criptografia" },
         { id: 16, name: "marketing" },
         { id: 17, name: "administração" },
-        { id: 18, name: "esmad" },
+        { id: 18, name: "esmad" }
     ],
     events: [
         {
@@ -267,7 +267,8 @@ export default {
             ],
             enrollments: [
                 { userId: 3, paid: false, moment: moment("2019-01-10 13:20") },
-                { userId: 4, paid: false, moment: moment("2019-01-11 22:10") }
+                { userId: 4, paid: false, moment: moment("2019-01-11 22:10") },
+                { userId: 6, paid: false, moment: moment("2019-01-11 23:10") }
             ]
         },
         {
@@ -316,7 +317,8 @@ export default {
             ],
             enrollments: [
                 { userId: 3, paid: false, moment: moment("2019-01-15 13:10") },
-                { userId: 5, paid: false, moment: moment("2019-01-15 14:10") }
+                { userId: 5, paid: false, moment: moment("2019-01-15 14:10") },
+                { userId: 6, paid: false, moment: moment("2019-01-15 23:10") }
             ]
         },
         {
@@ -453,11 +455,11 @@ export default {
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
             classroom: "Associação de Estudantes",
             coursesIds: [4],
-            hourStart: "10:00",
-            hourEnd: "17:30",
-            dateStart: "2018-01-24",
+            hourStart: "17:30",
+            hourEnd: "18:30",
+            dateStart: "2019-01-24",
             durationDays: 1,
-            dateEnd: "2018-01-24",
+            dateEnd: "2019-01-24",
             picture: {
                 thumbnail: "https://i.imgur.com/tS4md97.jpg",
                 poster: {
@@ -469,11 +471,66 @@ export default {
             paid: false,
             paymentPrice: 0,
             discussions: [],
+            enrollments: []
+        },
+        {
+            id: 10,
+            authorId: 1,
+            name: "A Reclamação",
+            category: "Exposição",
+            tags: [4],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "B301",
+            coursesIds: [1, 2],
+            hourStart: "16:00",
+            hourEnd: "17:00",
+            dateStart: "2019-01-22",
+            durationDays: 1,
+            dateEnd: "2019-01-22",
+            picture: {
+                thumbnail: "https://i.imgur.com/GHeJROB.jpg",
+                poster: {
+                    url: "https://i.imgur.com/Tmp9d9C.jpg",
+                    orientation: "Vertical"
+                },
+                gallery: []
+            },
+            paid: false,
+            paymentPrice: 0,
+            discussions: [],
             enrollments: [
-                { userId: 3, paid: false, moment: moment("2018-09-20 13:10") },
-                { userId: 4, paid: false, moment: moment("2018-09-20 14:10") },
-                { userId: 5, paid: false, moment: moment("2018-09-20 15:10") },
-                { userId: 6, paid: false, moment: moment("2018-09-20 16:10") }
+                { userId: 3, paid: false, moment: moment("2019-01-20 13:10") },
+                { userId: 6, paid: false, moment: moment("2019-01-20 16:10") }
+            ]
+        },
+        {
+            id: 11,
+            authorId: 1,
+            name: "Prólogo",
+            category: "Exposição",
+            tags: [3, 4],
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            classroom: "B201",
+            coursesIds: [1],
+            hourStart: "16:00",
+            hourEnd: "17:00",
+            dateStart: "2019-01-23",
+            durationDays: 1,
+            dateEnd: "2019-01-23",
+            picture: {
+                thumbnail: "https://i.imgur.com/4w6Yshl.jpg",
+                poster: {
+                    url: "https://i.imgur.com/Jrm27bx.jpg",
+                    orientation: "Vertical"
+                },
+                gallery: []
+            },
+            paid: false,
+            paymentPrice: 0,
+            discussions: [],
+            enrollments: [
+                { userId: 3, paid: false, moment: moment("2019-01-20 13:10") },
+                { userId: 6, paid: false, moment: moment("2019-01-20 16:10") }
             ]
         }
     ]
