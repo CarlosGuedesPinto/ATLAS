@@ -533,5 +533,14 @@ export default {
                 { userId: 6, paid: false, moment: moment("2019-01-20 16:10") }
             ]
         }
+    ],
+
+    notifications: [
+        {
+            id: 1,
+            userId: 1,
+            authorId: 2,
+            eventId: 3,
+        }
     ]
 }

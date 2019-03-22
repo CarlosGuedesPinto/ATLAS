@@ -14,6 +14,7 @@ import BackofficeUsersView from "@/views/Backoffice/Users.vue"
 import BackofficeTagsView from "@/views/Backoffice/Tags.vue"
 import BackofficeCoursesView from "@/views/Backoffice/Courses.vue"
 import BackofficeEventsView from "@/views/Backoffice/Events.vue"
+import Notifications from "@/views/Notifications.vue"
 
 Vue.use(Router)
 
@@ -74,7 +75,15 @@ const router = new Router({
           path: "perfil/:username",
           name: "profile",
           component: ProfileView
-        }
+        },
+        {
+          path: "notificacoes",
+          name: "notifications",
+          component: Notifications,
+          meta: {
+            title: "Notificações"
+          }
+        },
       ]
     },
     {

@@ -235,7 +235,11 @@ export default new Vuex.Store({
                 })
             }
             return lastId
-        }
+        },
+
+        getNotificationsByUserId: state => userId => {
+            return state.notifications.find(not => not.userId === userId)
+        },
     },
     mutations: {
         SET_USERS(state, payload) {

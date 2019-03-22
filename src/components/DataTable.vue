@@ -66,12 +66,12 @@
 			</template>
 
 			<template slot="actions" slot-scope="row" v-if="name === 'courses' || name === 'tags'">
-				<button class="btn btn-danger float-right" @click="btnRemoveClicked(parseInt(row.item.id))">
+				<button class="btn btn-danger float-right" @click.prevent="btnRemoveClicked(parseInt(row.item.id))">
 					<i class="fa fa-times" aria-hidden="true"></i>
 				</button>
 				<button
 					class="btn btn-warning text-white mx-2 float-right"
-					@click="btnEditClicked(parseInt(row.item.id))"
+					@click.prevent="btnEditClicked(parseInt(row.item.id))"
 				>
 					<i class="fa fa-edit" aria-hidden="true"></i>
 				</button>
@@ -163,6 +163,7 @@ export default {
 			this.currentPage = 1
 		},
 		rowClicked(event) {
+			console.log(event)
 			switch (this.name) {
 				case "users":
 					this.$router.push({
@@ -247,5 +248,3 @@ export default {
 	}
 }
 </script>
-
-
