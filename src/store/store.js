@@ -236,10 +236,12 @@ export default new Vuex.Store({
             }
             return lastId
         },
-
         getNotificationsByUserId: state => userId => {
-            return state.notifications.find(not => not.userId === userId)
+            return state.users.find(user => user.id === userId).notifications
         },
+        getEventInfoById: state => eventId => {
+            return state.events.find(event => event.id === eventId)
+        }
     },
     mutations: {
         SET_USERS(state, payload) {
@@ -440,6 +442,131 @@ export default new Vuex.Store({
                     })
                 }
             })
+        },
+        INSERT_NEW_NOTIFICATIONS(state, payload) {
+
+            let tags = payload.tags
+            let eventId = payload.event
+            let authorId = payload.authorId
+            let courses = payload.courses
+
+            console.log("Received Event: " + eventId)
+
+            let newNotifications = []
+            //Composed by userId(that receives the notification) and the event
+
+            //Tags
+            state.users.forEach(user => {
+                user.interests.tags.forEach(tag => {
+                    tags.forEach(eventTag => {
+                        //Found matching tag
+                        if (eventTag === tag) {
+                            if (newNotifications.length != 0) {
+
+                                let found = false
+                                newNotifications.forEach(newNot => {
+                                    //Searches if the event is already found in the newNotifications
+                                    if (!(newNot.userId === user.id && newNot.eventId === eventId)) {
+                                        found = true
+                                    }
+                                })
+                                if (found === false) {
+                                    newNotifications.push({
+                                        userId: user.id,
+                                        event: event
+                                    })
+                                }
+                            }
+                            else {
+                                newNotifications.push({
+                                    userId: user.id,
+                                    eventId: eventId
+                                })
+                            }
+
+                        }
+                    })
+                });
+                user.interests.courses.forEach(course => {
+                    courses.forEach(eventCourse => {
+                        //Found matching tag
+                        if (eventCourse === course) {
+                            if (newNotifications.length != 0) {
+                                let found = false
+                                newNotifications.forEach(newNot => {
+                                    //Searches if the event is already found in the newNotifications
+                                    if (!(newNot.userId === user.id && newNot.eventId === eventId)) {
+                                        found = true
+                                    }
+                                })
+
+                                if (found === false) {
+                                    newNotifications.push({
+                                        userId: user.id,
+                                        event: event
+                                    })
+                                }
+
+                            }
+                            else {
+                                newNotifications.push({
+                                    userId: user.id,
+                                    eventId: eventId
+                                })
+                            }
+
+                        }
+                    })
+                });
+                user.interests.proponents.forEach(prop => {
+                    authorId.forEach(eventAuthorId => {
+                        //Found matching tag
+                        if (eventAuthorId === prop) {
+                            if (newNotifications.length != 0) {
+                                //verify if found existing event
+                                let found = false
+
+                                newNotifications.forEach(newNot => {
+                                    //Searches if the event is already found in the newNotifications
+                                    if ((newNot.userId === user.id && newNot.eventId === eventId)) {
+                                        found = true
+                                    }
+                                })
+
+                                if (found === false) {
+                                    newNotifications.push({
+                                        userId: user.id,
+                                        eventId: eventId
+                                    })
+                                }
+                            }
+                            else {
+                                newNotifications.push({
+                                    userId: user.id,
+                                    eventId: eventId
+                                })
+                            }
+
+                        }
+                    })
+                });
+            });
+
+            console.log(newNotifications)
+
+            //Insert all the newNotifications in their respective user
+            state.users.forEach(user => {
+                newNotifications.forEach(newNot => {
+                    if (newNot.userId === user.id) {
+                        user.notifications.push({
+                            id: user.notifications.length,
+                            eventId: newNot.eventId,
+                            moment: moment("2019-03-10 13:45"),
+                        })
+                    }
+                })
+            });
+
         }
     },
     actions: {
@@ -529,6 +656,9 @@ export default new Vuex.Store({
         },
         removeEventDiscussionAnswerByEventIdDiscussionIdAnswerId(context, payload) {
             context.commit("REMOVE_EVENT_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID_ANSWER_ID", payload)
+        },
+        insertNewNotifications(context, payload) {
+            context.commit("INSERT_NEW_NOTIFICATIONS", payload)
         }
     }
 })

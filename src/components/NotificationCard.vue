@@ -63,6 +63,9 @@ import { mapGetters } from "vuex";
 
 export default {
   props: ["event"],
+  created(){
+    console.log(event)
+  },
   data() {
     return {
       someDate: "2019-01-13"

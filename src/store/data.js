@@ -17,8 +17,10 @@ export default {
             },
             interests: {
                 tags: [],
-                courses: []
-            }
+                courses: [],
+                proponents: []
+            },
+            notifications: []
         },
         {
             id: 3,
@@ -33,9 +35,11 @@ export default {
                 date: "2019-01-01", hour: "00:00"
             },
             interests: {
-                tags: [],
-                courses: []
-            }
+                tags: [1],
+                courses: [],
+                proponents: [],
+            },
+            notifications: []
         },
         {
             id: 4,
@@ -52,8 +56,10 @@ export default {
             },
             interests: {
                 tags: [1, 2, 9, 10],
-                courses: [6, 7]
-            }
+                courses: [6, 7],
+                proponents: []
+            },
+            notifications: []
         },
         {
             id: 5,
@@ -70,8 +76,10 @@ export default {
             },
             interests: {
                 tags: [1, 2, 9, 10],
-                courses: [6]
-            }
+                courses: [6],
+                proponents: []
+            },
+            notifications: []
         },
         {
             id: 6,
@@ -88,8 +96,10 @@ export default {
             },
             interests: {
                 tags: [1, 2, 9, 10],
-                courses: [6]
-            }
+                courses: [6],
+                proponents: []
+            },
+            notifications: []
         }
     ],
     courses: [
@@ -534,13 +544,4 @@ export default {
             ]
         }
     ],
-
-    notifications: [
-        {
-            id: 1,
-            userId: 1,
-            authorId: 2,
-            eventId: 3,
-        }
-    ]
 }
