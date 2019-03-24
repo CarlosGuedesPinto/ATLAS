@@ -466,7 +466,7 @@ export default new Vuex.Store({
                                 let found = false
                                 newNotifications.forEach(newNot => {
                                     //Searches if the event is already found in the newNotifications
-                                    if (!(newNot.userId === user.id && newNot.eventId === eventId)) {
+                                    if ((newNot.userId === user.id && newNot.eventId === eventId)) {
                                         found = true
                                     }
                                 })
@@ -495,7 +495,7 @@ export default new Vuex.Store({
                                 let found = false
                                 newNotifications.forEach(newNot => {
                                     //Searches if the event is already found in the newNotifications
-                                    if (!(newNot.userId === user.id && newNot.eventId === eventId)) {
+                                    if ((newNot.userId === user.id && newNot.eventId === eventId)) {
                                         found = true
                                     }
                                 })
@@ -503,7 +503,7 @@ export default new Vuex.Store({
                                 if (found === false) {
                                     newNotifications.push({
                                         userId: user.id,
-                                        event: event
+                                        eventId: eventId
                                     })
                                 }
 
