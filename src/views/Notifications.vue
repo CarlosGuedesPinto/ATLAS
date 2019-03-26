@@ -17,7 +17,7 @@
 <script>
 import TitleAtlas from "@/components/TitleAtlas.vue";
 import Panel from "@/components/Panel.vue";
-//fimport Carousel from "vue-owl-carousel";
+//import Carousel from "vue-owl-carousel";
 import NotificationCard from "@/components/NotificationCard.vue";
 //import EventListItem from "@/components/EventListItem.vue";
 
@@ -26,8 +26,7 @@ import { mapGetters } from "vuex";
 export default {
   components: { TitleAtlas, Panel, NotificationCard },
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
     handleResize() {
@@ -44,7 +43,6 @@ export default {
   created() {
     window.addEventListener("resize", this.handleResize);
     this.handleResize();
-    console.log(this.getNotifications)
   }
 };
 </script>
