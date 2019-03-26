@@ -86,6 +86,20 @@
         </div>
       </div>
     </div>
+    
+    <div class="mt-5" v-if="getEventsByTopEnrollments.length">
+      <TitleAtlas>TOP {{ getEventsByTopEnrollments.length >= 4 ? "4" : getEventsByTopEnrollments.length }} eventos com mais inscrições</TitleAtlas>
+      <template v-for="(event, index) in getEventsByTopEnrollments">
+        <template v-if="index <= 3">
+          <template v-if="windowWidth >= 768">
+            <EventListItem :key="event.id" :event="event" class="mb-1"/>
+          </template>
+          <template v-else>
+            <EventCard :key="event.id" :event="event" class="mb-1"/>
+          </template>
+        </template>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -126,7 +140,8 @@ export default {
       "getUserById",
       "getNextEvents",
       "getNextEventsByIdsTagsIdsCourses",
-      "getTopUsersEnrolledEvents"
+      "getTopUsersEnrolledEvents",
+      "getEventsByTopEnrollments"
     ])
   },
   methods: {

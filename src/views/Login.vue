@@ -65,7 +65,21 @@ export default {
 			if (user && user.password === this.password) {
 				//Logged In
 				this.$store.dispatch("userLoggedIn", user.id)
-
+				
+				Notification.requestPermission()
+				
+				Notification.requestPermission().then(function(result) {
+					if (result === 'denied') {
+					    console.log('Permission wasn\'t granted. Allow a retry.');
+					    return;
+					}
+					if (result === 'default') {
+					    console.log('The permission request was dismissed.');
+						return;
+					}
+					console.log("OLA")
+				});
+				
 				this.$router.replace({ name: "home" })
 			} else if (!this.username || !this.password) {
 				this.$snotify.error("Preencha todos os campos", "", {

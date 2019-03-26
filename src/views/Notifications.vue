@@ -11,7 +11,7 @@
         />
       </template>
     </div>
-    <div else>
+    <div v-else>
       <TitleAtlas>As Minhas Notificações</TitleAtlas>
       <template>Não Tem Notificações Novas</template>
     </div>

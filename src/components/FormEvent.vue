@@ -444,7 +444,8 @@ export default {
 					event: event.id,
 					tags: event.tags,
 					authorId: event.authorId,
-					courses: event.coursesIds
+					courses: event.coursesIds,
+					moment: this.$moment()
 				}
 
 				this.$store.dispatch("insertNewNotifications", notificationFields)

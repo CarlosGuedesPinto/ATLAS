@@ -64,7 +64,7 @@ import { mapGetters } from "vuex";
 export default {
   props: ["event"],
   created(){
-    console.log(event)
+    //console.log(event)
   },
   data() {
     return {

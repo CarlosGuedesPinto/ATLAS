@@ -192,6 +192,20 @@ export default new Vuex.Store({
 
             return users
         },
+        getEventsByTopEnrollments: state => {
+            let events = state.events.filter(event => event.enrollments.length)
+
+            events.sort((a, b) => {
+                if (a.enrollments.length > b.enrollments.length) {
+                    return -1
+                } else if (a.enrollments.length < b.enrollments.length) {
+                    return 1
+                }
+                return 0
+            })
+
+            return events
+        },
         getEventClassrooms: state => {
             let classrooms = []
             state.events.forEach(event => {
@@ -449,6 +463,7 @@ export default new Vuex.Store({
             let eventId = payload.event
             let authorId = payload.authorId
             let courses = payload.courses
+            let moment = payload.moment
 
             console.log("Received Event: " + eventId)
 
@@ -473,14 +488,16 @@ export default new Vuex.Store({
                                 if (found === false) {
                                     newNotifications.push({
                                         userId: user.id,
-                                        event: event
+                                        event,
+                                        moment,
                                     })
                                 }
                             }
                             else {
                                 newNotifications.push({
                                     userId: user.id,
-                                    eventId: eventId
+                                    eventId: eventId,
+                                    moment: moment
                                 })
                             }
 
@@ -503,7 +520,8 @@ export default new Vuex.Store({
                                 if (found === false) {
                                     newNotifications.push({
                                         userId: user.id,
-                                        eventId: eventId
+                                        eventId: eventId,
+                                        moment: moment
                                     })
                                 }
 
@@ -511,7 +529,8 @@ export default new Vuex.Store({
                             else {
                                 newNotifications.push({
                                     userId: user.id,
-                                    eventId: eventId
+                                    eventId: eventId,
+                                    moment: moment
                                 })
                             }
 
@@ -536,14 +555,16 @@ export default new Vuex.Store({
                                 if (found === false) {
                                     newNotifications.push({
                                         userId: user.id,
-                                        eventId: eventId
+                                        eventId: eventId,
+                                        moment: moment
                                     })
                                 }
                             }
                             else {
                                 newNotifications.push({
                                     userId: user.id,
-                                    eventId: eventId
+                                    eventId: eventId,
+                                    moment: moment
                                 })
                             }
 
@@ -552,16 +573,48 @@ export default new Vuex.Store({
                 });
             });
 
-            console.log(newNotifications)
 
             //Insert all the newNotifications in their respective user
             state.users.forEach(user => {
                 newNotifications.forEach(newNot => {
                     if (newNot.userId === user.id) {
+                        
+                        //ESTOU AQUI
+                        
+                        let event = this.getEventById(newNot.eventId)
+                        let matchingUser = {}
+                        
+                        let eventTags = event.tags
+                        let eventCourses = event.coursesIds
+                        let eventAuthor = event.authorId
+                        
+                        eventTags.forEach(tag => {
+                            user.interests.tags.forEach(userTag => {
+                                if (userTag === tag) {
+                                    matchingUser.tags.push(tag)
+                                }
+                            })
+                        })
+                        
+                        eventCourses.forEach(course => {
+                            user.interests.courses.forEach(userCourse => {
+                                if (course === userCourse) {
+                                    matchingUser.courses.push(course)
+                                }
+                            })
+                        })
+                        
+                       user.interests.proponents.forEach(prop => {
+                           if (prop === eventAuthor) {
+                               matchingUser.prop = eventAuthor
+                           }
+                       })
+                        
                         user.notifications.push({
                             id: user.notifications.length,
                             eventId: newNot.eventId,
-                            moment: moment("2019-03-10 13:45"),
+                            moment: newNot.moment,
+                            matching: {tags: [matchingUser.tags], proponent: [matchingUser.prop], courses: [matchingUser.courses]}
                         })
                     }
                 })
