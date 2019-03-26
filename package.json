@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "node server.js"
+    "start": "node server.js",
+    "cloud": "NODE_ENV=development vue-cli-service serve --open --inline --host $IP --port $PORT --public $C9_HOSTNAME --config vue.config.js"
   },
   "dependencies": {
     "bootstrap": "^4.1.3",
