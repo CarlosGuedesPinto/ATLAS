@@ -66,13 +66,6 @@ export default {
 				//Logged In
 				this.$store.dispatch("userLoggedIn", user.id)
 
-				//Notify of how many notifications the user have
-				Notification.requestPermission()
-
-				if (Notification.requestPermission().granted) {
-					console.log("OLA")
-				}
-
 				this.$router.replace({ name: "home" })
 			} else if (!this.username || !this.password) {
 				this.$snotify.error("Preencha todos os campos", "", {
