@@ -460,10 +460,12 @@ export default new Vuex.Store({
         INSERT_NEW_NOTIFICATIONS(state, payload) {
 
             let tags = payload.tags
-            let eventId = payload.event
+            let eventId = payload.eventId
             let authorId = payload.authorId
             let courses = payload.courses
             let moment = payload.moment
+
+            let event = payload.event
 
             console.log("Received Event: " + eventId)
 
@@ -578,20 +580,17 @@ export default new Vuex.Store({
             state.users.forEach(user => {
                 newNotifications.forEach(newNot => {
                     if (newNot.userId === user.id) {
-                        
-                        //ESTOU AQUI
-                        
-                        console.log(newNot.eventId)
-                        console.log(state.getters.getEventById(newNot.eventId))
-                        
-                        let event = getters.getEventById(newNot.eventId)
-                        
-                        let matchingUser = {}
-                        
+
+                        let matchingUser = {
+                            tags: [],
+                            courses: [],
+                            prop: []
+                        }
+
                         let eventTags = event.tags
                         let eventCourses = event.coursesIds
                         let eventAuthor = event.authorId
-                        
+
                         eventTags.forEach(tag => {
                             user.interests.tags.forEach(userTag => {
                                 if (userTag === tag) {
@@ -599,7 +598,7 @@ export default new Vuex.Store({
                                 }
                             })
                         })
-                        
+
                         eventCourses.forEach(course => {
                             user.interests.courses.forEach(userCourse => {
                                 if (course === userCourse) {
@@ -607,20 +606,18 @@ export default new Vuex.Store({
                                 }
                             })
                         })
-                        
-                       user.interests.proponents.forEach(prop => {
-                           if (prop === eventAuthor) {
-                               matchingUser.prop.push(eventAuthor)
-                           }
-                       })
-                       
-                       console.log(matchingUser)
-                        
+
+                        user.interests.proponents.forEach(prop => {
+                            if (prop === eventAuthor) {
+                                matchingUser.prop.push(eventAuthor)
+                            }
+                        })
+
                         user.notifications.push({
                             id: user.notifications.length,
                             eventId: newNot.eventId,
                             moment: newNot.moment,
-                            matching: {tags: matchingUser.tags, proponent: matchingUser.prop, courses: matchingUser.courses}
+                            matching: { tags: matchingUser.tags, proponent: matchingUser.prop, courses: matchingUser.courses }
                         })
                     }
                 })

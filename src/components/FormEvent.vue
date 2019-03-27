@@ -441,7 +441,8 @@ export default {
 				// insert all the new notifications
 
 				let notificationFields = {
-					event: event.id,
+					eventId: event.id,
+					event: this.getEventById(event.id),
 					tags: event.tags,
 					authorId: event.authorId,
 					courses: event.coursesIds,
@@ -573,7 +574,8 @@ export default {
 			"getLoggedUserId",
 			"getLastEventId",
 			"getTags",
-			"getCourses"
+			"getCourses",
+			"getEventById"
 		]),
 		nameState() {
 			if (!this.name && !this.attemptSubmit) {
