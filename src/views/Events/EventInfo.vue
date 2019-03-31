@@ -540,6 +540,10 @@ export default {
 								paid: false
 							}
 						})
+
+						//Verify if it is the first time that he applies to an event
+						this.assignMedals()
+
 						if (this.event.paid) {
 							this.$vs.dialog({
 								type: "confirm",
@@ -608,6 +612,17 @@ export default {
 					}
 				}
 			}
+		},
+		assignMedals() {
+
+			if (getUserById(getLoggedUserId).leveling.medals.length === 0) {
+				this.$store.dispatch(insertNewMedalUser, {userId: getLoggedUserId, medalId: 1})
+			}
+
+			if (getUserById(getLoggedUserId).leveling.medals.length === 9) {
+				this.$store.dispatch(insertNewMedalUser, {userId: getLoggedUserId, medalId: 2})
+			}
+
 		},
 		btnValidatePaymentClicked(userId) {},
 		btnRemoveEnrollmentClicked(userId) {

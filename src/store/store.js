@@ -255,7 +255,17 @@ export default new Vuex.Store({
         },
         getEventInfoById: state => eventId => {
             return state.events.find(event => event.id === eventId)
-        }
+        },
+        getMedals: state => {
+            return state.medals
+        }, 
+        getMedalInfoById: state => medalId => {
+            return state.medals.find(medal=> medal.id === medalId)
+        },
+        /* Alternativa ao getUserInfo
+        getMedalsByUserId: state => userId => {
+            return state.users.find(user => user.id === userId).leveling.medals
+        }*/
     },
     mutations: {
         SET_USERS(state, payload) {
@@ -490,7 +500,7 @@ export default new Vuex.Store({
                                 if (found === false) {
                                     newNotifications.push({
                                         userId: user.id,
-                                        event,
+                                        eventId,
                                         moment,
                                     })
                                 }
@@ -575,7 +585,6 @@ export default new Vuex.Store({
                 });
             });
 
-
             //Insert all the newNotifications in their respective user
             state.users.forEach(user => {
                 newNotifications.forEach(newNot => {
@@ -623,6 +632,26 @@ export default new Vuex.Store({
                 })
             });
 
+        },
+        INSERT_NEW_MEDAL_USER(state, payload) {
+
+            let xpEarned
+
+            //Get the xp from the medal
+            state.medals.forEach(medal => {
+                if (medal.id === payload.medalId) {
+                    xpEarned = medal.xp
+                }
+            })
+
+            state.users.forEach(user => {
+                if (user.id === payload.userId) {
+                    user.leveling.medals.push(payload.medalId)
+                    user.leveling.xp += xpEarned
+
+                    user.leveling.currentLevel = Math.round(xpEarned / 1000) //Convert to 0 decimal places
+                }
+            })
         }
     },
     actions: {
@@ -715,6 +744,9 @@ export default new Vuex.Store({
         },
         insertNewNotifications(context, payload) {
             context.commit("INSERT_NEW_NOTIFICATIONS", payload)
+        },
+        insertNewMedalUser(context, payload) {
+            context.commit("INSERT_NEW_MEDAL_USER", payload)
         }
     }
 })
