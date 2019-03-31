@@ -20,7 +20,12 @@ export default {
                 courses: [],
                 proponents: []
             },
-            notifications: []
+            notifications: [],
+            leveling: {
+                currentLevel: 1,
+                xp: 1200,
+                medals: [1]
+            }
         },
         {
             id: 3,
@@ -39,7 +44,12 @@ export default {
                 courses: [],
                 proponents: [],
             },
-            notifications: []
+            notifications: [],
+            leveling: {
+                currentLevel: 0,
+                xp: 0,
+                medals: []
+            }
         },
         {
             id: 4,
@@ -59,7 +69,12 @@ export default {
                 courses: [6, 7],
                 proponents: []
             },
-            notifications: []
+            notifications: [],
+            leveling: {
+                currentLevel: 3,
+                xp: 3200,
+                medals: [1]
+            }
         },
         {
             id: 5,
@@ -79,7 +94,12 @@ export default {
                 courses: [6],
                 proponents: []
             },
-            notifications: []
+            notifications: [],
+            leveling: {
+                currentLevel: 5,
+                xp: 5600,
+                medals: [1]
+            }
         },
         {
             id: 6,
@@ -99,11 +119,16 @@ export default {
                 courses: [6],
                 proponents: []
             },
-            notifications: []
+            notifications: [],
+            leveling: {
+                currentLevel: 0,
+                xp: 0,
+                medals: []
+            }
         }
     ],
     courses: [
-        { id: 1, name: "Design - Ramo Design Gráfico e Publicidade", abbreviation: "DGRAF" },
+        { id: 1, name: "Design - Ramo Design Gráfico e Publicidade", na: "DGRAF" },
         { id: 2, name: "Design - Ramo Design Industrial", abbreviation: "DIND" },
         { id: 3, name: "Fotografia", abbreviation: "FOTO" },
         { id: 4, name: "Multimédia", abbreviation: "MULTI" },
@@ -130,6 +155,22 @@ export default {
         { id: 16, name: "marketing" },
         { id: 17, name: "administração" },
         { id: 18, name: "esmad" }
+    ],
+    medals: [
+        {
+            id: 1,
+            xp: 1000,
+            title: "O Meu Primeiro Evento",
+            details: "Inscreveste-te no teu primeiro evento.",
+            picture: "http://www.sclance.com/pngs/first-png/first_png_499489.png",
+        },
+        {
+            id: 2,
+            xp: 2000,
+            title: "10 Inscrições Em Eventos",
+            details: "Já tens pelo menos 10 inscrições efetuadas.",
+            picture: "https://upload.wikimedia.org/wikipedia/commons/2/20/MRT_Singapore_Destination_10.png",
+        }
     ],
     events: [
         {
