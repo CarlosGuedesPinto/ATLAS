@@ -490,7 +490,7 @@ export default new Vuex.Store({
                                 if (found === false) {
                                     newNotifications.push({
                                         userId: user.id,
-                                        event,
+                                        eventId,
                                         moment,
                                     })
                                 }
@@ -574,6 +574,8 @@ export default new Vuex.Store({
                     })
                 });
             });
+
+            console.log(newNotifications)
 
 
             //Insert all the newNotifications in their respective user
