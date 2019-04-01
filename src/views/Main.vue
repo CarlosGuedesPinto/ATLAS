@@ -14,8 +14,6 @@
 import Navbar from "@/components/Navbar.vue"
 import AtlasFooter from "@/components/AtlasFooter.vue"
 
-import { mapGetters } from "vuex"
-
 export default {
 	name: "MainView",
 	components: {

@@ -19,6 +19,7 @@
     "serve-static": "^1.13.2",
     "socket.io-client": "^2.2.0",
     "vue": "^2.5.17",
+    "vue-beautiful-chat": "^2.2.0",
     "vue-moment": "^4.0.0",
     "vue-owl-carousel": "^2.0.3",
     "vue-router": "^3.0.1",

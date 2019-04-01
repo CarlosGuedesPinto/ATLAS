@@ -4,14 +4,17 @@
 			<router-view/>
 		</transition>
 		<vue-snotify></vue-snotify>
+		<Chat v-if="getLoggedUserId !== -1"></Chat>
 	</div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex"
 import database from "@/store/data.js"
+import Chat from "@/components/Chat.vue"
 
 export default {
+	components: { Chat },
 	methods: {
 		...mapActions(["setUsers", "userLoggedIn", "setCourses", "setTags", "setEvents"])
 	},

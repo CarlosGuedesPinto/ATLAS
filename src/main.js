@@ -7,6 +7,7 @@ import Snotify from 'vue-snotify'
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css'
 import 'material-icons/iconfont/material-icons.css'
+import Chat from 'vue-beautiful-chat'
 
 const moment = require("moment")
 require("moment/locale/pt")
@@ -29,6 +30,7 @@ Vue.use(Vuesax, {
     }
   }
 })
+Vue.use(Chat)
 
 new Vue({
   router,
