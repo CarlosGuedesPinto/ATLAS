@@ -64,6 +64,9 @@ export default {
 		}
 	},
 	created() {
+		window.addEventListener("beforeunload", () => {
+			this.$destroy()
+		})
 		/*
         {
             id: "user1",
@@ -132,6 +135,9 @@ export default {
 			// called when the user clicks on the botton to close the chat
 			this.isChatOpen = false
 		}
+	},
+	destroyed() {
+		this.socket.emit("DISCONNECTION", this.socket.id)
 	}
 }
 </script>
