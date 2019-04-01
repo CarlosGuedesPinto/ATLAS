@@ -81,15 +81,19 @@ export default {
 		})
 	},
 	mounted() {
+		this.socket.emit("CONNECTION", {
+			id: this.getLoggedUserId
+		})
+		
 		this.socket.on("CHAT_MESSAGE", data => {
-            if(!this.isChatOpen) {
-                this.newMessagesCount++
-            }
+			if (!this.isChatOpen) {
+				this.newMessagesCount++
+			}
 			if (data.author === this.getLoggedUserId) {
 				data.author = "me"
 			} else {
 				data.author = this.getUserById(data.author).username
-            }
+			}
 			this.messageList = [...this.messageList, data]
 		})
 	},
@@ -98,7 +102,7 @@ export default {
 	},
 	methods: {
 		onMessageWasSent(data) {
-            // called when the user sends a message
+			// called when the user sends a message
 			if (data.type === "text") {
 				this.socket.emit("CHAT_MESSAGE", {
 					author: this.getLoggedUserId,
