@@ -22,8 +22,6 @@ export default {
             },
             notifications: [],
             leveling: {
-                currentLevel: 1,
-                xp: 1200,
                 medals: [1]
             }
         },
@@ -46,8 +44,6 @@ export default {
             },
             notifications: [],
             leveling: {
-                currentLevel: 0,
-                xp: 0,
                 medals: []
             }
         },
@@ -71,8 +67,6 @@ export default {
             },
             notifications: [],
             leveling: {
-                currentLevel: 3,
-                xp: 3200,
                 medals: [1]
             }
         },
@@ -96,8 +90,6 @@ export default {
             },
             notifications: [],
             leveling: {
-                currentLevel: 5,
-                xp: 5600,
                 medals: [1]
             }
         },
@@ -121,8 +113,6 @@ export default {
             },
             notifications: [],
             leveling: {
-                currentLevel: 0,
-                xp: 0,
                 medals: []
             }
         }
@@ -159,14 +149,12 @@ export default {
     medals: [
         {
             id: 1,
-            xp: 1000,
             title: "O Meu Primeiro Evento",
             details: "Inscreveste-te no teu primeiro evento.",
             picture: "http://www.sclance.com/pngs/first-png/first_png_499489.png",
         },
         {
             id: 2,
-            xp: 2000,
             title: "10 Inscrições Em Eventos",
             details: "Já tens pelo menos 10 inscrições efetuadas.",
             picture: "https://upload.wikimedia.org/wikipedia/commons/2/20/MRT_Singapore_Destination_10.png",

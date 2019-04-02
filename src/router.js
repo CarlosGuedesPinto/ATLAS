@@ -82,7 +82,8 @@ const router = new Router({
           component: Notifications,
           meta: {
             title: "Notificações",
-            requiresAuth: true
+            requiresAuth: true,
+            authorizedProfiles: [1, 2, 3]
           }
         },
       ]

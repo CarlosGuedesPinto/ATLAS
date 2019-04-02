@@ -635,21 +635,9 @@ export default new Vuex.Store({
         },
         INSERT_NEW_MEDAL_USER(state, payload) {
 
-            let xpEarned
-
-            //Get the xp from the medal
-            state.medals.forEach(medal => {
-                if (medal.id === payload.medalId) {
-                    xpEarned = medal.xp
-                }
-            })
-
             state.users.forEach(user => {
                 if (user.id === payload.userId) {
                     user.leveling.medals.push(payload.medalId)
-                    user.leveling.xp += xpEarned
-
-                    user.leveling.currentLevel = Math.round(xpEarned / 1000) //Convert to 0 decimal places
                 }
             })
         }

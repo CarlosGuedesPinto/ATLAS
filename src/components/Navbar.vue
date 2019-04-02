@@ -48,7 +48,7 @@
                   <b-dropdown-divider></b-dropdown-divider>
                 </template>
                 <router-link
-                  :to="{name: 'notifications', params: { username: getUserById(getLoggedUserId).id }}"
+                  :to="{name: 'notifications'}"
                   class="dropdown-item"
                 >Notificações</router-link>
                 <router-link
