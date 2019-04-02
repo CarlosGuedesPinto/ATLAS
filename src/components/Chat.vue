@@ -91,7 +91,7 @@ export default {
 		(async () => {
 			try {
 				await axios.get("https://atlas-server-carlosguedespinto.c9users.io/chat", {
-					proxy: "https://atlas-server-carlosguedespinto.c9users.io",
+					proxy: "https://atlas-server-carlosguedespinto.c9users.iog",
 					port: 8080
 				})
 			} catch(err) {
