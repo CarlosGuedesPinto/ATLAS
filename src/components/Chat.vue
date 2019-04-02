@@ -90,7 +90,7 @@ export default {
 	mounted() {
 		(async () => {
 			try {
-				await axios.get("https://atlas-vue-server.herokuapp.com/chat")
+				console.log(await axios.get("https://atlas-vue-server.herokuapp.com/chat"))
 			} catch(err) {
 				console.log(err)
 			}
