@@ -258,9 +258,9 @@ export default new Vuex.Store({
         },
         getMedals: state => {
             return state.medals
-        }, 
+        },
         getMedalInfoById: state => medalId => {
-            return state.medals.find(medal=> medal.id === medalId)
+            return state.medals.find(medal => medal.id === medalId)
         },
         /* Alternativa ao getUserInfo
         getMedalsByUserId: state => userId => {
@@ -640,6 +640,29 @@ export default new Vuex.Store({
                     user.leveling.medals.push(payload.medalId)
                 }
             })
+        },
+
+        HISTORY_UPDATE(state, payload) {
+
+            if (payload.type === "ADD") {
+                state.users.forEach(user => {
+                    if (user.id === payload.userId) {
+                        user.history.events.push(payload.eventId)
+                    }
+                })
+            }
+            if (payload.type === "REMOVE") {
+                state.users.forEach(user => {
+                    if (user.id === payload.userId) {
+                        user.history.events.forEach((event, index) => {
+                            if (event === payload.eventId) {
+                                user.history.events.splice(index, 1)
+                            }
+                        })
+                    }
+                })
+            }
+
         }
     },
     actions: {
@@ -735,6 +758,9 @@ export default new Vuex.Store({
         },
         insertNewMedalUser(context, payload) {
             context.commit("INSERT_NEW_MEDAL_USER", payload)
+        },
+        historyUpdate(context, payload) {
+            context.commit("HISTORY_UPDATE", payload)
         }
     }
 })
