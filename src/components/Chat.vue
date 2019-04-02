@@ -28,7 +28,7 @@ export default {
 	name: "app",
 	data() {
 		return {
-			socket: io("https://atlas-vue-server.herokuapp.com"),
+			socket: io("https://atlas-server-carlosguedespinto.c9users.io"),
 			participants: [], // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
 			titleImageUrl:
 				"https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png",
@@ -78,6 +78,26 @@ export default {
             imageUrl:
                 "https://avatars3.githubusercontent.com/u/1915989?s=230&v=4"
         }*/
+        
+        (async () => {
+			try {
+				const response = await axios.get("https://atlas-server-carlosguedespinto.c9users.io/chat")
+
+				response.data.forEach(message => {
+					let { author, type, data } = message
+					if(author === this.getUserById(this.getLoggedUserId).username) {
+						author = "me"
+					}
+					this.messageList.push({
+						author,
+						type,
+						data
+					})
+				})
+			} catch(err) {
+				console.log(err)
+			}
+		})()
 
 		this.getUsers.forEach(user => {
 			this.participants.push({
@@ -86,27 +106,13 @@ export default {
 				imageUrl: user.picture
 			})
 		})
-	},
-	mounted() {
-		(async () => {
-			try {
-				this.messageList = await axios.get("https://atlas-vue-server.herokuapp.com/chat")
-			} catch(err) {
-				console.log(err)
-			}
-		})()
-		this.socket.emit("CONNECTION", {
-			id: this.getLoggedUserId
-		})
 		
 		this.socket.on("CHAT_MESSAGE", data => {
 			if (!this.isChatOpen) {
 				this.newMessagesCount++
 			}
-			if (data.author === this.getLoggedUserId) {
+			if (data.author === this.getUserById(this.getLoggedUserId).username) {
 				data.author = "me"
-			} else {
-				data.author = this.getUserById(data.author).username
 			}
 			this.messageList = [...this.messageList, data]
 		})
@@ -119,7 +125,7 @@ export default {
 			// called when the user sends a message
 			if (data.type === "text") {
 				this.socket.emit("CHAT_MESSAGE", {
-					author: this.getLoggedUserId,
+					author: this.getUserById(this.getLoggedUserId).username,
 					type: "text",
 					data: {
 						text: data.data.text
@@ -127,7 +133,7 @@ export default {
 				})
 			} else {
 				this.socket.emit("CHAT_MESSAGE", {
-					author: this.getLoggedUserId,
+					author: this.getUserById(this.getLoggedUserId).username,
 					type: "emoji",
 					data: {
 						emoji: data.data.emoji
