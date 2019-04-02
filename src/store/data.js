@@ -22,7 +22,7 @@ export default {
             },
             notifications: [],
             leveling: {
-                medals: [1]
+                medals: []
             },
             history: {
                 events: []
@@ -73,7 +73,7 @@ export default {
             },
             notifications: [],
             leveling: {
-                medals: [1]
+                medals: []
             },
             history: {
                 events: []
@@ -99,7 +99,7 @@ export default {
             },
             notifications: [],
             leveling: {
-                medals: [1]
+                medals: []
             },
             history: {
                 events: []

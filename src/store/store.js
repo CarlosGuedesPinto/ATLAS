@@ -640,8 +640,30 @@ export default new Vuex.Store({
                     user.leveling.medals.push(payload.medalId)
                 }
             })
-        },
 
+        },
+        ASSIGN_MEDALS(state, payload) {
+
+            let newMedals = []
+            
+            state.users.forEach(user => {
+                if (user.id === payload.userId) {
+                    state.medals.forEach(medal => {
+                        if (payload.type === "EVENT" && medal.constrains.type === 'EVENT') {
+
+                            let userEventsLen = user.history.events.length
+                            console.log(userEventsLen)
+                            if (userEventsLen + 1 === medal.constrains.constrain) {
+                                user.medals.push(medal.id)
+                                newMedals.push(medal.id)
+                            }
+
+                        }
+                    })
+                }
+            })
+
+        },
         HISTORY_UPDATE(state, payload) {
 
             if (payload.type === "ADD") {
@@ -761,6 +783,9 @@ export default new Vuex.Store({
         },
         historyUpdate(context, payload) {
             context.commit("HISTORY_UPDATE", payload)
+        },
+        assignMedals(context, payload) {
+            context.commit('ASSIGN_MEDALS', payload)
         }
     }
 })

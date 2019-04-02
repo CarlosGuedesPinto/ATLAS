@@ -541,9 +541,9 @@ export default {
               }
             });
 
+            //this.assignMedals();
             this.historyUpdate("ADD");
             //Verify if it is the first time that he applies to an event
-            this.assignMedals();
 
             if (this.event.paid) {
               this.$vs.dialog({
@@ -604,6 +604,13 @@ export default {
       }
     },
     assignMedals() {
+
+      this.$store.dispatch("assignMedals", {
+        userId: this.getLoggedUserId,
+        type: "EVENT"
+      });
+
+      /*
       if (this.getUserById(this.getLoggedUserId).history.events.length === 0) {
         this.$store.dispatch("insertNewMedalUser", {
           userId: this.getLoggedUserId,
@@ -616,7 +623,7 @@ export default {
           userId: this.getLoggedUserId,
           medalId: 2
         });
-      }
+      }*/
     },
     historyUpdate(type) {
       if (type === "ADD") {
