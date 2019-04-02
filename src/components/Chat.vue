@@ -21,6 +21,7 @@
 
 <script>
 import io from "socket.io-client"
+import axios from "axios"
 import { mapGetters } from "vuex"
 
 export default {
@@ -64,9 +65,12 @@ export default {
 		}
 	},
 	created() {
+		/*
 		window.addEventListener("beforeunload", () => {
 			this.$destroy()
-		})
+		})*/
+		
+
 		/*
         {
             id: "user1",
@@ -84,6 +88,18 @@ export default {
 		})
 	},
 	mounted() {
+		(async () => {
+			try {
+				await axios.get("localhost:3000/chat", {
+					proxy: {
+						host: "localhost",
+						port: 3000
+					}
+				})
+			} catch(err) {
+				console.log(err)
+			}
+		})()
 		this.socket.emit("CONNECTION", {
 			id: this.getLoggedUserId
 		})
