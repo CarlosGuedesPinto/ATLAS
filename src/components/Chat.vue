@@ -28,7 +28,7 @@ export default {
 	name: "app",
 	data() {
 		return {
-			socket: io("https://atlas-server-carlosguedespinto.c9users.io:8080"),
+			socket: io("https://atlas-vue-server.herokuapp.com"),
 			participants: [], // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
 			titleImageUrl:
 				"https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png",
@@ -90,10 +90,7 @@ export default {
 	mounted() {
 		(async () => {
 			try {
-				await axios.get("https://atlas-server-carlosguedespinto.c9users.io/chat", {
-					proxy: "https://atlas-server-carlosguedespinto.c9users.io",
-					port: 8080
-				})
+				await axios.get("https://atlas-vue-server.herokuapp.com/chat")
 			} catch(err) {
 				console.log(err)
 			}
