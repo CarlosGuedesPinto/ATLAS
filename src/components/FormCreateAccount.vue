@@ -147,6 +147,7 @@
 
 <script>
 import { mapGetters } from "vuex"
+import axios from "axios"
 
 export default {
 	name: "FormCreateAccount",
@@ -398,6 +399,7 @@ export default {
 	},
 	computed: {
 		...mapGetters([
+			"getApiUrl",
 			"getUserByUsername",
 			"getUserByEmail",
 			"getLastUserId",
