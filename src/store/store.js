@@ -1,5 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios';
+
+const axiosConfig = {
+  baseURL: "https://atlas-server-gustavovasconcelos.c9users.io",
+};
+
+const HTTP = axios.create(axiosConfig);
 
 Vue.use(Vuex)
 const moment = require("moment")
@@ -15,9 +22,13 @@ export default new Vuex.Store({
         courses: [],
         tags: [],
         events: [],
-        medals: []
+        medals: [],
+        apiUrl: "https://atlas-server-gustavovasconcelos.c9users.io"
     },
     getters: {
+        getApiUrl: state => {
+            return state.apiUrl
+        },
         getUserById: state => id => {
             return state.users.find(user => user.id === id)
         },
@@ -698,7 +709,18 @@ export default new Vuex.Store({
         userLoggedOut(context, payload) {
             context.commit("USER_LOGGED_OUT", payload)
         },
-        signUp(context, payload) {
+        async signUp(context, payload) {
+            await HTTP.post("/auth/sign-up", {
+                profileId: payload.profileId,
+                username: payload.username,
+                password: payload.password,
+                email: payload.email,
+                firstName: payload.name,
+                lastName: "Teste",
+                picture: "https://artscimedia.case.edu/wp-content/uploads/sites/79/2016/12/14205134/no-user-image.gif",
+                gender: payload.gender
+            })
+
             context.commit("SIGNED_UP", payload)
         },
         createAccount(context, payload) {
