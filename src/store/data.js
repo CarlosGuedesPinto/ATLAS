@@ -1,6 +1,36 @@
 let moment = require("moment")
 
 export default {
+
+    medals: [
+        {
+            id: 1,
+            details: {
+                title: "O Meu Primeiro Evento",
+                details: "Inscreveste-te no teu primeiro evento.",
+                picture: "http://www.sclance.com/pngs/first-png/first_png_499489.png",
+            },
+            constrains: {
+                type: "EVENT",
+                constrain: 1, //Because its the first event
+            }
+
+        },
+        {
+            id: 2,
+            details: {
+                title: "10 Inscrições Em Eventos",
+                description: "Já tens pelos 10 inscrições efetuadas.",
+                picture: "https://upload.wikimedia.org/wikipedia/commons/2/20/MRT_Singapore_Destination_10.png",
+            },
+            constrains: {
+                type: "EVENT",
+                constrain: 10,  //Bigger or equal than 10 events !!!Do not forget to add to the users an history of events
+            }
+
+
+        }
+    ],
     users: [
         {
             id: 1,
@@ -160,35 +190,6 @@ export default {
         { id: 16, name: "marketing" },
         { id: 17, name: "administração" },
         { id: 18, name: "esmad" }
-    ],
-    medals: [
-        {
-            id: 1,
-            details: {
-                title: "O Meu Primeiro Evento",
-                details: "Inscreveste-te no teu primeiro evento.",
-                picture: "http://www.sclance.com/pngs/first-png/first_png_499489.png",
-            },
-            constrains: {
-                type: "EVENT",
-                contrain: 1, //Because its the first event
-            }
-
-        },
-        {
-            id: 2,
-            details: {
-                title: "10 Inscrições Em Eventos",
-                description: "Já tens pelos 10 inscrições efetuadas.",
-                picture: "https://upload.wikimedia.org/wikipedia/commons/2/20/MRT_Singapore_Destination_10.png",
-            },
-            constrains: {
-                type: "EVENT",
-                constrain: 10,  //Bigger or equal than 10 events !!!Do not forget to add to the users an history of events
-            }
-
-
-        }
     ],
     events: [
         {

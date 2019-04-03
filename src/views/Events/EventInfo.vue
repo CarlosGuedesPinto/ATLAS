@@ -541,7 +541,7 @@ export default {
               }
             });
 
-            //this.assignMedals();
+            this.assignMedals();
             this.historyUpdate("ADD");
             //Verify if it is the first time that he applies to an event
 
@@ -604,11 +604,38 @@ export default {
       }
     },
     assignMedals() {
+      let beforeMedals = this.getUserById(this.getLoggedUserId).leveling.medals;
+      console.log("BF " + beforeMedals);
+      //Nao sei porque retorna array vazio
+      //So falta verificar novas mudancas
 
       this.$store.dispatch("assignMedals", {
         userId: this.getLoggedUserId,
         type: "EVENT"
       });
+
+      let afterMedals = this.getUserById(this.getLoggedUserId).leveling.medals;
+      console.log(afterMedals);
+
+      let newMedals = [];
+
+      if (beforeMedals.length === 0) {
+        newMedals = afterMedals;
+        console.log("NEW" + newMedals);
+      } else if (!(beforeMedals.length === afterMedals.length)) {
+        console.log("ELSE");
+        afterMedals.forEach(aM => {
+          beforeMedals.forEach(bM => {
+            if (aM !== bM) {
+              newMedals.push(aM);
+            }
+          });
+        });
+      }
+
+      console.log(newMedals);
+
+      //Fazer aviso de que ganhou uma nova medalha
 
       /*
       if (this.getUserById(this.getLoggedUserId).history.events.length === 0) {

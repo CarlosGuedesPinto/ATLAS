@@ -14,7 +14,8 @@ export default new Vuex.Store({
         loggedUserId: -1,
         courses: [],
         tags: [],
-        events: []
+        events: [],
+        medals: []
     },
     getters: {
         getUserById: state => id => {
@@ -642,20 +643,20 @@ export default new Vuex.Store({
             })
 
         },
+        SET_MEDALS(state, payload) {
+            state.medals = payload
+        },
         ASSIGN_MEDALS(state, payload) {
 
-            let newMedals = []
-            
             state.users.forEach(user => {
                 if (user.id === payload.userId) {
                     state.medals.forEach(medal => {
                         if (payload.type === "EVENT" && medal.constrains.type === 'EVENT') {
 
                             let userEventsLen = user.history.events.length
-                            console.log(userEventsLen)
+                            console.log((userEventsLen + 1) + " = " + medal.constrains.constrain)
                             if (userEventsLen + 1 === medal.constrains.constrain) {
-                                user.medals.push(medal.id)
-                                newMedals.push(medal.id)
+                                user.leveling.medals.push(medal.id)
                             }
 
                         }
@@ -783,6 +784,9 @@ export default new Vuex.Store({
         },
         historyUpdate(context, payload) {
             context.commit("HISTORY_UPDATE", payload)
+        },
+        setMedals(context, payload) {
+            context.commit("SET_MEDALS", payload)
         },
         assignMedals(context, payload) {
             context.commit('ASSIGN_MEDALS', payload)
