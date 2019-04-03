@@ -658,14 +658,14 @@ export default new Vuex.Store({
             state.medals = payload
         },
         ASSIGN_MEDALS(state, payload) {
-
+            console.log("medal")
             state.users.forEach(user => {
                 if (user.id === payload.userId) {
                     state.medals.forEach(medal => {
                         if (payload.type === "EVENT" && medal.constrains.type === 'EVENT') {
 
                             let userEventsLen = user.history.events.length
-                            console.log((userEventsLen + 1) + " = " + medal.constrains.constrain)
+                            //console.log((userEventsLen + 1) + " = " + medal.constrains.constrain)
                             if (userEventsLen + 1 === medal.constrains.constrain) {
                                 user.leveling.medals.push(medal.id)
                             }
