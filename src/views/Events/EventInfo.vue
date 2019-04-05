@@ -614,23 +614,7 @@ export default {
 
       let afterMedals = this.getUserById(this.getLoggedUserId).medals;
 
-      //tirar o observer dasafterMedals NAO SEI PQ RAIO E Q SAI OBSERVER
-      let beforeMedals = afterMedals.splice(afterMedals.length, 1);
-
-      let newMedals = [];
-
-      if (beforeMedals.length === 0) {
-        console.log("asd");
-        newMedals = afterMedals;
-      } else if (!(beforeMedals.length === afterMedals.length)) {
-        afterMedals.forEach(aM => {
-          beforeMedals.forEach(bM => {
-            if (aM !== bM) {
-              newMedals.push(aM);
-            }
-          });
-        });
-      }
+      let newMedals = afterMedals.splice(afterMedals.length, 1);
 
       console.log(newMedals);
 

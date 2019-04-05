@@ -50,7 +50,6 @@ export default {
   },
   created() {
     
-    console.log(this.getNotificationsByUserId(this.getLoggedUserId))
     window.addEventListener("resize", this.handleResize);
     this.handleResize();
   }
