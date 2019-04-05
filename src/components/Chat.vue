@@ -138,16 +138,6 @@ export default {
 					}
 				})
 			}
-			
-			(async () => {
-				data.author = this.getUserById(this.getLoggedUserId).username
-				try {
-					await this.$http.post("/chat", data)
-				} catch(err) {
-					console.log(err)
-				}
-			})()
-
 			//this.messageList = [...this.messageList, message]
 		},
 		openChat() {

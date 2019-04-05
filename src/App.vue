@@ -68,7 +68,7 @@ export default {
     } else {
       this.setEvents(JSON.parse(localStorage.events));
     }
-
+    
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
         case "USER_LOGGED_IN":
