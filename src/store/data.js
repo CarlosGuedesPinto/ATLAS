@@ -51,9 +51,7 @@ export default {
                 proponents: []
             },
             notifications: [],
-            leveling: {
-                medals: []
-            },
+            medals: [],
             history: {
                 events: []
             }
@@ -76,9 +74,7 @@ export default {
                 proponents: [],
             },
             notifications: [],
-            leveling: {
-                medals: []
-            },
+            medals: [],
             history: {
                 events: []
             }
@@ -102,9 +98,7 @@ export default {
                 proponents: []
             },
             notifications: [],
-            leveling: {
-                medals: []
-            },
+            medals: [],
             history: {
                 events: []
             }
@@ -127,10 +121,7 @@ export default {
                 courses: [6],
                 proponents: []
             },
-            notifications: [],
-            leveling: {
-                medals: []
-            },
+            medals: [],
             history: {
                 events: []
             }
@@ -154,9 +145,7 @@ export default {
                 proponents: []
             },
             notifications: [],
-            leveling: {
-                medals: []
-            },
+            medals: [],
             history: {
                 events: []
             }

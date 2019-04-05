@@ -667,7 +667,7 @@ export default new Vuex.Store({
                             let userEventsLen = user.history.events.length
                             //console.log((userEventsLen + 1) + " = " + medal.constrains.constrain)
                             if (userEventsLen + 1 === medal.constrains.constrain) {
-                                user.leveling.medals.push(medal.id)
+                                user.medals.push(medal.id)
                             }
 
                         }
