@@ -612,23 +612,17 @@ export default {
         type: "EVENT"
       });
 
-      const afterMedals = this.getUserById(this.getLoggedUserId).leveling
-        .medals;
-      console.log(afterMedals);
+      let afterMedals = this.getUserById(this.getLoggedUserId).medals;
 
       //tirar o observer dasafterMedals NAO SEI PQ RAIO E Q SAI OBSERVER
-      let beforeMedals = afterMedals.splice(afterMedals.length - 1, 1);
+      let beforeMedals = afterMedals.splice(afterMedals.length, 1);
 
       let newMedals = [];
-
-      console.log(beforeMedals.length); // a variavel muda de valor ao ser chamada >> aqui retorna 1 pq é chamada outra vez e nao fica com o valor anterior
 
       if (beforeMedals.length === 0) {
         console.log("asd");
         newMedals = afterMedals;
-        //console.log("NEW" + newMedals);
       } else if (!(beforeMedals.length === afterMedals.length)) {
-        //console.log("ELSE");
         afterMedals.forEach(aM => {
           beforeMedals.forEach(bM => {
             if (aM !== bM) {
