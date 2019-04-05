@@ -8,6 +8,13 @@ import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css'
 import 'material-icons/iconfont/material-icons.css'
 import Chat from 'vue-beautiful-chat'
+import axios from 'axios'
+
+const http = axios.create({
+  baseURL: "https://atlas-server-gustavovasconcelos.c9users.io",
+});
+
+Vue.prototype.$http = http
 
 const moment = require("moment")
 require("moment/locale/pt")

@@ -3,7 +3,7 @@
 		<b-form @submit.prevent="submitForm()">
 			<template v-if="!editInterests">
 				<b-form-group
-					label="Nome"
+					label="Nome próprio"
 					label-for="name"
 					:invalid-feedback="nameInvalidFeedback"
 					:valid-feedback="nameValidFeedback"
@@ -11,6 +11,15 @@
 					:class="!editProfile ? 'mt-4' : ''"
 				>
 					<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
+				</b-form-group>
+				<b-form-group
+					label="Apelido"
+					label-for="surname"
+					:invalid-feedback="surnameInvalidFeedback"
+					:valid-feedback="surnameValidFeedback"
+					:state="surnameState"
+				>
+					<b-form-input id="surname" :state="surnameState" v-model="surname" type="text" maxlength="50"></b-form-input>
 				</b-form-group>
 				<b-form-group
 					label="Utilizador"
@@ -155,6 +164,7 @@ export default {
 	watch: {
 		editProfile: function(newVal, oldVal) {
 			this.name = newVal.name
+			this.surname = newVal.surname
 			this.username = newVal.username
 			this.password = newVal.password
 			this.confirmPassword = newVal.password
@@ -173,6 +183,7 @@ export default {
 		return {
 			name: "",
 			username: "",
+			surname: "",
 			password: "",
 			confirmPassword: "",
 			email: "",
@@ -426,6 +437,29 @@ export default {
 		},
 		nameValidFeedback() {
 			if (this.name.length === 50) {
+				return "Máximo 50 caracteres"
+			} else {
+				return null
+			}
+		},
+		surnameState() {
+			if (!this.surname && !this.attemptSubmit) {
+				return null
+			} else if (!this.surname && this.attemptSubmit) {
+				return false
+			} else {
+				return true
+			}
+		},
+		surnameInvalidFeedback() {
+			if (!this.surname && this.attemptSubmit) {
+				return "Introduza o nome"
+			} else {
+				return null
+			}
+		},
+		surnameValidFeedback() {
+			if (this.surname.length === 50) {
 				return "Máximo 50 caracteres"
 			} else {
 				return null
