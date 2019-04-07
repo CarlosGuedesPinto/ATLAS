@@ -367,7 +367,6 @@ export default {
       "getEventById",
       "getTagById",
       "getUserById",
-      "getEnrollmentsByEventId",
       "getLoggedUserId",
       "getCourseById",
       "getEventsByIdsTagsIdsCourses"
