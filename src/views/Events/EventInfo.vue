@@ -589,6 +589,7 @@ export default {
               eventId: this.event.id,
               userId: this.getLoggedUserId
             });
+            this.historyUpdate("REMOVE");
             this.$vs.dialog({
               type: "confirm",
               color: "primary",
@@ -643,6 +644,15 @@ export default {
           eventId: this.event.id
         });
       }
+      if (type === "REMOVE") {
+        this.$store.dispatch("historyUpdate", {
+          type: "REMOVE",
+          userId: this.getLoggedUserId,
+          eventId: this.event.id
+        });
+      }
+
+      //reduzir codigo aqui
     },
     btnValidatePaymentClicked(userId) {},
     btnRemoveEnrollmentClicked(userId) {
