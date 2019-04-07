@@ -71,50 +71,27 @@ import axios from "axios"
 
 export default {
 	name: "FormCreateAccount",
-	props: ["backoffice", "editProfile", "editInterests"],
+	props: ["backoffice", "editMedals"],
 	watch: {
-		editProfile: function(newVal, oldVal) {
-			this.name = newVal.name
-			this.surname = newVal.surname
-			this.username = newVal.username
-			this.password = newVal.password
-			this.confirmPassword = newVal.password
-			this.email = newVal.email
+		editMedal: function(newVal, oldVal) {
+			this.title = newVal.title
+			this.details = newVal.details
 			this.picture = newVal.picture
-			this.selectedGender = newVal.gender
-			this.selectedUserType = newVal.profileId
+			this.type = newVal.type
+			this.constrain = newVal.constrain
 		},
-		editInterests: function(newVal, oldVal) {
-			this.filterTags = ""
-			this.selectedTags = newVal.interests.tags
-			this.selectedCourses = newVal.interests.courses
-		}
 	},
 	data() {
 		return {
-			name: "",
-			username: "",
-			surname: "",
-			password: "",
-			confirmPassword: "",
-			email: "",
+			title: "",
+			details: "",
 			picture: "",
 			pictureLoaded: false,
-			genders: [
-				{ text: "Masculino", value: 1 },
-				{ text: "Feminino", value: 2 }
+			type: 1,
+			medalTypes: [
+				{ text: "Evento", value: 1 },
 			],
-			selectedGender: 1,
-			userTypes: [
-				{ text: "Aluno", value: 1 },
-				{ text: "Proponente de evento", value: 2 },
-				{ text: "Administrador", value: 3 }
-			],
-			selectedUserType: 1,
-			filterTags: "",
-			selectedTags: [],
-			selectedCourses: [],
-			courses: [],
+			constrain: "",
 			attemptSubmit: false,
 			windowWidth: 0
 		}
@@ -125,41 +102,21 @@ export default {
 			this.handleResize()
 		}
 
-		this.getCourses.forEach(course => {
-			this.courses.push({
-				text: course.name,
-				value: course.id
-			})
-		})
-
-		if (this.editProfile) {
-			this.name = this.editProfile.name
-			this.username = this.editProfile.username
-			this.password = this.editProfile.password
-			this.confirmPassword = this.editProfile.password
-			this.email = this.editProfile.email
-			this.picture = this.editProfile.picture
-			this.selectedGender = this.editProfile.gender
-			this.selectedUserType = this.editProfile.profileId
-		}
-
-		if (this.editInterests) {
-			this.filterTags = ""
-			this.selectedTags = this.editInterests.interests.tags
-			this.selectedCourses = this.editInterests.interests.courses
+		if (this.editMedal) {
+			this.title = this.editMedal.title
+			this.details = this.editMedal.details
+			this.picture = this.editMedal.picture
+			this.type = this.editMedal.type
+			this.constrain = this.editMedal.constrain
 		}
 	},
 	methods: {
 		submitForm() {
 			this.attemptSubmit = true
-			if (!this.backoffice && !this.editProfile && !this.editInterests) {
+			if (!this.backoffice && !this.editMedal) {
 				this.signUp()
-			} else if (!this.editProfile && !this.editInterests) {
+			} else if (!this.editMedals) {
 				this.createAccount()
-			} else if (!this.editInterests) {
-				this.editAccount()
-			} else {
-				this.methodEditInterests()
 			}
 		},
 		signUp() {
