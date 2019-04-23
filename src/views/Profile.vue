@@ -2,7 +2,7 @@
 	<div>
 		<div>
 			<TitleAtlas>
-				Perfil - {{ user.name }}
+				Perfil - {{ user.firstName }}
 				<button
 					class="btn btn-atlas2"
 					@click="modalProfile = true"
@@ -14,7 +14,7 @@
 					<button
 						class="btn btn-danger ml-2"
 						@click="btnRemoveClicked()"
-						v-if="getUserById(getLoggedUserId).profileId === 3 && user.id !== getLoggedUserId"
+						v-if="getUserById(getLoggedUserId).profileId === 3 && user._id !== getLoggedUserId"
 					>
 						<i class="fa fa-times" aria-hidden="true"></i>
 					</button>
@@ -27,7 +27,7 @@
 				</div>
 				<div class="col-lg-9 col-md-8 col-12">
 					<vs-list>
-						<vs-list-item icon="person" title="Nome" :subtitle="user.name"></vs-list-item>
+						<vs-list-item icon="person" title="Nome" :subtitle="user.firstName"></vs-list-item>
 						<vs-list-item icon="email" title="Email" :subtitle="user.email"></vs-list-item>
 						<vs-list-item icon="public" title="Nome de utilizador" :subtitle="'@' + user.username"></vs-list-item>
 						<vs-list-item
@@ -63,30 +63,30 @@
 			<p v-else>Nenhum interesse selecionado.</p>
 		</div>
 		<div class="mt-5" v-if="user.profileId !== 1">
-			<TitleAtlas>Eventos criados - {{ getEventsByAuthorId(user.id).length }}</TitleAtlas>
+			<TitleAtlas>Eventos criados - {{ getEventsByAuthorId(user._id).length }}</TitleAtlas>
 			<template v-if="windowWidth >= 768">
 				<EventListItem
-					v-for="event in getEventsByAuthorId(user.id)"
-					:key="'event_' + event.id"
+					v-for="event in getEventsByAuthorId(user._id)"
+					:key="'event_' + event._id"
 					:event="event"
 					class="mb-1"
 				/>
 			</template>
 			<template v-else>
 				<EventCard
-					v-for="event in getEventsByAuthorId(user.id)"
-					:key="'event_' + event.id"
+					v-for="event in getEventsByAuthorId(user._id)"
+					:key="'event_' + event._id"
 					:event="event"
 					class="mb-1"
 				/>
 			</template>
 		</div>
-		<div v-if="user.profileId !== 3 && getUserEnrollmentsByUserId(user.id).length" class="mt-5">
-			<TitleAtlas>Eventos inscrito - {{ getUserEnrollmentsByUserId(user.id).length }}</TitleAtlas>
+		<div v-if="user.profileId !== 3 && getUserEnrollmentsByUserId(user._id).length" class="mt-5">
+			<TitleAtlas>Eventos inscrito - {{ getUserEnrollmentsByUserId(user._id).length }}</TitleAtlas>
 			<template v-if="windowWidth >= 768">
 				<EventListItem
 					v-for="event in getEventsBySelectedPage"
-					:key="event.id"
+					:key="event._id"
 					:event="event"
 					class="mb-1"
 				/>
@@ -94,12 +94,12 @@
 			<template v-else>
 				<EventCard
 					v-for="event in getEventsBySelectedPage"
-					:key="event.id"
+					:key="event._id"
 					:event="event"
 					class="mb-1"
 				/>
 			</template>
-			<div class="mt-3" v-if="getUserEnrollmentsByUserId(user.id).length > eventsPerPage">
+			<div class="mt-3" v-if="getUserEnrollmentsByUserId(user._id).length > eventsPerPage">
 				<vs-pagination :total="totalPages" v-model="currentPage"/>
 			</div>
 		</div>
@@ -193,7 +193,7 @@ export default {
 			if (this.getLoggedUserId !== -1) {
 				if (
 					this.getUserById(this.getLoggedUserId).profileId === 3 ||
-					this.getLoggedUserId === this.user.id
+					this.getLoggedUserId === this.user._id
 				) {
 					return true
 				}
@@ -201,7 +201,7 @@ export default {
 			return false
 		},
 		btnRemoveClicked() {
-			let events = this.getEventsByAuthorId(this.user.id)
+			let events = this.getEventsByAuthorId(this.user._id)
 			if (events.length) {
 				this.$vs.dialog({
 					type: "confirm",
@@ -226,7 +226,7 @@ export default {
 						this.user.username
 					} será removido para sempre.`,
 					accept: () => {
-						this.$store.dispatch("removeUserById", this.user.id)
+						this.$store.dispatch("removeUserById", this.user._id)
 						this.$snotify.success("Utilizador removido", "", {
 							timeout: 2000,
 							showProgressBar: false,
@@ -253,25 +253,25 @@ export default {
 			return this.getUserByUsername(this.$route.params.username)
 		},
 		totalPages() {
-			return this.getUserEnrollmentsByUserId(this.user.id).length <=
+			return this.getUserEnrollmentsByUserId(this.user._id).length <=
 				this.eventsPerPage
 				? 1
 				: Math.floor(
-						this.getUserEnrollmentsByUserId(this.user.id).length /
+						this.getUserEnrollmentsByUserId(this.user._id).length /
 							this.eventsPerPage
 				  ) + 1
 		},
 		getEventsBySelectedPage() {
 			if (
-				this.getUserEnrollmentsByUserId(this.user.id).length >
+				this.getUserEnrollmentsByUserId(this.user._id).length >
 				this.eventsPerPage
 			) {
-				return this.getUserEnrollmentsByUserId(this.user.id).slice(
+				return this.getUserEnrollmentsByUserId(this.user._id).slice(
 					(this.currentPage - 1) * this.eventsPerPage,
 					this.eventsPerPage * this.currentPage
 				)
 			} else {
-				return this.getUserEnrollmentsByUserId(this.user.id)
+				return this.getUserEnrollmentsByUserId(this.user._id)
 			}
 		}
 	}

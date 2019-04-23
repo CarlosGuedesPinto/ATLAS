@@ -4,7 +4,7 @@
       <router-view/>
     </transition>
     <vue-snotify></vue-snotify>
-    <Chat v-if="getLoggedUserId !== -1"></Chat>
+    <!--<Chat v-if="getLoggedUserId !== -1"></Chat>-->
   </div>
 </template>
 
@@ -14,7 +14,6 @@ import database from "@/store/data.js";
 import Chat from "@/components/Chat.vue";
 
 export default {
-  components: { Chat },
   methods: {
     ...mapActions([
       "setUsers",
@@ -26,49 +25,6 @@ export default {
     ])
   },
   created() {
-    window.addEventListener("beforeunload", () => {
-      this.$destroy();
-    });
-
-    if (!localStorage.medals) {
-      localStorage.medals = JSON.stringify(database.medals);
-      this.setMedals(database.medals);
-    } else {
-      this.setMedals(JSON.parse(localStorage.medals));
-    }
-
-    if (!localStorage.users) {
-      localStorage.users = JSON.stringify(database.users);
-      this.setUsers(database.users);
-    } else {
-      this.setUsers(JSON.parse(localStorage.users));
-    }
-
-    if (localStorage.loggedUserId) {
-      this.userLoggedIn(parseInt(localStorage.loggedUserId));
-    }
-
-    if (!localStorage.courses) {
-      localStorage.courses = JSON.stringify(database.courses);
-      this.setCourses(database.courses);
-    } else {
-      this.setCourses(JSON.parse(localStorage.courses));
-    }
-
-    if (!localStorage.tags) {
-      localStorage.tags = JSON.stringify(database.tags);
-      this.setTags(database.tags);
-    } else {
-      this.setTags(JSON.parse(localStorage.tags));
-    }
-
-    if (!localStorage.events) {
-      localStorage.events = JSON.stringify(database.events);
-      this.setEvents(database.events);
-    } else {
-      this.setEvents(JSON.parse(localStorage.events));
-    }
-    
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
         case "USER_LOGGED_IN":
@@ -115,14 +71,6 @@ export default {
       "getEvents",
       "getMedals"
     ])
-  },
-  destroyed() {
-    localStorage.users = JSON.stringify(this.getUsers);
-    localStorage.loggedUserId = JSON.stringify(this.getLoggedUserId);
-    localStorage.courses = JSON.stringify(this.getCourses);
-    localStorage.tags = JSON.stringify(this.getTags);
-    localStorage.events = JSON.stringify(this.getEvents);
-    localStorage.medals = JSON.stringify(this.getMedals);
   }
 };
 </script>

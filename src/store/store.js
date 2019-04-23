@@ -700,8 +700,8 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        async setUsers(context, payload) {
-            const response = HTTP.get("/users")
+        async setUsers(context) {
+            const response = await HTTP.get("/users")
             context.commit("SET_USERS", response.data)
         },
         userLoggedIn(context, payload) {
@@ -736,8 +736,9 @@ export default new Vuex.Store({
         removeUserById(context, payload) {
             context.commit("REMOVE_USER_BY_ID", payload)
         },
-        setCourses(context, payload) {
-            context.commit("SET_COURSES", payload)
+        async setCourses(context) {
+            const response = await HTTP.get("/courses")
+            context.commit("SET_COURSES", response.data)
         },
         addCourse(context, payload) {
             context.commit("ADD_COURSE", payload)
@@ -748,8 +749,9 @@ export default new Vuex.Store({
         removeCourseById(context, payload) {
             context.commit("REMOVE_COURSE_BY_ID", payload)
         },
-        setTags(context, payload) {
-            context.commit("SET_TAGS", payload)
+        async setTags(context, payload) {
+            const response = await HTTP.get("/tags")
+            context.commit("SET_TAGS", response.data)
         },
         addTag(context, payload) {
             context.commit("ADD_TAG", payload)
@@ -760,8 +762,9 @@ export default new Vuex.Store({
         removeTagById(context, payload) {
             context.commit("REMOVE_TAG_BY_ID", payload)
         },
-        setEvents(context, payload) {
-            context.commit("SET_EVENTS", payload)
+        async setEvents(context) {
+            const response = await HTTP.get("/events")
+            context.commit("SET_EVENTS", response.data)
         },
         addEvent(context, payload) {
             context.commit("ADD_EVENT", payload)

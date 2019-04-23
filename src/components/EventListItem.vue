@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex event-list-item">
     <router-link
-      :to="{ name: 'eventsInfo', params: { id: event.id } }"
+      :to="{ name: 'eventsInfo', params: { id: event._id } }"
       class="p-0 col-xl-3 col-lg-4 col-6"
     >
       <img
@@ -11,21 +11,21 @@
       >
     </router-link>
     <div class="bg-atlas2 py-2 col-xl-9 col-lg-8 col-6">
-      <router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
+      <router-link :to="{ name: 'eventsInfo', params: { id: event._id } }" class="router-link">
         <h5 class="text-white atlas-bold">
           <b class="text-atlas1">[{{ event.category }}]</b>
           <span class="atlas-semi-bold ml-1">{{ event.name }}</span>
         </h5>
       </router-link>
       <div class="text-atlas3 event-card-body">
-        <div class="float-left mb-3">{{ getEventShortDescription(event.id) }}</div>
+        <div class="float-left mb-3">{{ getEventShortDescription(event._id) }}</div>
         <div>
           <div class="float-left">
             <router-link
               class="text-atlas3"
               v-for="eventTag in event.tags"
               :to="{name: 'events', query: {tags: getTagById(eventTag).name}}"
-              :key="'event_' + event.id + 'tag_' + eventTag"
+              :key="'event_' + event._id + 'tag_' + eventTag"
             >{{ "#" + getTagById(eventTag).name + " " }}</router-link>
           </div>
           <div class="float-right row">

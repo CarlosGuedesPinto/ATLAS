@@ -153,10 +153,15 @@ const router = new Router({
 import store from "@/store/store.js"
 let loggedUserId = -1, users = [], loggedUser = null
 
-router.beforeEach((to, from, next) => {
+router.beforeResolve(async (to, from, next) => {
+  await store.dispatch("setUsers")
+  await store.dispatch("setCourses")
+  await store.dispatch("setTags")
+  await store.dispatch("setEvents")
+
   if (!from.name) {
     loggedUserId = parseInt(localStorage.loggedUserId)
-    users = JSON.parse(localStorage.users)
+    users = store.state.users
   } else {
     loggedUserId = store.state.loggedUserId
     users = store.getters.getUsers
@@ -184,7 +189,7 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.matched.some(m => m.meta.requiresNotAuth) && loggedUserId !== -1) {
     next({ name: "home" })
-  } 
+  }
   next()
 })
 

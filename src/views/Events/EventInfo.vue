@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <div>
       <TitleAtlas>
         <b class="text-atlas2">[{{ event.category }}]</b>
@@ -283,7 +283,7 @@ import FormEvent from "@/components/FormEvent.vue";
 import EventListItem from "@/components/EventListItem.vue";
 import EventCard from "@/components/EventCard.vue";
 
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "EventInfoView",
@@ -302,7 +302,9 @@ export default {
     }
     next();
   },
-  created() {
+  async created() {
+    await this.loadEvent()
+    console.log(this.event)
     if (
       this.$route.name === "eventsInfo" &&
       this.$route.query.inscrever === "sim"
@@ -352,6 +354,7 @@ export default {
   },
   data() {
     return {
+      event: [],
       modalEdit: false,
       slide: 0,
       modalEnrollments: false,
@@ -359,7 +362,8 @@ export default {
       modal: false,
       currentPage: 1,
       discussionsPerPage: 5,
-      windowWidth: 0
+      windowWidth: 0,
+      loading: false
     };
   },
   computed: {
@@ -371,9 +375,10 @@ export default {
       "getCourseById",
       "getEventsByIdsTagsIdsCourses"
     ]),
+    /*
     event() {
       return this.getEventById(parseInt(this.$route.params.id));
-    },
+    },*/
     totalPages() {
       return this.event.discussions.length <= this.discussionsPerPage
         ? 1
@@ -440,6 +445,19 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      "setUsers",
+      "setCourses",
+      "setTags",
+      "setEvents"
+    ]),
+    async loadEvent() {
+      console.log(this.$route.query.params.id)
+      this.loading = true
+      const response = await this.$http.get(`/events/${this.$route.query.params.id}`)
+      this.event = response.data
+      this.loading = false
+    },
     handleResize() {
       this.windowWidth = window.innerWidth;
     },
