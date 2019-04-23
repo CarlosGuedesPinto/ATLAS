@@ -4,9 +4,9 @@ import axios from 'axios';
 
 const axiosConfig = {
   baseURL: "https://atlas-server-gustavovasconcelos.c9users.io",
-};
+}
 
-const HTTP = axios.create(axiosConfig);
+const HTTP = axios.create(axiosConfig)
 
 Vue.use(Vuex)
 const moment = require("moment")
@@ -30,7 +30,7 @@ export default new Vuex.Store({
             return state.apiUrl
         },
         getUserById: state => id => {
-            return state.users.find(user => user.id === id)
+            return state.users.find(user => user._id === id)
         },
         getUserByUsername: state => username => {
             return state.users.find(user => user.username.toLowerCase() === username.toLowerCase())
@@ -43,8 +43,8 @@ export default new Vuex.Store({
             let lastId = 0
             if (state.users.length) {
                 state.users.forEach(user => {
-                    if (user.id >= lastId) {
-                        lastId = user.id
+                    if (user._id >= lastId) {
+                        lastId = user._id
                     }
                 })
             }
@@ -67,15 +67,15 @@ export default new Vuex.Store({
             let lastId = 0
             if (state.courses.length) {
                 state.courses.forEach(course => {
-                    if (course.id >= lastId) {
-                        lastId = course.id
+                    if (course._id >= lastId) {
+                        lastId = course._id
                     }
                 })
             }
             return lastId
         },
         getCourseById: state => id => {
-            return state.courses.find(course => course.id === id)
+            return state.courses.find(course => course._id === id)
         },
         getCourseByName: state => name => {
             return state.courses.find(course => course.name.toLowerCase() === name.toLowerCase())
@@ -90,21 +90,21 @@ export default new Vuex.Store({
             let lastId = 0
             if (state.tags.length) {
                 state.tags.forEach(tag => {
-                    if (tag.id >= lastId) {
-                        lastId = tag.id
+                    if (tag._id >= lastId) {
+                        lastId = tag._id
                     }
                 })
             }
             return lastId
         },
         getTagById: state => id => {
-            return state.tags.find(tag => tag.id === id)
+            return state.tags.find(tag => tag._id === id)
         },
         getTagByName: state => name => {
             return state.tags.find(tag => tag.name.toLowerCase() === name.toLowerCase())
         },
         getTagNameById: state => id => {
-            return state.tags.find(tag => tag.id === id).name
+            return state.tags.find(tag => tag._id === id).name
         },
         getEvents: state => {
             return state.events
@@ -125,15 +125,15 @@ export default new Vuex.Store({
             let lastId = 0
             if (state.events.length) {
                 state.events.forEach(event => {
-                    if (event.id >= lastId) {
-                        lastId = event.id
+                    if (event._id >= lastId) {
+                        lastId = event._id
                     }
                 })
             }
             return lastId
         },
         getEventShortDescription: state => eventId => {
-            let description = state.events.find(event => event.id === eventId).description
+            let description = state.events.find(event => event._id === eventId).description
             return description.length <= 100 ? description : description.substr(0, description.indexOf(" ", 250)) + "..."
         },
         getEndedEvents: state => {
@@ -152,7 +152,7 @@ export default new Vuex.Store({
             return events
         },
         getEventById: state => id => {
-            return state.events.find(event => event.id === id)
+            return state.events.find(event => event._id === id)
         },
         getEventsByIdsTagsIdsCourses: state => (idsTags, idsCourses) => {
             return state.events.filter(event => {
@@ -178,14 +178,14 @@ export default new Vuex.Store({
                 state.events.forEach(event => {
                     if (event.enrollments.length) {
                         event.enrollments.forEach(enrollment => {
-                            if (user.id === enrollment.userId) {
-                                if (!users.some(user => user.id === enrollment.userId)) {
+                            if (user._id === enrollment.userId) {
+                                if (!users.some(user => user._id === enrollment.userId)) {
                                     users.push({
-                                        id: user.id,
+                                        id: user._id,
                                         amount: 1
                                     })
                                 } else {
-                                    users.find(user => user.id === enrollment.userId).amount++
+                                    users.find(user => user._id === enrollment.userId).amount++
                                 }
                             }
                         })
@@ -226,15 +226,15 @@ export default new Vuex.Store({
             return classrooms
         },
         getEventDiscussionByEventIdDiscussionId: state => (eventId, discussionId) => {
-            return state.events.find(event => event.id === eventId).discussions.find(discussion => discussion.id === discussionId)
+            return state.events.find(event => event._id === eventId).discussions.find(discussion => discussion._id === discussionId)
         },
         getLastDiscussionIdByEventId: state => eventId => {
             let lastId = 0
-            let eventIndex = state.events.findIndex(event => event.id === eventId)
+            let eventIndex = state.events.findIndex(event => event._id === eventId)
             if (state.events[eventIndex].discussions.length) {
                 state.events[eventIndex].discussions.forEach(discussion => {
-                    if (discussion.id >= lastId) {
-                        lastId = discussion.id
+                    if (discussion._id >= lastId) {
+                        lastId = discussion._id
                     }
                 })
             }
@@ -244,13 +244,13 @@ export default new Vuex.Store({
             let lastId = 0
             if (state.events.length) {
                 state.events.forEach(event => {
-                    if (event.id === eventId && event.discussions.length) {
+                    if (event._id === eventId && event.discussions.length) {
                         event.discussions.forEach(discussion => {
-                            if (discussion.id === discussionId) {
+                            if (discussion._id === discussionId) {
                                 if (discussion.answers) {
                                     discussion.answers.forEach(answer => {
-                                        if (answer.id >= lastId) {
-                                            lastId = answer.id
+                                        if (answer._id >= lastId) {
+                                            lastId = answer._id
                                         }
                                     })
                                 }
@@ -263,20 +263,20 @@ export default new Vuex.Store({
             return lastId
         },
         getNotificationsByUserId: state => userId => {
-            return state.users.find(user => user.id === userId).notifications
+            return state.users.find(user => user._id === userId).notifications
         },
         getEventInfoById: state => eventId => {
-            return state.events.find(event => event.id === eventId)
+            return state.events.find(event => event._id === eventId)
         },
         getMedals: state => {
             return state.medals
         },
         getMedalInfoById: state => medalId => {
-            return state.medals.find(medal => medal.id === medalId)
+            return state.medals.find(medal => medal._id === medalId)
         },
         /* Alternativa ao getUserInfo
         getMedalsByUserId: state => userId => {
-            return state.users.find(user => user.id === userId).leveling.medals
+            return state.users.find(user => user._id === userId).leveling.medals
         }*/
     },
     mutations: {
@@ -297,7 +297,7 @@ export default new Vuex.Store({
         },
         EDIT_USER_BY_ID(state, payload) {
             state.users.forEach(user => {
-                if (user.id === payload.id) {
+                if (user._id === payload._id) {
                     user.name = payload.name
                     user.profileId = payload.profileId
                     user.username = payload.username
@@ -310,13 +310,13 @@ export default new Vuex.Store({
         },
         EDIT_USER_INTERESTS_BY_ID(state, payload) {
             state.users.forEach(user => {
-                if (user.id === payload.id) {
+                if (user._id === payload._id) {
                     user.interests = payload.interests
                 }
             })
         },
         REMOVE_USER_BY_ID(state, payload) {
-            let index = state.users.findIndex(user => user.id === payload)
+            let index = state.users.findIndex(user => user._id === payload)
             state.users.splice(index, 1)
         },
         SET_COURSES(state, payload) {
@@ -327,7 +327,7 @@ export default new Vuex.Store({
         },
         EDIT_COURSE(state, payload) {
             state.courses.forEach(course => {
-                if (course.id === payload.id) {
+                if (course._id === payload._id) {
                     course.name = payload.name
                     course.abbreviation = payload.abbreviation
                 }
@@ -335,7 +335,7 @@ export default new Vuex.Store({
         },
         REMOVE_COURSE_BY_ID(state, payload) {
             state.courses.forEach((course, index) => {
-                if (course.id === payload) state.courses.splice(index, 1)
+                if (course._id === payload) state.courses.splice(index, 1)
             })
         },
         SET_TAGS(state, payload) {
@@ -346,12 +346,12 @@ export default new Vuex.Store({
         },
         EDIT_TAG(state, payload) {
             state.tags.forEach(tag => {
-                if (tag.id === payload.id) tag.name = payload.name
+                if (tag._id === payload._id) tag.name = payload.name
             })
         },
         REMOVE_TAG_BY_ID(state, payload) {
             state.tags.forEach((tag, index) => {
-                if (tag.id === payload) state.tags.splice(index, 1)
+                if (tag._id === payload) state.tags.splice(index, 1)
             })
         },
         SET_EVENTS(state, payload) {
@@ -362,7 +362,7 @@ export default new Vuex.Store({
         },
         EDIT_EVENT_BY_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.id) {
+                if (event._id === payload._id) {
                     event.name = payload.event.name
                     event.category = payload.event.category
                     event.tags = payload.event.tags
@@ -381,14 +381,14 @@ export default new Vuex.Store({
         },
         ADD_EVENT_ENROLLMENT_BY_EVENT_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.eventId) {
+                if (event._id === payload.eventId) {
                     event.enrollments.push(payload.enrollment)
                 }
             })
         },
         REMOVE_EVENT_ENROLLMENT_BY_EVENT_ID_USER_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.eventId) {
+                if (event._id === payload.eventId) {
                     event.enrollments.forEach((enrollment, index) => {
                         if (enrollment.userId === payload.userId) {
                             event.enrollments.splice(index, 1)
@@ -399,9 +399,9 @@ export default new Vuex.Store({
         },
         UPVOTE_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.eventId) {
+                if (event._id === payload.eventId) {
                     event.discussions.forEach(discussion => {
-                        if (discussion.id === payload.discussionId) {
+                        if (discussion._id === payload.discussionId) {
                             discussion.upvotes++
                             discussion.usersVoted.push(state.loggedUserId)
                         }
@@ -411,9 +411,9 @@ export default new Vuex.Store({
         },
         DOWNVOTE_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.eventId) {
+                if (event._id === payload.eventId) {
                     event.discussions.forEach(discussion => {
-                        if (discussion.id === payload.discussionId) {
+                        if (discussion._id === payload.discussionId) {
                             discussion.downvotes++
                             discussion.usersVoted.push(state.loggedUserId)
                         }
@@ -422,14 +422,14 @@ export default new Vuex.Store({
             })
         },
         CREATE_EVENT_DISCUSSION(state, payload) {
-            let index = state.events.findIndex(event => event.id === payload.eventId)
+            let index = state.events.findIndex(event => event._id === payload.eventId)
             state.events[index].discussions.push(payload.discussion)
         },
         EDIT_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.eventId) {
+                if (event._id === payload.eventId) {
                     event.discussions.forEach(discussion => {
-                        if (discussion.id === payload.discussionId) {
+                        if (discussion._id === payload.discussionId) {
                             discussion.title = payload.discussion.title
                             discussion.category = payload.discussion.category
                             discussion.content = payload.discussion.content
@@ -439,14 +439,14 @@ export default new Vuex.Store({
             })
         },
         REMOVE_EVENT_BY_ID(state, payload) {
-            let index = state.events.findIndex(event => event.id === payload)
+            let index = state.events.findIndex(event => event._id === payload)
             state.events.splice(index, 1)
         },
         REMOVE_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.eventId) {
+                if (event._id === payload.eventId) {
                     event.discussions.forEach((discussion, index) => {
-                        if (discussion.id === payload.discussionId) {
+                        if (discussion._id === payload.discussionId) {
                             event.discussions.splice(index, 1)
                         }
                     })
@@ -455,9 +455,9 @@ export default new Vuex.Store({
         },
         ADD_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.eventId) {
+                if (event._id === payload.eventId) {
                     event.discussions.forEach(discussion => {
-                        if (discussion.id === payload.discussionId) {
+                        if (discussion._id === payload.discussionId) {
                             discussion.answers.push(payload.answer)
                         }
                     })
@@ -466,11 +466,11 @@ export default new Vuex.Store({
         },
         REMOVE_EVENT_DISCUSSION_ANSWER_BY_EVENT_ID_DISCUSSION_ID_ANSWER_ID(state, payload) {
             state.events.forEach(event => {
-                if (event.id === payload.eventId) {
+                if (event._id === payload.eventId) {
                     event.discussions.forEach(discussion => {
-                        if (discussion.id === payload.discussionId) {
+                        if (discussion._id === payload.discussionId) {
                             discussion.answers.forEach((answer, index) => {
-                                if (answer.id === payload.answerId) {
+                                if (answer._id === payload.answerId) {
                                     discussion.answers.splice(index, 1)
                                 }
                             })
@@ -505,13 +505,13 @@ export default new Vuex.Store({
                                 let found = false
                                 newNotifications.forEach(newNot => {
                                     //Searches if the event is already found in the newNotifications
-                                    if ((newNot.userId === user.id && newNot.eventId === eventId)) {
+                                    if ((newNot.userId === user._id && newNot.eventId === eventId)) {
                                         found = true
                                     }
                                 })
                                 if (found === false) {
                                     newNotifications.push({
-                                        userId: user.id,
+                                        userId: user._id,
                                         eventId,
                                         moment,
                                     })
@@ -519,7 +519,7 @@ export default new Vuex.Store({
                             }
                             else {
                                 newNotifications.push({
-                                    userId: user.id,
+                                    userId: user._id,
                                     eventId: eventId,
                                     moment: moment
                                 })
@@ -536,14 +536,14 @@ export default new Vuex.Store({
                                 let found = false
                                 newNotifications.forEach(newNot => {
                                     //Searches if the event is already found in the newNotifications
-                                    if ((newNot.userId === user.id && newNot.eventId === eventId)) {
+                                    if ((newNot.userId === user._id && newNot.eventId === eventId)) {
                                         found = true
                                     }
                                 })
 
                                 if (found === false) {
                                     newNotifications.push({
-                                        userId: user.id,
+                                        userId: user._id,
                                         eventId: eventId,
                                         moment: moment
                                     })
@@ -552,7 +552,7 @@ export default new Vuex.Store({
                             }
                             else {
                                 newNotifications.push({
-                                    userId: user.id,
+                                    userId: user._id,
                                     eventId: eventId,
                                     moment: moment
                                 })
@@ -571,14 +571,14 @@ export default new Vuex.Store({
 
                                 newNotifications.forEach(newNot => {
                                     //Searches if the event is already found in the newNotifications
-                                    if ((newNot.userId === user.id && newNot.eventId === eventId)) {
+                                    if ((newNot.userId === user._id && newNot.eventId === eventId)) {
                                         found = true
                                     }
                                 })
 
                                 if (found === false) {
                                     newNotifications.push({
-                                        userId: user.id,
+                                        userId: user._id,
                                         eventId: eventId,
                                         moment: moment
                                     })
@@ -586,7 +586,7 @@ export default new Vuex.Store({
                             }
                             else {
                                 newNotifications.push({
-                                    userId: user.id,
+                                    userId: user._id,
                                     eventId: eventId,
                                     moment: moment
                                 })
@@ -600,7 +600,7 @@ export default new Vuex.Store({
             //Insert all the newNotifications in their respective user
             state.users.forEach(user => {
                 newNotifications.forEach(newNot => {
-                    if (newNot.userId === user.id) {
+                    if (newNot.userId === user._id) {
 
                         let matchingUser = {
                             tags: [],
@@ -648,7 +648,7 @@ export default new Vuex.Store({
         INSERT_NEW_MEDAL_USER(state, payload) {
 
             state.users.forEach(user => {
-                if (user.id === payload.userId) {
+                if (user._id === payload.userId) {
                     user.leveling.medals.push(payload.medalId)
                 }
             })
@@ -660,14 +660,14 @@ export default new Vuex.Store({
         ASSIGN_MEDALS(state, payload) {
             console.log("medal")
             state.users.forEach(user => {
-                if (user.id === payload.userId) {
+                if (user._id === payload.userId) {
                     state.medals.forEach(medal => {
                         if (payload.type === "EVENT" && medal.constrains.type === 'EVENT') {
 
                             let userEventsLen = user.history.events.length
                             //console.log((userEventsLen + 1) + " = " + medal.constrains.constrain)
                             if (userEventsLen + 1 === medal.constrains.constrain) {
-                                user.medals.push(medal.id)
+                                user.medals.push(medal._id)
                             }
 
                         }
@@ -680,14 +680,14 @@ export default new Vuex.Store({
 
             if (payload.type === "ADD") {
                 state.users.forEach(user => {
-                    if (user.id === payload.userId) {
+                    if (user._id === payload.userId) {
                         user.history.events.push(payload.eventId)
                     }
                 })
             }
             if (payload.type === "REMOVE") {
                 state.users.forEach(user => {
-                    if (user.id === payload.userId) {
+                    if (user._id === payload.userId) {
                         user.history.events.forEach((event, index) => {
                             if (event === payload.eventId) {
                                 user.history.events.splice(index, 1)
@@ -700,8 +700,9 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        setUsers(context, payload) {
-            context.commit("SET_USERS", payload)
+        async setUsers(context, payload) {
+            const response = HTTP.get("/users")
+            context.commit("SET_USERS", response.data)
         },
         userLoggedIn(context, payload) {
             context.commit("USER_LOGGED_IN", payload)
