@@ -283,6 +283,9 @@ export default new Vuex.Store({
         SET_USERS(state, payload) {
             state.users = payload
         },
+        ADD_USER(state, payload) {
+            state.users.push(payload)
+        },
         USER_LOGGED_IN(state, payload) {
             state.loggedUserId = payload
         },

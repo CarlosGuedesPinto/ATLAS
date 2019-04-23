@@ -5,12 +5,12 @@
 				<b-form-group
 					label="Nome próprio"
 					label-for="name"
-					:invalid-feedback="nameInvalidFeedback"
-					:valid-feedback="nameValidFeedback"
-					:state="nameState"
+					:invalid-feedback="firstNameInvalidFeedback"
+					:valid-feedback="firstNameValidFeedback"
+					:state="firstNameState"
 					:class="!editProfile ? 'mt-4' : ''"
 				>
-					<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
+					<b-form-input id="firstName" :state="firstNameState" v-model="firstName" type="text" maxlength="50"></b-form-input>
 				</b-form-group>
 				<b-form-group
 					label="Apelido"
@@ -163,7 +163,7 @@ export default {
 	props: ["backoffice", "editProfile", "editInterests"],
 	watch: {
 		editProfile: function(newVal, oldVal) {
-			this.name = newVal.name
+			this.firstName = newVal.name
 			this.surname = newVal.surname
 			this.username = newVal.username
 			this.password = newVal.password
@@ -181,7 +181,7 @@ export default {
 	},
 	data() {
 		return {
-			name: "",
+			firstName: "",
 			username: "",
 			surname: "",
 			password: "",
@@ -222,7 +222,7 @@ export default {
 		})
 
 		if (this.editProfile) {
-			this.name = this.editProfile.name
+			this.firstName = this.editProfile.firstName
 			this.username = this.editProfile.username
 			this.password = this.editProfile.password
 			this.confirmPassword = this.editProfile.password
@@ -265,7 +265,7 @@ export default {
 					username: this.username,
 					password: this.password,
 					email: this.email,
-					name: this.name,
+					firstName: this.firstName,
 					picture: !this.picture
 						? this.selectedGender === 1
 							? "https://i.imgur.com/uUbH9go.png"
@@ -299,7 +299,7 @@ export default {
 					username: this.username,
 					password: this.password,
 					email: this.email,
-					name: this.name,
+					firstName: this.firstName,
 					picture: !this.picture
 						? this.selectedGender === 1
 							? "https://i.imgur.com/uUbH9go.png"
@@ -345,7 +345,7 @@ export default {
 					username: this.username,
 					password: this.password,
 					email: this.email,
-					name: this.name,
+					firstName: this.firstName,
 					picture: !this.picture
 						? this.selectedGender === 1
 							? "https://i.imgur.com/uUbH9go.png"
@@ -391,7 +391,7 @@ export default {
 		},
 		clearForm() {
 			this.attemptSubmit = false
-			this.name = ""
+			this.firstName = ""
 			this.username = ""
 			this.password = ""
 			this.confirmPassword = ""
@@ -419,24 +419,24 @@ export default {
 			"getLoggedUserId",
 			"getUserById"
 		]),
-		nameState() {
-			if (!this.name && !this.attemptSubmit) {
+		firstNameState() {
+			if (!this.firstName && !this.attemptSubmit) {
 				return null
-			} else if (!this.name && this.attemptSubmit) {
+			} else if (!this.firstName && this.attemptSubmit) {
 				return false
 			} else {
 				return true
 			}
 		},
-		nameInvalidFeedback() {
-			if (!this.name && this.attemptSubmit) {
+		firstNameInvalidFeedback() {
+			if (!this.firstName && this.attemptSubmit) {
 				return "Introduza o nome"
 			} else {
 				return null
 			}
 		},
-		nameValidFeedback() {
-			if (this.name.length === 50) {
+		firstNameValidFeedback() {
+			if (this.firstName.length === 50) {
 				return "Máximo 50 caracteres"
 			} else {
 				return null

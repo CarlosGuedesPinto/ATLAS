@@ -153,12 +153,7 @@ const router = new Router({
 import store from "@/store/store.js"
 let loggedUserId = -1, users = [], loggedUser = null
 
-router.beforeResolve(async (to, from, next) => {
-  await store.dispatch("setUsers")
-  await store.dispatch("setCourses")
-  await store.dispatch("setTags")
-  await store.dispatch("setEvents")
-
+router.beforeResolve((to, from, next) => {
   if (!from.name) {
     loggedUserId = parseInt(localStorage.loggedUserId)
     users = store.state.users

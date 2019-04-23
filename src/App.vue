@@ -10,8 +10,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import database from "@/store/data.js";
-import Chat from "@/components/Chat.vue";
+//import Chat from "@/components/Chat.vue";
 
 export default {
   methods: {
@@ -24,7 +23,12 @@ export default {
       "setMedals"
     ])
   },
-  created() {
+  async created() {
+    //await this.setUsers()
+    await this.setCourses()
+    await this.setTags()
+    await this.setEvents()
+
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
         case "USER_LOGGED_IN":
