@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<div v-if="loading">Loading</div>
+		<div v-if="loading" class="text-center">
+			<p class="mb-5">&nbsp;</p>
+			<b-spinner variant="atlas" label="A carregar..." style="width: 8rem; height: 8rem;" class="mt-5"></b-spinner>
+		</div>
 		<div v-else>
 			<div>
 				<TitleAtlas>
@@ -173,16 +176,21 @@ export default {
 			const exists = this.getUserByUsername(username)
 			if (!exists) {
 				this.loading = true
-				const response = await this.$http.get(
-					`/users/?username=${username}`
-				)
-				if (response.status === 200) {
-					this.$store.commit("ADD_USER", response.data)
-					this.user = response.data
-				} else {
-					this.$route.push({ name: "home" })
+				try {
+					const response = await this.$http.get(
+						`/users/?username=${username}`
+					)
+					if (response.status === 200) {
+						this.$store.commit("ADD_USER", response.data)
+						this.user = response.data
+					}
+				} catch (err) {
+					console.log("fuck")
+					this.$router.push({ name: "home" })
 				}
 				this.loading = false
+			} else {
+				this.user = exists
 			}
 		},
 		handleResize() {

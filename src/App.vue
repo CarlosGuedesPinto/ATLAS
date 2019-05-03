@@ -15,20 +15,10 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   methods: {
     ...mapActions([
-      "setUsers",
-      "userLoggedIn",
-      "setCourses",
-      "setTags",
-      "setEvents",
-      "setMedals"
+      "userLoggedIn"
     ])
   },
   async created() {
-    //await this.setUsers()
-    await this.setCourses()
-    await this.setTags()
-    await this.setEvents()
-
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
         case "USER_LOGGED_IN":

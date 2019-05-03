@@ -65,8 +65,12 @@ export default {
   props: ["event"],
   data() {
     return {
-      someDate: "2019-01-13"
+      someDate: "2019-01-13",
+      loading: false
     };
+  },
+  methods: {
+
   },
   computed: {
     ...mapGetters(["getUserById", "getTagById", "getEventShortDescription"])

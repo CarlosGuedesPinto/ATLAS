@@ -29,8 +29,20 @@ export default new Vuex.Store({
         getApiUrl: state => {
             return state.apiUrl
         },
-        getUserById: state => id => {
-            return state.users.find(user => user._id === id)
+        getUserById: state => async id => {
+            const user = state.users.find(user => user._id === id)
+            if(!user) {
+                try {
+                    const response = await HTTP.get(`/users/${id}`)
+                    if(response.status === 200) {
+                        this.users.push(response.data)
+                    }
+                } catch(err) {
+                    return null
+                }
+            }
+            console.log(user)
+            return user
         },
         getUserByUsername: state => username => {
             return state.users.find(user => user.username.toLowerCase() === username.toLowerCase())
