@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="card">
-      <router-link :to="{ name: 'eventsInfo', params: { id: event.id } }">
+      <router-link :to="{ name: 'eventsInfo', params: { id: event._id } }">
         <img :src="event.picture.thumbnail" class="card-img-top">
       </router-link>
       <div
         class="bg-atlas2 px-3 py-2 body-card"
         :style="(windowWidth >= 768 && windowWidth <= 991) ? 'min-height: 150px' : ''"
       >
-        <router-link :to="{ name: 'eventsInfo', params: { id: event.id } }" class="router-link">
+        <router-link :to="{ name: 'eventsInfo', params: { id: event._id } }" class="router-link">
           <h5 class="text-white m-0">
             <b class="text-atlas1">[{{ event.category }}]</b>
             {{ event.name }}
@@ -20,12 +20,12 @@
               <router-link
                 class="text-atlas3"
                 v-if="index <= 2"
-                :key="'event_' + event.id + 'tag_' + eventTag"
+                :key="'event_' + event._id + 'tag_' + eventTag"
                 :to="{name: 'events', query: {tags: getTagById(eventTag).name}}"
               >{{ "#" + getTagById(eventTag).name + " " }}</router-link>
               <span v-else-if="index === 3" :key="index">e mais {{ event.tags.length - 3 }} [...]</span>
             </template>
-            <div v-if="ended">{{ getEventShortDescription(event.id) }}</div>
+            <div v-if="ended">{{ getEventShortDescription(event._id) }}</div>
           </div>
           <div class="row">
             <div class="col-6">
@@ -37,7 +37,7 @@
             </div>
             <div class="col-6">
               <i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-              {{ (event.dateStart + " " + event.hourStart) | moment("from", "now") }}
+              {{ ($moment(event.dateStart).format("YYYY-MM-DD") + " " + event.hourStart) | moment("from", "now") }}
             </div>
           </div>
           <div>

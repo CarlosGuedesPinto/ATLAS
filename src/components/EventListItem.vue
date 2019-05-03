@@ -38,7 +38,7 @@
             </div>
             <div class="ml-3">
               <i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-              {{ (event.dateStart + " " + event.hourStart) | moment("from", "now") }}
+              {{ ($moment(event.dateStart).format("YYYY-MM-DD") + " " + event.hourStart) | moment("from", "now") }}
             </div>
             <div class="ml-3">
               <i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
