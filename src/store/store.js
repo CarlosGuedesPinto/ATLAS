@@ -375,6 +375,9 @@ export default new Vuex.Store({
         ADD_EVENT(state, payload) {
             state.events.push(payload)
         },
+        ADD_EVENTS(state, payload) {
+            state.events.push(payload)
+        },
         EDIT_EVENT_BY_ID(state, payload) {
             state.events.forEach(event => {
                 if (event._id === payload._id) {
@@ -456,6 +459,9 @@ export default new Vuex.Store({
         REMOVE_EVENT_BY_ID(state, payload) {
             let index = state.events.findIndex(event => event._id === payload)
             state.events.splice(index, 1)
+        },
+        REMOVE_EVENTS_BY_AUTHOR_ID(state, payload) {
+            state.events = state.events.filter(event => event.authorId !== payload)
         },
         REMOVE_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
@@ -789,6 +795,9 @@ export default new Vuex.Store({
         },
         removeEventById(context, payload) {
             context.commit("REMOVE_EVENT_BY_ID", payload)
+        },
+        removeEventsByAuthorId(context, payload) {
+            context.commit("REMOVE_EVENTS_BY_AUTHOR_ID", payload)
         },
         addEventEnrollmentByEventId(context, payload) {
             context.commit("ADD_EVENT_ENROLLMENT_BY_EVENT_ID", payload)

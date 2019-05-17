@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="loading" class="text-center">
+		<div v-if="loadingPage" class="text-center">
 			<p class="mb-5">&nbsp;</p>
 			<b-spinner variant="atlas" label="A carregar..." style="width: 8rem; height: 8rem;" class="mt-5"></b-spinner>
 		</div>
@@ -136,7 +136,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
+import { mapGetters, mapActions } from "vuex"
 import TitleAtlas from "@/components/TitleAtlas.vue"
 import FormCreateAccount from "@/components/FormCreateAccount.vue"
 import EventListItem from "@/components/EventListItem.vue"
@@ -161,7 +161,11 @@ export default {
 	},
 	data() {
 		return {
-			loading: false,
+			loading: {
+				user: false,
+				enrolledEvents: false,
+				createdEvents: false
+			},
 			modalProfile: false,
 			modalInterests: false,
 			windowWidth: 0,
@@ -175,7 +179,7 @@ export default {
 			const username = this.$route.params.username
 			const exists = this.getUserByUsername(username)
 			if (!exists) {
-				this.loading = true
+				this.loading.user = true
 				try {
 					const response = await this.$http.get(
 						`/users/?username=${username}`
@@ -187,9 +191,32 @@ export default {
 				} catch (err) {
 					this.$router.push({ name: "home" })
 				}
-				this.loading = false
+				this.loading.user = false
 			} else {
 				this.user = exists
+			}
+
+			try {
+
+			} catch(err) {
+				
+			}
+
+			if(this.user.profileId !== 1) {
+				this.loading.createdEvents = true
+				this.$store.commit("REMOVE_EVENTS_BY_AUTHOR_ID", this.user._id)
+				try {
+					const response = await this.$http.get(
+						`/events/authors/${this.user._id}`
+					)
+					if (response.status === 200) {
+						this.$store.commit("ADD_EVENTS", response.data)
+					}
+				} catch(err) {
+					console.log(err)
+					//this.$router.push({ name: "home" })
+				}
+				this.loading.createdEvents = false		
 			}
 		},
 		handleResize() {
@@ -279,6 +306,9 @@ export default {
 			"getEventsByAuthorId",
 			"getUserEnrollmentsByUserId"
 		]),
+		loadingPage() {
+			return this.loading.user || this.loading.events
+		},
 		totalPages() {
 			return this.getUserEnrollmentsByUserId(this.user._id).length <=
 				this.eventsPerPage
