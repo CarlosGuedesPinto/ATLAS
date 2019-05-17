@@ -185,7 +185,6 @@ export default {
 						this.user = response.data
 					}
 				} catch (err) {
-					console.log("fuck")
 					this.$router.push({ name: "home" })
 				}
 				this.loading = false
