@@ -177,31 +177,40 @@ export default {
 	methods: {
 		async loadPage() {
 			const username = this.$route.params.username
-			const exists = this.getUserByUsername(username)
-			if (!exists) {
-				this.loading.user = true
-				try {
-					const response = await this.$http.get(
-						`/users/?username=${username}`
-					)
-					if (response.status === 200) {
-						this.$store.commit("ADD_USER", response.data)
-						this.user = response.data
-					}
-				} catch (err) {
-					this.$router.push({ name: "home" })
-				}
-				this.loading.user = false
-			} else {
-				this.user = exists
-			}
-
+			// loads user
 			try {
-
-			} catch(err) {
-				
+				this.loading.user = true
+				const response = await this.$http.get(
+					`/users/?username=${username}`
+				)
+				if (response.status === 200) {
+					this.$store.commit("ADD_USER", response.data)
+					this.user = response.data
+					this.loading.user = false
+				}
+			} catch (err) {
+				console.log("user")
+				//this.$router.push({ name: "home" })
 			}
 
+
+			// loads user enrollments
+			try {
+				this.loading.enrolledEvents = true
+				const response = await this.$http.get(
+					`/events/enrollments/${this.user._id}`
+				)
+				if (response.status === 200) {
+					this.$store.commit("ADD_EVENTS", response.data)
+					this.loading.enrolledEvents = false
+				}
+			} catch(err) {
+				console.log("enrolled events")
+				console.log(err)
+				//this.$router.push({ name: "home" })
+			}
+
+			// loads user created events
 			if(this.user.profileId !== 1) {
 				this.loading.createdEvents = true
 				this.$store.commit("REMOVE_EVENTS_BY_AUTHOR_ID", this.user._id)
@@ -211,12 +220,12 @@ export default {
 					)
 					if (response.status === 200) {
 						this.$store.commit("ADD_EVENTS", response.data)
+						this.loading.createdEvents = false		
 					}
 				} catch(err) {
-					console.log(err)
+					console.log("created events")
 					//this.$router.push({ name: "home" })
 				}
-				this.loading.createdEvents = false		
 			}
 		},
 		handleResize() {
@@ -307,7 +316,7 @@ export default {
 			"getUserEnrollmentsByUserId"
 		]),
 		loadingPage() {
-			return this.loading.user || this.loading.events
+			return this.loading.user || this.loading.enrolledEvents || this.loading.createdEvents
 		},
 		totalPages() {
 			return this.getUserEnrollmentsByUserId(this.user._id).length <=

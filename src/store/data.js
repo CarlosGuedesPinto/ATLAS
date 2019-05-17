@@ -152,7 +152,7 @@ export default {
         }
     ],
     courses: [
-        { id: 1, name: "Design - Ramo Design Gráfico e Publicidade", na: "DGRAF" },
+        { id: 1, name: "Design - Ramo Design Gráfico e Publicidade", abbreviation: "DGRAF" },
         { id: 2, name: "Design - Ramo Design Industrial", abbreviation: "DIND" },
         { id: 3, name: "Fotografia", abbreviation: "FOTO" },
         { id: 4, name: "Multimédia", abbreviation: "MULTI" },
