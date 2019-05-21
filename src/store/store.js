@@ -15,6 +15,17 @@ require("moment/locale/pt")
 Vue.use(require("vue-moment"), {
     moment
 })
+
+function initialState() {
+    return {
+        users: [],
+        courses: [],
+        tags: [],
+        events: [],
+        medals: []
+    }
+}
+
 export default new Vuex.Store({
     state: {
         users: [],
@@ -29,7 +40,8 @@ export default new Vuex.Store({
         getApiUrl: state => {
             return state.apiUrl
         },
-        getUserById: state => async id => {
+        getUserById: state => id => {
+            /*
             const user = state.users.find(user => user._id === id)
             if(!user) {
                 try {
@@ -42,7 +54,8 @@ export default new Vuex.Store({
                 }
             }
             console.log(user)
-            return user
+            */
+            return state.users.find(user => user._id === id)
         },
         getUserByUsername: state => username => {
             return state.users.find(user => user.username.toLowerCase() === username.toLowerCase())
@@ -292,8 +305,14 @@ export default new Vuex.Store({
         }*/
     },
     mutations: {
-        SET_USERS(state, payload) {
-            state.users = payload
+        RESET_STATE(state) {
+            const initial = initialState()
+            Object.keys(initial).forEach(key => {
+                state[key] = initial[key] 
+            })
+        },
+        LOAD_USERS(state, users) {
+            state.users = users
         },
         ADD_USER(state, payload) {
             state.users.push(payload)
@@ -353,8 +372,8 @@ export default new Vuex.Store({
                 if (course._id === payload) state.courses.splice(index, 1)
             })
         },
-        SET_TAGS(state, payload) {
-            state.tags = payload
+        LOAD_TAGS(state, tags) {
+            tags.forEach(tag => state.tags.push(tag))
         },
         ADD_TAG(state, payload) {
             state.tags.push(payload)
@@ -375,8 +394,8 @@ export default new Vuex.Store({
         ADD_EVENT(state, payload) {
             state.events.push(payload)
         },
-        ADD_EVENTS(state, payload) {
-            state.events.push(payload)
+        ADD_EVENTS(state, events) {
+            events.forEach(event => state.events.push(event))
         },
         EDIT_EVENT_BY_ID(state, payload) {
             state.events.forEach(event => {
@@ -721,9 +740,9 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        async setUsers(context) {
+        async loadUsers(context) {
             const response = await HTTP.get("/users")
-            context.commit("SET_USERS", response.data)
+            context.commit("LOAD_USERS", response.data)
         },
         userLoggedIn(context, payload) {
             context.commit("USER_LOGGED_IN", payload)
@@ -770,9 +789,9 @@ export default new Vuex.Store({
         removeCourseById(context, payload) {
             context.commit("REMOVE_COURSE_BY_ID", payload)
         },
-        async setTags(context, payload) {
+        async loadTags(context) {
             const response = await HTTP.get("/tags")
-            context.commit("SET_TAGS", response.data)
+            context.commit("LOAD_TAGS", response.data)
         },
         addTag(context, payload) {
             context.commit("ADD_TAG", payload)

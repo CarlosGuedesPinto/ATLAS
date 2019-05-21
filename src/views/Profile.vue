@@ -174,8 +174,13 @@ export default {
 			user: []
 		}
 	},
+	watch: {
+		"$route": "loadPage"
+	},
 	methods: {
 		async loadPage() {
+		    this.$store.commit("RESET_STATE")
+
 			const username = this.$route.params.username
 			// loads user
 			try {
@@ -192,8 +197,7 @@ export default {
 				console.log("user")
 				//this.$router.push({ name: "home" })
 			}
-
-
+			
 			// loads user enrollments
 			try {
 				this.loading.enrolledEvents = true
@@ -209,7 +213,7 @@ export default {
 				console.log(err)
 				//this.$router.push({ name: "home" })
 			}
-
+			
 			// loads user created events
 			if(this.user.profileId !== 1) {
 				this.loading.createdEvents = true

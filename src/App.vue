@@ -15,10 +15,15 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   methods: {
     ...mapActions([
-      "userLoggedIn"
+      "userLoggedIn",
+      "loadTags",
+      "loadUsers"
     ])
   },
-  async created() {
+  created() {
+    this.loadTags()
+    this.loadUsers()
+
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
         case "USER_LOGGED_IN":
