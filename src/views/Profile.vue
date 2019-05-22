@@ -182,7 +182,7 @@ export default {
 		    this.$store.commit("RESET_STATE")
 
 			const username = this.$route.params.username
-			// loads user
+			// loads user info
 			try {
 				this.loading.user = true
 				const response = await this.$http.get(

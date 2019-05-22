@@ -13,16 +13,18 @@ import { mapGetters, mapActions } from "vuex";
 //import Chat from "@/components/Chat.vue";
 
 export default {
+  watch: {
+    $route(to, from) {
+      if (to.name === "events") {
+        this.loadTags();
+      }
+    }
+  },
   methods: {
-    ...mapActions([
-      "userLoggedIn",
-      "loadTags",
-      "loadUsers"
-    ])
+    ...mapActions(["userLoggedIn", "loadTags", "loadUsers"])
   },
   created() {
-    this.loadTags()
-    this.loadUsers()
+    this.loadTags();
 
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
