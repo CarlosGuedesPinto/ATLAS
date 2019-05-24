@@ -25,6 +25,7 @@ export default {
   },
   created() {
     this.loadTags();
+    this.loadUsers()
 
     this.$store.subscribe(mutation => {
       switch (mutation.type) {

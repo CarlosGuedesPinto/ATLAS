@@ -44,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="mt-5" v-if="user.profileId !== 3">
+			<div class="mt-5" v-if="user.profileId !== 3 && getLoggedUserId !== -1">
 				<TitleAtlas>
 					Interesses
 					<button class="btn btn-atlas2" @click="modalInterests = true" v-if="btnConditions()">
@@ -175,11 +175,17 @@ export default {
 		}
 	},
 	watch: {
-		"$route": "loadPage"
+		$route() {
+			this.currentPage = 1
+			this.loadPage()
+		}
 	},
 	methods: {
+		...mapActions(["loadUsers", "loadTags"]),
 		async loadPage() {
-		    this.$store.commit("RESET_STATE")
+			this.$store.commit("RESET_STATE")
+			this.loadTags()
+			this.loadUsers()
 
 			const username = this.$route.params.username
 			// loads user info
