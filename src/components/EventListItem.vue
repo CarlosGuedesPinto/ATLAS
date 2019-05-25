@@ -24,9 +24,9 @@
             <router-link
               class="text-atlas3"
               v-for="eventTag in event.tags"
-              :to="{name: 'events', query: {tags: getTagById(eventTag).name}}"
-              :key="'event_' + event._id + 'tag_' + eventTag"
-            >{{ "#" + getTagById(eventTag).name + " " }}</router-link>
+              :to="{name: 'events', query: {tags: eventTag.name}}"
+              :key="'event_' + event._id + 'tag_' + eventTag._id"
+            >{{ "#" + eventTag.name + " " }}</router-link>
           </div>
           <div class="float-right row">
             <div class="ml-3">
@@ -43,9 +43,9 @@
             <div class="ml-3">
               <i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
               <router-link
-                :to="{name: 'profile', params: { username: getUserById(event.authorId).username }}"
+                :to="{name: 'profile', params: { username: event.author.username }}"
                 class="text-atlas3"
-              >&nbsp;@{{ getUserById(event.authorId).username }}</router-link>
+              >&nbsp;@{{ event.author.username }}</router-link>
             </div>
             <div class="mx-3">
               <i class="fa fa-users text-atlas1" aria-hidden="true"></i>

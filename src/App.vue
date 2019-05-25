@@ -21,12 +21,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["userLoggedIn", "loadTags", "loadUsers"])
+    ...mapActions(["userLoggedIn", "loadUsers"])
   },
   created() {
-    this.loadTags();
-    this.loadUsers()
-
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
         case "USER_LOGGED_IN":

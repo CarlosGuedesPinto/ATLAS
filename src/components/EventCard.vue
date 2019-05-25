@@ -20,9 +20,9 @@
               <router-link
                 class="text-atlas3"
                 v-if="index <= 2"
-                :key="'event_' + event._id + 'tag_' + eventTag"
-                :to="{name: 'events', query: {tags: getTagById(eventTag).name}}"
-              >{{ "#" + getTagById(eventTag).name + " " }}</router-link>
+                :key="'event_' + event._id + 'tag_' + eventTag._id"
+                :to="{name: 'events', query: {tags: eventTag.name}}"
+              >{{ "#" + eventTag.name + " " }}</router-link>
               <span v-else-if="index === 3" :key="index">e mais {{ event.tags.length - 3 }} [...]</span>
             </template>
             <div v-if="ended">{{ getEventShortDescription(event._id) }}</div>
@@ -43,9 +43,9 @@
           <div>
             <i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
             <router-link
-              :to="{name: 'profile', params: { username: getUserById(event.authorId).username }}"
+              :to="{name: 'profile', params: { username: event.author.username }}"
               class="text-atlas3"
-            >&nbsp;@{{ getUserById(event.authorId).username }}</router-link>
+            >&nbsp;@{{ event.author.username }}</router-link>
           </div>
           <div>
             <i class="fa fa-users text-atlas1" aria-hidden="true"></i>

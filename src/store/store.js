@@ -137,7 +137,7 @@ export default new Vuex.Store({
         getEventsByAuthorId: state => authorId => {
             let events = []
             state.events.forEach(event => {
-                if (event.authorId === authorId) events.push(event)
+                if (event.author._id === authorId) events.push(event)
             })
 
             if (events.length) {
@@ -353,6 +353,9 @@ export default new Vuex.Store({
             let index = state.users.findIndex(user => user._id === payload)
             state.users.splice(index, 1)
         },
+        LOAD_COURSES(state, courses) {
+            state.courses = courses
+        },
         SET_COURSES(state, payload) {
             state.courses = payload
         },
@@ -480,7 +483,7 @@ export default new Vuex.Store({
             state.events.splice(index, 1)
         },
         REMOVE_EVENTS_BY_AUTHOR_ID(state, payload) {
-            state.events = state.events.filter(event => event.authorId !== payload)
+            state.events = state.events.filter(event => event.author._id !== payload)
         },
         REMOVE_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID(state, payload) {
             state.events.forEach(event => {
@@ -776,9 +779,9 @@ export default new Vuex.Store({
         removeUserById(context, payload) {
             context.commit("REMOVE_USER_BY_ID", payload)
         },
-        async setCourses(context) {
+        async loadCourses(context) {
             const response = await HTTP.get("/courses")
-            context.commit("SET_COURSES", response.data)
+            context.commit("LOAD_COURSES", response.data)
         },
         addCourse(context, payload) {
             context.commit("ADD_COURSE", payload)
