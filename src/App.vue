@@ -16,7 +16,7 @@ export default {
   watch: {
     $route(to, from) {
       if (to.name === "events") {
-        this.loadTags();
+
       }
     }
   },

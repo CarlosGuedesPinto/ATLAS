@@ -8,16 +8,36 @@
 					class="col-lg-3 col-12"
 					@input="getUrlQuery"
 				>
-					<b-form-input id="name" v-model="name" type="text" maxlength="50"></b-form-input>
+					<b-form-input
+						id="name"
+						v-model="name"
+						type="text"
+						maxlength="50"
+						:disabled="loading.next || loading.previous"
+					></b-form-input>
 				</b-form-group>
 				<b-form-group label="Depois de" label-for="dateStart" class="col-lg-3 col-sm-6">
-					<b-form-input id="dateStart" v-model="dateStart" type="date"></b-form-input>
+					<b-form-input
+						id="dateStart"
+						v-model="dateStart"
+						type="date"
+						:disabled="loading.next || loading.previous"
+					></b-form-input>
 				</b-form-group>
 				<b-form-group label="Antes de" label-for="dateEnd" class="col-lg-3 col-sm-6">
-					<b-form-input id="dateEnd" v-model="dateEnd" type="date"></b-form-input>
+					<b-form-input
+						id="dateEnd"
+						v-model="dateEnd"
+						type="date"
+						:disabled="loading.next || loading.previous"
+					></b-form-input>
 				</b-form-group>
 				<b-form-group :label="windowWidth >= 992 ? '&nbsp;' : ''" class="col-lg-3 col-12">
-					<button class="btn btn-atlas1 col-12" @click="searchCollapse = !searchCollapse">
+					<button
+						class="btn btn-atlas1 col-12"
+						@click="searchCollapse = !searchCollapse"
+						:disabled="loading.next || loading.previous"
+					>
 						<i class="fa" :class="!searchCollapse ? 'fa-arrow-down' : 'fa-arrow-up'" aria-hidden="true"></i> Pesquisa avançada
 					</button>
 				</b-form-group>
@@ -376,8 +396,8 @@ export default {
 						(event.name
 							.toLowerCase()
 							.includes(this.name.toLowerCase()) ||
-							this.getUserById(event.authorId)
-								.username.toLowerCase()
+							event.author.username
+								.toLowerCase()
 								.includes(this.name.toLowerCase())) &&
 						result
 				}
