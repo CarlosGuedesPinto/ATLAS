@@ -21,7 +21,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["userLoggedIn", "loadUsers"])
+    ...mapActions(["userLoggedIn", "loadUsers", "loadTags"])
   },
   created() {
     this.$store.subscribe(mutation => {

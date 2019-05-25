@@ -376,7 +376,7 @@ export default new Vuex.Store({
             })
         },
         LOAD_TAGS(state, tags) {
-            tags.forEach(tag => state.tags.push(tag))
+            state.tags = tags
         },
         ADD_TAG(state, payload) {
             state.tags.push(payload)
