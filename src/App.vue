@@ -15,8 +15,8 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   watch: {
     $route(to, from) {
-      if (to.name === "events") {
-
+      if (to.name === "events" && from.name !== "events") {
+        
       }
     }
   },

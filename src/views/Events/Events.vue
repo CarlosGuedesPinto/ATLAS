@@ -239,6 +239,7 @@ export default {
 		this.classrooms = this.getEventClassrooms
 
 		this.$store.commit("RESET_STATE")
+		this.$store.dispatch("loadTags")
 		this.loadNext()
 		this.loadPrevious()
 
@@ -270,7 +271,7 @@ export default {
 			if (to.query.tags) {
 				let tags = to.query.tags.split("_")
 				let tagIds = []
-				tags.forEach(tag => tagIds.push(this.getTagByName(tag).id))
+				tags.forEach(tag => tagIds.push(this.getTagByName(tag)._id))
 				this.selectedTags = tagIds
 				this.searchCollapse = true
 			}
@@ -366,7 +367,7 @@ export default {
 			if (this.selectedTags.length) {
 				let tagNames = []
 				this.selectedTags.forEach(selectedTag =>
-					tagNames.push(this.getTagById(selectedTag).name)
+					tagNames.push(selectedTag)
 				)
 				queryResult.tags = tagNames.join("_")
 			}
@@ -425,9 +426,9 @@ export default {
 
 				if (this.course) {
 					result =
-						event.coursesIds.some(course =>
-							this.getCourseById(course)
-								.name.toLowerCase()
+						event.courses.some(course =>
+							course.name
+								.toLowerCase()
 								.includes(this.course.toLowerCase())
 						) && result
 				}
