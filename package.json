@@ -23,6 +23,7 @@
     "vue-beautiful-chat": "^2.2.0",
     "vue-moment": "^4.0.0",
     "vue-owl-carousel": "^2.0.3",
+    "vue-progressbar": "^0.7.5",
     "vue-router": "^3.0.1",
     "vue-snotify": "^3.2.1",
     "vuesax": "^3.8.0",

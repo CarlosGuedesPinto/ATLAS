@@ -1,13 +1,13 @@
 <template>
 	<div>
-		<div v-if="loadingPage" class="text-center">
+		<div v-if="loading" class="text-center">
 			<p class="mb-5">&nbsp;</p>
 			<b-spinner variant="atlas" label="A carregar..." style="width: 8rem; height: 8rem;" class="mt-5"></b-spinner>
 		</div>
 		<div v-else>
 			<div>
 				<TitleAtlas>
-					Perfil - {{ user.firstName + " " + user.lastName }}
+					Perfil
 					<button
 						class="btn btn-atlas2"
 						@click="modalProfile = true"
@@ -32,7 +32,7 @@
 					</div>
 					<div class="col-lg-9 col-md-8 col-12">
 						<vs-list>
-							<vs-list-item icon="person" title="Nome" :subtitle="user.firstName"></vs-list-item>
+							<vs-list-item icon="person" title="Nome" :subtitle="user.firstName + ' ' + user.lastName"></vs-list-item>
 							<vs-list-item icon="email" title="Email" :subtitle="user.email"></vs-list-item>
 							<vs-list-item icon="public" title="Nome de utilizador" :subtitle="'@' + user.username"></vs-list-item>
 							<vs-list-item
@@ -44,25 +44,31 @@
 					</div>
 				</div>
 			</div>
-			<div class="mt-5" v-if="user.profileId !== 3">
+			<div class="mt-5" v-if="user.profileId !== 3 && !(user.profileId !== 3 && !(user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length))">
 				<TitleAtlas>
 					Interesses
 					<button class="btn btn-atlas2" @click="modalInterests = true" v-if="btnConditions()">
 						<i class="fa fa-edit" aria-hidden="true"></i>
 					</button>
 				</TitleAtlas>
-				<vs-list v-if="interestedTags().length || interestedCourses().length">
+				<vs-list v-if="user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length">
 					<vs-list-item
 						icon="local_offer"
-						:title="interestedTags().length > 1 ? 'Tags' : 'Tag'"
-						:subtitle="interestedTags().join(' ')"
-						v-if="interestedTags().length"
+						:title="user.interests.tags.length > 1 ? 'Tags' : 'Tag'"
+						:subtitle="'#' + user.interests.tags.map(tag => tag.name).join(' #')"
+						v-if="user.interests.tags.length"
 					></vs-list-item>
 					<vs-list-item
 						icon="school"
-						:title="interestedCourses().length > 1 ? 'Cursos' : 'Curso'"
-						:subtitle="interestedCourses().join(', ')"
-						v-if="interestedCourses().length"
+						:title="user.interests.courses.length > 1 ? 'Cursos' : 'Curso'"
+						:subtitle="user.interests.courses.map(course => course.name).join(', ')"
+						v-if="user.interests.courses.length"
+					></vs-list-item>
+					<vs-list-item
+						icon="person"
+						:title="user.interests.proponents.length > 1 ? 'Proponentes' : 'Proponente'"
+						:subtitle="'@' + user.interests.proponents.map(proponent => proponent.username).join(' @')"
+						v-if="user.interests.proponents.length"
 					></vs-list-item>
 				</vs-list>
 				<p v-else>Nenhum interesse selecionado.</p>
@@ -161,11 +167,7 @@ export default {
 	},
 	data() {
 		return {
-			loading: {
-				user: false,
-				enrolledEvents: false,
-				createdEvents: false
-			},
+			loading: false,
 			modalProfile: false,
 			modalInterests: false,
 			windowWidth: 0,
@@ -174,46 +176,47 @@ export default {
 			user: []
 		}
 	},
+	watch: {
+		$route() {
+			this.currentPage = 1
+			this.loadPage()
+		}
+	},
 	methods: {
 		async loadPage() {
-			console.log("Its worl")
+			this.$store.commit("RESET_STATE")
+			this.loading = true
 			const username = this.$route.params.username
-			// loads user
+			// loads user info
 			try {
-				this.loading.user = true
 				const response = await this.$http.get(
 					`/users/?username=${username}`
 				)
 				if (response.status === 200) {
 					this.$store.commit("ADD_USER", response.data)
 					this.user = response.data
-					this.loading.user = false
 				}
 			} catch (err) {
 				console.log("user")
 				//this.$router.push({ name: "home" })
 			}
 
-
 			// loads user enrollments
 			try {
-				this.loading.enrolledEvents = true
 				const response = await this.$http.get(
 					`/events/enrollments/${this.user._id}`
 				)
 				if (response.status === 200) {
 					this.$store.commit("ADD_EVENTS", response.data)
-					this.loading.enrolledEvents = false
 				}
 			} catch(err) {
 				console.log("enrolled events")
 				console.log(err)
 				//this.$router.push({ name: "home" })
 			}
-
+			
 			// loads user created events
 			if(this.user.profileId !== 1) {
-				this.loading.createdEvents = true
 				this.$store.commit("REMOVE_EVENTS_BY_AUTHOR_ID", this.user._id)
 				try {
 					const response = await this.$http.get(
@@ -221,13 +224,13 @@ export default {
 					)
 					if (response.status === 200) {
 						this.$store.commit("ADD_EVENTS", response.data)
-						this.loading.createdEvents = false		
 					}
 				} catch(err) {
 					console.log("created events")
 					//this.$router.push({ name: "home" })
 				}
 			}
+			this.loading = false
 		},
 		handleResize() {
 			this.windowWidth = window.innerWidth
@@ -241,20 +244,6 @@ export default {
 				case 3:
 					return "Administrador"
 			}
-		},
-		interestedTags() {
-			let tagNames = []
-			this.user.interests.tags.forEach(tag =>
-				tagNames.push("#" + this.getTagById(tag).name)
-			)
-			return tagNames
-		},
-		interestedCourses() {
-			let coursesNames = []
-			this.user.interests.courses.forEach(course =>
-				coursesNames.push(this.getCourseById(course).name)
-			)
-			return coursesNames
 		},
 		btnConditions() {
 			if (this.getLoggedUserId !== -1) {
@@ -316,9 +305,6 @@ export default {
 			"getEventsByAuthorId",
 			"getUserEnrollmentsByUserId"
 		]),
-		loadingPage() {
-			return this.loading.user || this.loading.enrolledEvents || this.loading.createdEvents
-		},
 		totalPages() {
 			return this.getUserEnrollmentsByUserId(this.user._id).length <=
 				this.eventsPerPage

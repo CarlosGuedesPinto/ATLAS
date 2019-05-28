@@ -13,12 +13,17 @@ import { mapGetters, mapActions } from "vuex";
 //import Chat from "@/components/Chat.vue";
 
 export default {
-  methods: {
-    ...mapActions([
-      "userLoggedIn"
-    ])
+  watch: {
+    $route(to, from) {
+      if (to.name === "events" && from.name !== "events") {
+        
+      }
+    }
   },
-  async created() {
+  methods: {
+    ...mapActions(["userLoggedIn", "loadUsers", "loadTags"])
+  },
+  created() {
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
         case "USER_LOGGED_IN":
