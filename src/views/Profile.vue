@@ -176,6 +176,7 @@ export default {
 	},
 	methods: {
 		async loadPage() {
+			console.log("Its worl")
 			const username = this.$route.params.username
 			// loads user
 			try {

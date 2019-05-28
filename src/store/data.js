@@ -121,6 +121,7 @@ export default {
                 courses: [6],
                 proponents: []
             },
+            notifications: [],
             medals: [],
             history: {
                 events: []
