@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="loading">
+    <div v-if="loading" class="text-center">
       <p class="mb-5">&nbsp;</p>
       <b-spinner
         variant="atlas"
@@ -67,11 +67,11 @@
               </div>
               <div>
                 <router-link
-                  :to="{name: 'profile', params: { username: getUserById(event.authorId).username }}"
+                  :to="{name: 'profile', params: { username: event.author.username }}"
                   class="text-atlas2"
                 >
                   <i class="fa fa-microphone-alt text-atlas1" aria-hidden="true"></i>
-                  @{{ getUserById(event.authorId).username }}
+                  @{{ event.author.username }}
                 </router-link>
               </div>
               <div>
@@ -91,9 +91,9 @@
                 <router-link
                   v-for="tag in event.tags"
                   :key="'tag_' + tag"
-                  :to="{name: 'events', query: { tags: getTagById(tag).name } }"
+                  :to="{name: 'events', query: { tags: tag.name } }"
                   class="text-atlas2"
-                >#{{ getTagById(tag).name }}</router-link>
+                >#{{ tag.name }}</router-link>
               </div>
               <div>
                 <i class="fa fa-graduation-cap text-atlas1 mr-1" aria-hidden="true"></i>
@@ -183,7 +183,7 @@
         <TitleAtlas>Eventos relacionados</TitleAtlas>
         <template v-if="windowWidth >= 768">
           <EventListItem
-            v-for="sugestedEvent in getSugestedEvents"
+            v-for="sugestedEvent in related"
             :key="'sugested_event_' + sugestedEvent.id"
             :event="sugestedEvent"
             class="mb-1"
@@ -191,7 +191,7 @@
         </template>
         <template v-else>
           <EventCard
-            v-for="sugestedEvent in getSugestedEvents"
+            v-for="sugestedEvent in related"
             :key="'sugested_event_' + sugestedEvent.id"
             :event="sugestedEvent"
             class="mb-1"
@@ -370,6 +370,7 @@ export default {
   data() {
     return {
       event: [],
+      related: [],
       modalEdit: false,
       slide: 0,
       modalEnrollments: false,
@@ -390,10 +391,6 @@ export default {
       "getCourseById",
       "getEventsByIdsTagsIdsCourses"
     ]),
-    /*
-    event() {
-      return this.getEventById(parseInt(this.$route.params.id));
-    },*/
     totalPages() {
       return this.event.discussions.length <= this.discussionsPerPage
         ? 1
@@ -460,28 +457,23 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["setUsers", "setCourses", "setTags", "setEvents"]),
     async loadPage() {
-			const id = this.$route.params.id
-			const exists = this.getEventById(id)
-			if (!exists) {
-				this.loading = true
-				try {
-					const response = await this.$http.get(
-						`/events/${id}`
-					)
-					if (response.status === 200) {
-						this.$store.commit("ADD_USER", response.data)
-						this.user = response.data
-					}
-				} catch (err) {
-					this.$router.push({ name: "home" })
-				}
-				this.loading = false
-			} else {
-				this.user = exists
-			}
-		},
+      const id = this.$route.params.id;
+      this.loading = true;
+      try {
+        const response = await this.$http.get(`/events/ids/${id}/related`);
+        if (response.status === 200) {
+          this.$store.commit("ADD_EVENTS", [response.data.event]);
+          this.$store.commit("ADD_EVENTS", response.data.related);
+          this.event = response.data.event;
+          this.related = response.data.related
+          this.loading = false
+        }
+      } catch (err) {
+        console.log(err);
+        //this.$router.push({ name: "home" })
+      }
+    },
     handleResize() {
       this.windowWidth = window.innerWidth;
     },

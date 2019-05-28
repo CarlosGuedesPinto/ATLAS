@@ -236,7 +236,6 @@ export default {
 	created() {
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()
-		this.classrooms = this.getEventClassrooms
 
 		this.$store.commit("RESET_STATE")
 		this.$store.dispatch("loadTags")
@@ -265,7 +264,14 @@ export default {
 				this.searchCollapse = true
 			}
 		}
-	},
+  },
+  watch: {
+    loadingDone() {
+      if(!this.loading.next && !this.loading.previous) {
+		    this.classrooms = this.getEventClassrooms        
+      }
+    }
+  },
 	beforeRouteUpdate(to, from, next) {
 		if (to.name === "events" && to.query) {
 			if (to.query.tags) {
@@ -322,7 +328,10 @@ export default {
 			"getCourseById",
 			"getEventClassrooms",
 			"getNextEvents"
-		]),
+    ]),
+    loadingDone() {
+      return !this.loading.next && !this.loading.previous
+    },
 		getEndedEventsSelectedPage() {
 			if (this.getEndedEvents.length > this.endedEventsPerPage) {
 				return this.getEndedEvents.slice(
