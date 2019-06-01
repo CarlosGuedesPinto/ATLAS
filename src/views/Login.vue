@@ -32,7 +32,14 @@
 						maxlength="15"
 					></b-form-input>
 				</b-form-group>
-				<button class="btn btn-atlas1 col-12 mt-2" type="submit">Iniciar sessão</button>
+				<button class="btn btn-atlas1 col-12 mt-2" type="submit">
+					<template v-if="loading">
+						<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+					</template>
+					<template v-else>
+						Iniciar sessão
+					</template>
+				</button>
 			</b-form>
 			<div class="mt-2">
 				<small>Sem conta? Registe-se
@@ -53,21 +60,16 @@ export default {
 	components: { Panel },
 	data() {
 		return {
+			loading: false,
 			username: "",
 			password: "",
 			attemptSubmit: false
 		}
 	},
 	methods: {
-		verifyCredentials() {
+		async verifyCredentials() {
 			this.attemptSubmit = true
-			let user = this.getUserByUsername(this.username)
-			if (user && user.password === this.password) {
-				//Logged In
-				this.$store.dispatch("userLoggedIn", user.id)
-				
-				this.$router.replace({ name: "home" })
-			} else if (!this.username || !this.password) {
+			if (!this.username || !this.password) {
 				this.$snotify.error("Preencha todos os campos", "", {
 					timeout: 2000,
 					showProgressBar: false,
@@ -75,6 +77,15 @@ export default {
 					pauseOnHover: true
 				})
 			} else {
+				this.loading = true
+				
+				const response = await this.$http.post("/auth/sign-in", {
+					username: this.username,
+					password: this.password
+				})
+				
+				console.log(response.data)
+
 				this.$snotify.error("Dados de autenticação incorretos", "", {
 					timeout: 2000,
 					showProgressBar: false,
