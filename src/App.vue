@@ -1,10 +1,23 @@
 <template>
   <div id="app">
-    <transition name="fade" mode="out-in">
-      <router-view/>
-    </transition>
-    <vue-snotify></vue-snotify>
-    <!--<Chat v-if="getLoggedUserId !== -1"></Chat>-->
+    <div v-if="loading" class="row">
+      <div class="ml-auto mr-auto">
+        <p class="mb-5">&nbsp;</p>
+        <b-spinner
+          variant="atlas"
+          label="A carregar..."
+          style="width: 8rem; height: 8rem;"
+          class="mt-5"
+        ></b-spinner>
+      </div>
+    </div>
+    <div v-else>
+      <transition name="fade" mode="out-in">
+        <router-view/>
+      </transition>
+      <vue-snotify></vue-snotify>
+      <!--<Chat v-if="getLoggedUserId !== -1"></Chat>-->
+    </div>
   </div>
 </template>
 
@@ -16,19 +29,39 @@ export default {
   watch: {
     $route(to, from) {
       if (to.name === "events" && from.name !== "events") {
-        
       }
     }
   },
+  data() {
+    return {
+      loading: false
+    };
+  },
   methods: {
-    ...mapActions(["userLoggedIn", "loadUsers", "loadTags"])
+    ...mapActions(["userLoggedIn", "loadUsers", "loadTags"]),
+    async loadLoggedUser() {
+      this.loading = true;
+      try {
+        const response = await this.$http.get("/auth/jwt");
+        this.userLoggedIn(response.data)
+      } catch (err) {}
+      this.loading = false
+    }
   },
   created() {
+    this.$store.commit("GET_JWT_COOKIE");
+    if (this.getJwt) {
+      this.$http.defaults.headers.common["Authorization"] = `Bearer ${
+        this.getJwt
+      }`;
+      this.loadLoggedUser();
+    }
+
     this.$store.subscribe(mutation => {
       switch (mutation.type) {
         case "USER_LOGGED_IN":
           this.$snotify.success(
-            `Bem vindo, ${this.getUserById(this.getLoggedUserId).username}!`,
+            `Bem vindo, ${this.getLoggedUser.username}!`,
             "Sessão iniciada",
             {
               timeout: 2000,
@@ -62,8 +95,9 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "getJwt",
       "getUsers",
-      "getLoggedUserId",
+      "getLoggedUser",
       "getUserById",
       "getCourses",
       "getTags",

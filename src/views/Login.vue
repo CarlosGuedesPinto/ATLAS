@@ -15,6 +15,7 @@
 						v-model="username"
 						type="text"
 						maxlength="15"
+						ref="username"
 					></b-form-input>
 				</b-form-group>
 				<b-form-group
@@ -30,6 +31,7 @@
 						v-model="password"
 						type="password"
 						maxlength="15"
+						ref="password"
 					></b-form-input>
 				</b-form-group>
 				<button class="btn btn-atlas1 col-12 mt-2" type="submit">
@@ -61,6 +63,16 @@ export default {
 	data() {
 		return {
 			loading: false,
+			credentialsError: {
+				username: {
+					error: false,
+					value: ""
+				},
+				password: {
+					error: false,
+					value: ""
+				}
+			},
 			username: "",
 			password: "",
 			attemptSubmit: false
@@ -78,27 +90,44 @@ export default {
 				})
 			} else {
 				this.loading = true
-				
+
 				const response = await this.$http.post("/auth/sign-in", {
 					username: this.username,
 					password: this.password
 				})
-				
-				console.log(response.data)
 
-				this.$snotify.error("Dados de autenticação incorretos", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
+				if(response.data.success) {
+					this.$store.commit("SET_JWT_COOKIE", response.data.content.jwt)
+					this.$store.dispatch("userLoggedIn", response.data.content.user)
+					this.$http.defaults.headers.common["Authorization"] = `Bearer ${this.getJwt}`
+					this.$router.push({ name: "home" })
+				} else {
+					if(response.data.description === "invalidUsername") {
+						this.credentialsError.username.error = true
+						this.credentialsError.username.value = this.username
+						this.$refs.username.$el.focus()
+					}
+					if(response.data.description === "invalidPassword") {
+						this.credentialsError.password.error = true
+						this.credentialsError.password.value = this.password
+						this.$refs.password.$el.focus()
+					}
+					
+					this.$snotify.error(response.data.message.pt, "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				}			
+				this.loading = false
 			}
 		}
 	},
 	computed: {
 		...mapGetters(["getUserByUsername"]),
 		usernameState() {
-			if (!this.username && this.attemptSubmit) {
+			if ((!this.username && this.attemptSubmit) || this.credentialsError.username.error && this.credentialsError.username.value === this.username) {
 				return false
 			} else {
 				return null
@@ -112,7 +141,7 @@ export default {
 			}
 		},
 		passwordState() {
-			if (!this.password && this.attemptSubmit) {
+			if ((!this.password && this.attemptSubmit) || this.credentialsError.password.error && this.credentialsError.password.value === this.password) {
 				return false
 			} else {
 				return null

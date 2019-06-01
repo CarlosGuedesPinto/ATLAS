@@ -34,9 +34,17 @@ export default new Vuex.Store({
         tags: [],
         events: [],
         medals: [],
-        apiUrl: "https://atlas-server-gustavovasconcelos.c9users.io"
+        apiUrl: "https://atlas-server-gustavovasconcelos.c9users.io",
+        jwt: "",
+        loggedUser: {}
     },
     getters: {
+        getJwt: state => {
+            return state.jwt
+        },
+        getLoggedUser: state => {
+            return state.loggedUser
+        },
         getApiUrl: state => {
             return state.apiUrl
         },
@@ -305,6 +313,21 @@ export default new Vuex.Store({
         }*/
     },
     mutations: {
+        SET_JWT_COOKIE(state, jwt) {
+            state.jwt = jwt
+            // sets cookie
+            let date = new Date()
+            date.setTime(date.getTime() + 24 * 60 * 60 * 1000)
+            document.cookie = `jwt=${jwt};expires=${date.toUTCString()};path=/`
+        },
+        GET_JWT_COOKIE(state) {
+            const cookies = decodeURIComponent(document.cookie).split(";")
+            cookies.forEach(cookie => {
+                if (cookie.indexOf("jwt") !== -1) {
+                    state.jwt = cookie.split("=")[1]
+                }
+            })
+        },
         RESET_STATE(state) {
             const initial = initialState()
             Object.keys(initial).forEach(key => {
@@ -318,7 +341,7 @@ export default new Vuex.Store({
             state.users.push(payload)
         },
         USER_LOGGED_IN(state, payload) {
-            state.loggedUserId = payload
+            state.loggedUser = payload
         },
         USER_LOGGED_OUT(state) {
             state.loggedUserId = -1

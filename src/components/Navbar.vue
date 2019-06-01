@@ -25,7 +25,7 @@
               :to="{name: 'login'}"
               class="nav-link"
               :class="{'active-route': isActive('login')}"
-              v-if="getLoggedUserId === -1"
+              v-if="!getLoggedUser.username"
             >Iniciar sessão</router-link>
             <div v-else>
               <b-dropdown variant="link" id="nav-user-logged">
@@ -35,15 +35,15 @@
                     height="35"
                     width="35"
                     fluid
-                    :src="getUserById(getLoggedUserId).picture"
-                    :alt="getUserById(getLoggedUserId).username"
+                    :src="getLoggedUser.picture"
+                    :alt="getLoggedUser.username"
                   />
                   <span
                     class="ml-2"
                     style="color: white;"
-                  >@{{ getUserById(getLoggedUserId).username }}</span>
+                  >@{{ getLoggedUser.username }}</span>
                 </template>
-                <template v-if="getUserById(getLoggedUserId).profileId !== 1">
+                <template v-if="getLoggedUser.profileId !== 1">
                   <router-link :to="{name: 'backoffice'}" class="dropdown-item">Painel de controlo</router-link>
                   <b-dropdown-divider></b-dropdown-divider>
                 </template>
@@ -52,7 +52,7 @@
                   class="dropdown-item"
                 >Notificações</router-link>
                 <router-link
-                  :to="{name: 'profile', params: { username: getUserById(getLoggedUserId).username }}"
+                  :to="{name: 'profile', params: { username: getLoggedUser.username }}"
                   class="dropdown-item"
                 >Perfil</router-link>
                 <b-dropdown-item-button @click="userLoggedOut">Terminar sessão</b-dropdown-item-button>
@@ -77,7 +77,7 @@ export default {
     ...mapActions(["userLoggedOut"])
   },
   computed: {
-    ...mapGetters(["getLoggedUserId", "getUserById"])
+    ...mapGetters(["getLoggedUser", "getUserById"])
   }
 };
 </script>

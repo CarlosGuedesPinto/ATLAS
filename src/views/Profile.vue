@@ -54,19 +54,19 @@
 				<vs-list v-if="user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length">
 					<vs-list-item
 						icon="local_offer"
-						:title="user.interests.tags.length > 1 ? 'Tags' : 'Tag'"
+						title="Tags"
 						:subtitle="'#' + user.interests.tags.map(tag => tag.name).join(' #')"
 						v-if="user.interests.tags.length"
 					></vs-list-item>
 					<vs-list-item
 						icon="school"
-						:title="user.interests.courses.length > 1 ? 'Cursos' : 'Curso'"
+						title="Cursos"
 						:subtitle="user.interests.courses.map(course => course.name).join(', ')"
 						v-if="user.interests.courses.length"
 					></vs-list-item>
 					<vs-list-item
 						icon="person"
-						:title="user.interests.proponents.length > 1 ? 'Proponentes' : 'Proponente'"
+						title="Proponentes"
 						:subtitle="'@' + user.interests.proponents.map(proponent => proponent.username).join(' @')"
 						v-if="user.interests.proponents.length"
 					></vs-list-item>
