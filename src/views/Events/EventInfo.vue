@@ -235,7 +235,7 @@
               class="text-atlas2 ml-2"
               :to="{name: 'profile', params: { username: enrollment.user.username } }"
             >@{{ enrollment.user.username }}</router-link>
-            / {{ $moment(enrollment.moment).format("LLL") }}
+            / {{ $moment(enrollment.createdAt).format("LLL") }}
           </div>
 
           <template v-if="btnConditions()" class="text-center">
@@ -310,6 +310,11 @@ export default {
     FormEvent,
     EventListItem,
     EventCard
+  },
+  watch: {
+    $route() {
+      this.loadPage()
+    } 
   },
   beforeRouteUpdate(to, from, next) {
     if (to.name === "eventsInfo" && to.query.inscrever === "sim") {
@@ -427,7 +432,7 @@ export default {
       if (!this.enrollmentsFilter) return this.event.enrollments;
 
       return this.event.enrollments.filter(enrollment =>
-        this.getUserById(enrollment.userId)
+        enrollment.user
           .username.toLowerCase()
           .includes(this.enrollmentsFilter.toLowerCase())
       );

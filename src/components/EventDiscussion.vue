@@ -19,7 +19,7 @@
 			<div>
 				<div>
 					<router-link
-						:to="{ name: 'eventDiscussion', params: { id: $route.params.id, discussionId: discussion.id } }"
+						:to="{ name: 'eventDiscussion', params: { id: $route.params.id, discussionId: discussion._id } }"
 						class="text-white"
 					>
 						<b
@@ -32,24 +32,24 @@
 				<div class="row mt-4">
 					<div class="ml-3">
 						<router-link
-							:to="{name: 'profile', params: { username: getUserById(discussion.authorId).username } }"
+							:to="{name: 'profile', params: { username: discussion.author.username } }"
 							class="text-white"
 						>
 							<i class="fa fa-user text-atlas1" aria-hidden="true"></i>
-							<small>@{{ getUserById(discussion.authorId).username }}</small>
+							<small> @{{ discussion.author.username }}</small>
 						</router-link>
 					</div>
 					<div class="ml-3">
 						<i class="fa fa-comments text-atlas1" aria-hidden="true"></i>
-						<small>&nbsp;{{ discussion.answers.length }} {{ discussion.answers.length === 1 ? 'resposta' : 'respostas' }}</small>
+						<small>&nbsp;{{ discussion.answers }} {{ discussion.answers === 1 ? 'resposta' : 'respostas' }}</small>
 					</div>
 					<div class="ml-3">
 						<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-						<small>&nbsp;{{ $moment(discussion.moment).format("LL") }}</small>
+						<small>&nbsp;{{ $moment(discussion.createdAt).format("LL") }}</small>
 					</div>
 					<div class="ml-3">
 						<i class="fa fa-clock text-atlas1" aria-hidden="true"></i>
-						<small>&nbsp;{{ $moment(discussion.moment).format("HH:mm") }}</small>
+						<small>&nbsp;{{ $moment(discussion.createdAt).format("HH:mm") }}</small>
 					</div>
 				</div>
 			</div>
