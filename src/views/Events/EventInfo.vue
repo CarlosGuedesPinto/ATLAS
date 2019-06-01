@@ -90,19 +90,19 @@
                 <i class="fa fa-tags text-atlas1" aria-hidden="true"></i>
                 <router-link
                   v-for="tag in event.tags"
-                  :key="'tag_' + tag"
+                  :key="'tag_' + tag._id"
                   :to="{name: 'events', query: { tags: tag.name } }"
                   class="text-atlas2"
-                >#{{ tag.name }}</router-link>
+                >#{{ tag.name }} </router-link>
               </div>
               <div>
                 <i class="fa fa-graduation-cap text-atlas1 mr-1" aria-hidden="true"></i>
-                <span v-for="(course, index) in event.coursesIds" :key="'course_' + course">
+                <span v-for="(course, index) in event.courses" :key="'course_' + course._id">
                   <router-link
-                    :to="{name: 'events', query: { curso: getCourseById(course).name } }"
+                    :to="{name: 'events', query: { curso: course.abbreviation } }"
                     class="text-atlas2"
-                  >{{ getCourseById(course).name }}</router-link>
-                  <span v-if="index < event.coursesIds.length - 1">/</span>
+                  >{{ course.name }}</router-link>
+                  <span v-if="index < event.courses.length - 1">/</span>
                 </span>
               </div>
               <div v-if="event.paid">
@@ -149,7 +149,7 @@
         <b-carousel id="picturesCarousel" controls :interval="4000" v-model="slide">
           <b-carousel-slide
             v-for="picture in event.picture.gallery"
-            :key="event.id + '_picture_' + picture"
+            :key="event._id + '_picture_' + picture"
             :img-src="picture"
           ></b-carousel-slide>
         </b-carousel>
@@ -183,17 +183,17 @@
         <TitleAtlas>Eventos relacionados</TitleAtlas>
         <template v-if="windowWidth >= 768">
           <EventListItem
-            v-for="sugestedEvent in related"
-            :key="'sugested_event_' + sugestedEvent.id"
-            :event="sugestedEvent"
+            v-for="relatedEvent in related"
+            :key="'relatedEvent_' + relatedEvent._id"
+            :event="relatedEvent"
             class="mb-1"
           />
         </template>
         <template v-else>
           <EventCard
-            v-for="sugestedEvent in related"
-            :key="'sugested_event_' + sugestedEvent.id"
-            :event="sugestedEvent"
+            v-for="relatedEvent in related"
+            :key="'relatedEvent_' + relatedEvent._id"
+            :event="relatedEvent"
             class="mb-1"
           />
         </template>
@@ -216,15 +216,15 @@
         <hr>
         <div
           v-for="(enrollment, index) in getFilteredEnrollments"
-          :key="'enrollment_' + enrollment.userId"
+          :key="'enrollment_' + enrollment.user._id"
         >
           <div class="text-center">
             <router-link
               class="text-atlas2 ml-2"
-              :to="{name: 'profile', params: { username: getUserById(enrollment.userId).username } }"
+              :to="{name: 'profile', params: { username: enrollment.user.username } }"
             >
               <img
-                :src="getUserById(enrollment.userId).picture"
+                :src="enrollment.user.picture"
                 alt
                 class="rounded-circle img-thumbnail img-fluid"
                 style="height: 100px; width: 100px;"
@@ -233,8 +233,8 @@
             <br v-if="windowWidth < 520">
             <router-link
               class="text-atlas2 ml-2"
-              :to="{name: 'profile', params: { username: getUserById(enrollment.userId).username } }"
-            >@{{ getUserById(enrollment.userId).username }}</router-link>
+              :to="{name: 'profile', params: { username: enrollment.user.username } }"
+            >@{{ enrollment.user.username }}</router-link>
             / {{ $moment(enrollment.moment).format("LLL") }}
           </div>
 
@@ -319,7 +319,6 @@ export default {
   },
   created() {
     this.loadPage();
-    console.log(this.event);
     if (
       this.$route.name === "eventsInfo" &&
       this.$route.query.inscrever === "sim"
@@ -385,11 +384,7 @@ export default {
   computed: {
     ...mapGetters([
       "getEventById",
-      "getTagById",
-      "getUserById",
       "getLoggedUserId",
-      "getCourseById",
-      "getEventsByIdsTagsIdsCourses"
     ]),
     totalPages() {
       return this.event.discussions.length <= this.discussionsPerPage
@@ -428,24 +423,6 @@ export default {
         return this.event.discussions;
       }
     },
-    getSugestedEvents() {
-      let events = this.getEventsByIdsTagsIdsCourses(
-        this.event.tags,
-        this.event.coursesIds
-      );
-
-      let index = events.findIndex(event => event === this.event);
-      if (index !== -1) {
-        events.splice(index, 1);
-      }
-
-      events.sort((a, b) => {
-        return 0.5 - Math.random();
-      });
-
-      events.length = events.length > 3 ? 3 : events.length;
-      return events;
-    },
     getFilteredEnrollments() {
       if (!this.enrollmentsFilter) return this.event.enrollments;
 
@@ -476,20 +453,6 @@ export default {
     },
     handleResize() {
       this.windowWidth = window.innerWidth;
-    },
-    getEventTags() {
-      let tags = [];
-      this.event.tags.forEach(tag => {
-        tags.push("#" + this.getTagById(tag).name);
-      });
-      return tags;
-    },
-    getEventCourses() {
-      let courses = [];
-      this.event.coursesIds.forEach(course => {
-        courses.push(this.getCourseById(course).name);
-      });
-      return courses;
     },
     btnConditions() {
       if (this.getLoggedUserId !== -1) {
