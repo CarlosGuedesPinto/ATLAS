@@ -328,6 +328,9 @@ export default new Vuex.Store({
                 }
             })
         },
+        REFRESHED_PAGE(state, payload) {
+            state.loggedUser = payload
+        },
         RESET_STATE(state) {
             const initial = initialState()
             Object.keys(initial).forEach(key => {
@@ -344,7 +347,8 @@ export default new Vuex.Store({
             state.loggedUser = payload
         },
         USER_LOGGED_OUT(state) {
-            state.loggedUserId = -1
+            document.cookie = "jwt" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+            state.loggedUser = {}
         },
         SIGNED_UP(state, payload) {
             state.users.push(payload)

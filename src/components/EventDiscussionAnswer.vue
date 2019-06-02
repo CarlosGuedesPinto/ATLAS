@@ -3,10 +3,10 @@
 		<div class="discussion" v-if="windowWidth > 768">
 			<div class="row">
 				<div class="col-xl-3 col-md-3 col-12 text-center">
-					<router-link :to="{name:'profile', params: { username: user.username } }">
-						<img :src="user.picture" alt class="rounded-circle img-fluid col-8">
+					<router-link :to="{name:'profile', params: { username: answer.author.username } }">
+						<img :src="answer.author.picture" alt class="rounded-circle img-fluid col-8">
 						<br>
-						<span class="mt-2 text-atlas2">@{{ user.username }}</span>
+						<span class="mt-2 text-atlas2">@{{ answer.author.username }}</span>
 					</router-link>
 					<button class="btn btn-atlas1 col-12" id="profile-name">{{ getProfileName() }}</button>
 				</div>
@@ -15,12 +15,12 @@
 						<template v-if="answer.id !== 0">
 							<small>
 								<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-								{{ $moment(answer.moment).format("LL") }}
+								{{ $moment(answer.createdAt).format("LL") }}
 								<i
 									class="fa fa-clock text-atlas1 ml-2"
 									aria-hidden="true"
 								></i>
-								{{ $moment(answer.moment).format("HH:mm") }}
+								{{ $moment(answer.createdAt).format("HH:mm") }}
 								<button
 									class="btn btn-danger float-right"
 									v-if="btnRemoveConditions()"
@@ -41,26 +41,26 @@
 			<template v-if="answer.id !== 0">
 				<div class="col-12 mt-2">
 					<small>
-						<router-link :to="{name:'profile', params: { username: user.username } }">
+						<router-link :to="{name:'profile', params: { username: answer.author.username } }">
 							<img
-								:src="user.picture"
+								:src="answer.author.picture"
 								alt
 								class="rounded-circle img-fluid"
 								style="width: 35px; height: 35px;"
 							>
 						</router-link>&nbsp;
 						<router-link
-							:to="{name:'profile', params: { username: user.username } }"
+							:to="{name:'profile', params: { username: answer.author.username } }"
 							class="text-atlas2"
-						>@{{ user.username }}</router-link>/
+						>@{{ answer.author.username }}</router-link>/
 						<i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-						{{ $moment(answer.moment).format("LL") }}
+						{{ $moment(answer.createdAt).format("LL") }}
 						/
 						<i
 							class="fa fa-clock text-atlas1"
 							aria-hidden="true"
 						></i>
-						{{ $moment(answer.moment).format("HH:mm") }}
+						{{ $moment(answer.createdAt).format("HH:mm") }}
 						<button
 							class="btn btn-danger float-right"
 							v-if="btnRemoveConditions()"
@@ -98,7 +98,7 @@ export default {
 			this.windowWidth = window.innerWidth
 		},
 		getProfileName() {
-			switch (this.user.profileId) {
+			switch (this.answer.author.profileId) {
 				case 1:
 					return "Aluno"
 				case 2:
@@ -127,11 +127,14 @@ export default {
 				cancelText: "Cancelar",
 				text: "Esta reposta será apagada.",
 				accept: () => {
-					this.$store.dispatch("removeEventDiscussionAnswerByEventIdDiscussionIdAnswerId", {
-						eventId: parseInt(this.$route.params.id),
-						discussionId: parseInt(this.$route.params.discussionId),
-						answerId: this.answer.id
-					})
+					this.$store.dispatch(
+						"removeEventDiscussionAnswerByEventIdDiscussionIdAnswerId",
+						{
+							eventId: parseInt(this.$route.params.id),
+							discussionId: parseInt(this.$route.params.discussionId),
+							answerId: this.answer.id
+						}
+					)
 					this.$snotify.success("Resposta apagada", "", {
 						timeout: 2000,
 						showProgressBar: false,
@@ -143,10 +146,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(["getUserById", "getLoggedUserId"]),
-		user() {
-			return this.getUserById(this.answer.authorId)
-		}
+		...mapGetters(["getUserById", "getLoggedUserId"])
 	}
 }
 </script>
