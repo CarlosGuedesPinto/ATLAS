@@ -168,22 +168,29 @@ const router = new Router({
 })
 
 import store from "@/store/store.js"
-let loggedUserId = -1, users = [], loggedUser = null
+import axios from "axios"
+const http = axios.create({
+  baseURL: "https://atlas-server-gustavovasconcelos.c9users.io",
+})
 
-router.beforeResolve((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (!from.name) {
-    loggedUserId = parseInt(localStorage.loggedUserId)
-    users = store.state.users
-  } else {
-    loggedUserId = store.state.loggedUserId
-    users = store.getters.getUsers
+    store.commit("GET_JWT_COOKIE")
+    http.defaults.headers.common["Authorization"] = `Bearer ${
+      store.getters.getJwt
+      }`
   }
+  let loggedUser = ""
+  if (to.matched.some(route => route.meta.requiresAuth)) {
+    try {
+      const jwtResponse = await http.get("/auth/jwt")
+      loggedUser = jwtResponse.data
+    } catch (err) {
+    }
 
-  loggedUser = users.find(user => user.id === loggedUserId)
 
-  if (to.matched.some(m => m.meta.requiresAuth)) {
-    if (loggedUserId === -1) {
-      next({ name: "login" })
+    if (!loggedUser.profileId) {
+      next({ name: "home" })
     } else {
       let hasAuthorization = to.matched.some(
         m => m.meta.authorizedProfiles ?
@@ -191,6 +198,7 @@ router.beforeResolve((to, from, next) => {
             authorizedProfile => authorizedProfile === loggedUser.profileId
           ) : false
       )
+
       if (!hasAuthorization && loggedUser.profileId === 1) {
         next({ name: "home" })
       } else if (!hasAuthorization && loggedUser.profileId === 2) {
@@ -199,7 +207,7 @@ router.beforeResolve((to, from, next) => {
         next()
       }
     }
-  } else if (to.matched.some(m => m.meta.requiresNotAuth) && loggedUserId !== -1) {
+  } else if (to.matched.some(m => m.meta.requiresNotAuth) && loggedUser !== undefined) {
     next({ name: "home" })
   }
   next()

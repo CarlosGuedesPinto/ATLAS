@@ -342,6 +342,7 @@ export default {
 		}
 	},
 	created() {
+		console.log(this.edit)
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()
 

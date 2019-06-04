@@ -97,7 +97,7 @@
 					<b-form-group
 						label="Tipo de utilizador"
 						class="mt-4"
-						v-if="getUserById(getLoggedUserId).profileId === 3"
+						v-if="getLoggedUser.profileId === 3"
 					>
 						<b-form-radio-group
 							buttons
@@ -416,8 +416,7 @@ export default {
 			"getLastUserId",
 			"getTags",
 			"getCourses",
-			"getLoggedUserId",
-			"getUserById"
+			"getLoggedUser"
 		]),
 		firstNameState() {
 			if (!this.firstName && !this.attemptSubmit) {

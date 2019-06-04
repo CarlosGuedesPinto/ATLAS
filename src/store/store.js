@@ -36,9 +36,13 @@ export default new Vuex.Store({
         medals: [],
         apiUrl: "https://atlas-server-gustavovasconcelos.c9users.io",
         jwt: "",
-        loggedUser: {}
+        loggedUser: {},
+        redirectAfterLogin: ""
     },
     getters: {
+        getRedirectionAfterLogin: state => {
+            return state.redirectAfterLogin
+        },
         getJwt: state => {
             return state.jwt
         },
@@ -327,6 +331,9 @@ export default new Vuex.Store({
                     state.jwt = cookie.split("=")[1]
                 }
             })
+        },
+        REDIRECT_AFTER_LOGIN(state, payload) {
+            state.redirectAfterLogin = payload
         },
         REFRESHED_PAGE(state, payload) {
             state.loggedUser = payload

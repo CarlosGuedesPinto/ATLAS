@@ -46,10 +46,18 @@
 			@row-clicked="rowClicked($event)"
 		>
 			<template
-				slot="userType"
+				slot="name"
 				slot-scope="row"
 				v-if="name === 'users'"
-			>{{ getNameUserType(row.item.profileId) }}</template>
+			>{{ row.item.firstName + " " + row.item.lastName }}</template>
+
+			<template slot="username" slot-scope="row" v-if="name === 'users'">{{ "@" + row.item.username }}</template>
+
+			<template slot="tagName" slot-scope="row" v-if="name === 'tags'">{{ "#" + row.item.name }}</template>
+
+			<template slot="courseName" slot-scope="row" v-if="name === 'courses'">{{row.item.name }}</template>
+
+			<template slot="courseAbbreviation" slot-scope="row" v-if="name === 'courses'">{{row.item.abbreviation }}</template>
 
 			<template
 				slot="author"
@@ -66,7 +74,10 @@
 			</template>
 
 			<template slot="actions" slot-scope="row" v-if="name === 'courses' || name === 'tags'">
-				<button class="btn btn-danger float-right" @click.prevent="btnRemoveClicked(parseInt(row.item.id))">
+				<button
+					class="btn btn-danger float-right"
+					@click.prevent="btnRemoveClicked(parseInt(row.item.id))"
+				>
 					<i class="fa fa-times" aria-hidden="true"></i>
 				</button>
 				<button

@@ -23,25 +23,25 @@
 				index="2"
 				icon="person"
 				:to="{name: 'backofficeUsers'}"
-				v-if="getUserById(getLoggedUserId).profileId === 3"
+				v-if="getLoggedUser.profileId === 3"
 			>Utilizadores</vs-sidebar-item>
 			<vs-sidebar-item
 				index="3"
 				icon="local_offer"
 				:to="{name: 'backofficeTags'}"
-				v-if="getUserById(getLoggedUserId).profileId === 3"
+				v-if="getLoggedUser.profileId === 3"
 			>Tags</vs-sidebar-item>
 			<vs-sidebar-item
 				index="4"
 				icon="school"
 				:to="{name: 'backofficeCourses'}"
-				v-if="getUserById(getLoggedUserId).profileId === 3"
+				v-if="getLoggedUser.profileId === 3"
 			>Cursos</vs-sidebar-item>
 			<vs-sidebar-item
 				index="5"
 				icon="event"
 				:to="{ name: 'backofficeEvents' }"
-			>{{ getUserById(getLoggedUserId).profileId === 2 ? "Meus eventos" : "Eventos" }}</vs-sidebar-item>
+			>{{ getLoggedUser.profileId === 2 ? "Meus eventos" : "Eventos" }}</vs-sidebar-item>
 		</vs-sidebar>
 	</div>
 </template>
@@ -75,7 +75,7 @@ export default {
 		...mapActions(["toggleBackofficeSidebar"])
 	},
 	computed: {
-		...mapGetters(["getUserById", "getLoggedUserId"]),
+		...mapGetters(["getLoggedUser"]),
 		sidebarReduced() {
 			return this.windowWidth <= 768 ? true : false
 		},

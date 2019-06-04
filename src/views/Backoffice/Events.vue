@@ -29,22 +29,13 @@ export default {
 		DataTable
 	},
 	created() {
-		if (this.getUserById(this.getLoggedUserId).profileId === 3)
-			this.eventsFields.splice(2, 0, {
-				key: "author",
-				label: "Autor (ID)",
-				sortable: true
-			})
+		this.loadPage()
 	},
 	data() {
 		return {
+			loading: false,
+			events: [],
 			eventsFields: [
-				{
-					key: "id",
-					label: "ID",
-					sortable: true,
-					sortDirection: "desc"
-				},
 				{
 					key: "name",
 					label: "Nome",
@@ -78,13 +69,30 @@ export default {
 			]
 		}
 	},
+	methods: {
+		async loadPage() {
+			this.$store.commit("RESET_STATE")
+			this.loading = true
+			try {
+				let response
+				if(this.getLoggedUser.profileId === 2) {
+					response = await this.$http.get(`/events/authors/${this.getLoggedUser._id}`)
+				}
+				if(this.getLoggedUser.profileId === 3) {
+					response = await this.$http.get("/events")
+				}
+				
+				if (response.status === 200) {
+					this.events = response.data
+					this.loading = false
+				}
+			} catch (err) {
+				this.$router.push({ name: "home" })
+			}
+		}
+	},
 	computed: {
-		...mapGetters([
-			"getUserById",
-			"getLoggedUserId",
-			"getEvents",
-			"getEventsByAuthorId"
-		])
+		...mapGetters(["getLoggedUser"])
 	}
 }
 </script>

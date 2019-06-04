@@ -24,9 +24,6 @@ Vue.use(require("vue-moment"), {
 })
 Vue.config.productionTip = false
 
-import BSpinner from 'bootstrap-vue/es/components/spinner/spinner'
-Vue.component('spinner', BSpinner)
-
 Vue.use(BootstrapVue)
 Vue.use(Snotify)
 Vue.use(Vuesax, {

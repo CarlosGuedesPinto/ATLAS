@@ -1,6 +1,6 @@
 <template>
 	<div class="row">
-		<Panel title="Iniciar sessão" class="col-md-8 col-sm-9 col-10 mr-auto ml-auto">
+		<Panel title="Iniciar sessão" class="col-md-8 col-10 mr-auto ml-auto">
 			<b-form @submit.prevent="verifyCredentials()">
 				<b-form-group
 					label="Utilizador"
@@ -38,13 +38,12 @@
 					<template v-if="loading">
 						<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
 					</template>
-					<template v-else>
-						Iniciar sessão
-					</template>
+					<template v-else>Iniciar sessão</template>
 				</button>
 			</b-form>
 			<div class="mt-2">
-				<small>Sem conta? Registe-se
+				<small>
+					Sem conta? Registe-se
 					<router-link :to="{name: 'signup'}" class="text-atlas2">aqui</router-link>.
 				</small>
 			</div>
@@ -78,6 +77,12 @@ export default {
 			attemptSubmit: false
 		}
 	},
+	beforeRouteLeave(to, from, next) {
+		if(this.getRedirectionAfterLogin) {
+			this.$store.commit("REDIRECT_AFTER_LOGIN", "")
+		}
+		next()
+	},
 	methods: {
 		async verifyCredentials() {
 			this.attemptSubmit = true
@@ -96,38 +101,49 @@ export default {
 					password: this.password
 				})
 
-				if(response.data.success) {
+				if (response.data.success) {
 					this.$store.commit("SET_JWT_COOKIE", response.data.content.jwt)
 					this.$store.dispatch("userLoggedIn", response.data.content.user)
-					this.$http.defaults.headers.common["Authorization"] = `Bearer ${this.getJwt}`
-					this.$router.push({ name: "home" })
+					this.$http.defaults.headers.common["Authorization"] = `Bearer ${
+						this.getJwt
+					}`
+					if (this.getRedirectionAfterLogin) {
+						this.$router.push({ path: this.getRedirectionAfterLogin })
+						this.$store.commit("REDIRECT_AFTER_LOGIN", "")
+					} else {
+						this.$router.push({ name: "home" })
+					}
 				} else {
-					if(response.data.description === "invalidUsername") {
+					if (response.data.description === "invalidUsername") {
 						this.credentialsError.username.error = true
 						this.credentialsError.username.value = this.username
 						this.$refs.username.$el.focus()
 					}
-					if(response.data.description === "invalidPassword") {
+					if (response.data.description === "invalidPassword") {
 						this.credentialsError.password.error = true
 						this.credentialsError.password.value = this.password
 						this.$refs.password.$el.focus()
 					}
-					
+
 					this.$snotify.error(response.data.message.pt, "", {
 						timeout: 2000,
 						showProgressBar: false,
 						closeOnClick: true,
 						pauseOnHover: true
 					})
-				}			
+				}
 				this.loading = false
 			}
 		}
 	},
 	computed: {
-		...mapGetters(["getUserByUsername"]),
+		...mapGetters(["getRedirectionAfterLogin"]),
 		usernameState() {
-			if ((!this.username && this.attemptSubmit) || this.credentialsError.username.error && this.credentialsError.username.value === this.username) {
+			if (
+				(!this.username && this.attemptSubmit) ||
+				(this.credentialsError.username.error &&
+					this.credentialsError.username.value === this.username)
+			) {
 				return false
 			} else {
 				return null
@@ -141,7 +157,11 @@ export default {
 			}
 		},
 		passwordState() {
-			if ((!this.password && this.attemptSubmit) || this.credentialsError.password.error && this.credentialsError.password.value === this.password) {
+			if (
+				(!this.password && this.attemptSubmit) ||
+				(this.credentialsError.password.error &&
+					this.credentialsError.password.value === this.password)
+			) {
 				return false
 			} else {
 				return null
