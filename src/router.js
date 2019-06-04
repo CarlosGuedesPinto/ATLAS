@@ -1,6 +1,7 @@
 import Vue from "vue"
 import Router from "vue-router"
 import MainView from "@/views/Main.vue"
+/*
 import HomeView from "@/views/Home.vue"
 import EventsView from "@/views/Events/Events.vue"
 import EventInfoView from "@/views/Events/EventInfo.vue"
@@ -15,6 +16,22 @@ import BackofficeTagsView from "@/views/Backoffice/Tags.vue"
 import BackofficeCoursesView from "@/views/Backoffice/Courses.vue"
 import BackofficeEventsView from "@/views/Backoffice/Events.vue"
 import Notifications from "@/views/Notifications.vue"
+*/
+const HomeView = () => import("@/views/Home.vue")
+const EventsView = () => import("@/views/Events/Events.vue")
+const EventInfoView = () => import("@/views/Events/EventInfo.vue")
+const EventDiscussionView = () => import("@/views/Events/EventDiscussion.vue")
+const LoginView = () => import("@/views/Login.vue")
+const SignUpView = () => import("@/views/SignUp.vue")
+const ProfileView = () => import("@/views/Profile.vue")
+const BackofficeView = () => import("@/views/Backoffice/Backoffice.vue")
+const BackofficeHomeView = () => import("@/views/Backoffice/Home.vue")
+const BackofficeUsersView = () => import("@/views/Backoffice/Users.vue")
+const BackofficeTagsView = () => import("@/views/Backoffice/Tags.vue")
+const BackofficeCoursesView = () => import("@/views/Backoffice/Courses.vue")
+const BackofficeEventsView = () => import("@/views/Backoffice/Events.vue")
+const Notifications = () => import("@/views/Notifications.vue")
+
 
 Vue.use(Router)
 
