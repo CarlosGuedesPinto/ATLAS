@@ -8,11 +8,7 @@
 			<div>
 				<TitleAtlas>
 					Perfil
-					<button
-						class="btn btn-atlas2"
-						@click="modalProfile = true"
-						v-if="btnConditions()"
-					>
+					<button class="btn btn-atlas2" @click="modalProfile = true" v-if="btnConditions()">
 						<i class="fa fa-cog" aria-hidden="true"></i>
 					</button>
 					<template v-if="getLoggedUser.username">
@@ -44,14 +40,19 @@
 					</div>
 				</div>
 			</div>
-			<div class="mt-5" v-if="user.profileId !== 3 && !(user.profileId !== 3 && !(user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length))">
+			<div
+				class="mt-5"
+				v-if="user.profileId !== 3 && !(user.profileId !== 3 && !(user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length))"
+			>
 				<TitleAtlas>
 					Interesses
 					<button class="btn btn-atlas2" @click="modalInterests = true" v-if="btnConditions()">
 						<i class="fa fa-edit" aria-hidden="true"></i>
 					</button>
 				</TitleAtlas>
-				<vs-list v-if="user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length || getLoggedUser.username">
+				<vs-list
+					v-if="user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length || getLoggedUser.username"
+				>
 					<vs-list-item
 						icon="local_offer"
 						title="Tags"
@@ -74,10 +75,10 @@
 				<p v-else>Nenhum interesse selecionado.</p>
 			</div>
 			<div class="mt-5" v-if="user.profileId !== 1">
-				<TitleAtlas>Eventos criados - {{ getEventsByAuthorId(user._id).length }}</TitleAtlas>
+				<TitleAtlas>Eventos criados - {{ events.created.length }}</TitleAtlas>
 				<template v-if="windowWidth >= 768">
 					<EventListItem
-						v-for="event in getEventsByAuthorId(user._id)"
+						v-for="event in getCreatedEventsBySelectedPage"
 						:key="'event_' + event._id"
 						:event="event"
 						class="mb-1"
@@ -85,18 +86,21 @@
 				</template>
 				<template v-else>
 					<EventCard
-						v-for="event in getEventsByAuthorId(user._id)"
+						v-for="event in getCreatedEventsBySelectedPage"
 						:key="'event_' + event._id"
 						:event="event"
 						class="mb-1"
 					/>
 				</template>
+				<div class="mt-3" v-if="events.created.length > eventsPerPage">
+					<vs-pagination :total="totalPagesCreated" v-model="currentPageCreated"/>
+				</div>
 			</div>
-			<div v-if="user.profileId !== 3 && getUserEnrollmentsByUserId(user._id).length" class="mt-5">
-				<TitleAtlas>Eventos inscrito - {{ getUserEnrollmentsByUserId(user._id).length }}</TitleAtlas>
+			<div v-if="user.profileId !== 3 && events.enrolled.length" class="mt-5">
+				<TitleAtlas>Eventos inscrito - {{ events.enrolled.length }}</TitleAtlas>
 				<template v-if="windowWidth >= 768">
 					<EventListItem
-						v-for="event in getEventsBySelectedPage"
+						v-for="event in getEnrolledEventsBySelectedPage"
 						:key="event._id"
 						:event="event"
 						class="mb-1"
@@ -104,14 +108,14 @@
 				</template>
 				<template v-else>
 					<EventCard
-						v-for="event in getEventsBySelectedPage"
+						v-for="event in getEnrolledEventsBySelectedPage"
 						:key="event._id"
 						:event="event"
 						class="mb-1"
 					/>
 				</template>
-				<div class="mt-3" v-if="getUserEnrollmentsByUserId(user._id).length > eventsPerPage">
-					<vs-pagination :total="totalPages" v-model="currentPage"/>
+				<div class="mt-3" v-if="events.enrolled.length > eventsPerPage">
+					<vs-pagination :total="totalPagesEnrolled" v-model="currentPage"/>
 				</div>
 			</div>
 
@@ -173,64 +177,50 @@ export default {
 			windowWidth: 0,
 			eventsPerPage: 5,
 			currentPage: 1,
-			user: []
+			currentPageCreated: 1,
+			user: [],
+			events: {
+				created: [],
+				enrolled: []
+			}
 		}
 	},
 	watch: {
 		$route() {
 			this.currentPage = 1
+			this.currentPageCreated = 1
 			this.loadPage()
 		}
 	},
 	methods: {
 		async loadPage() {
 			this.$store.commit("RESET_STATE")
-			this.loading = true
 			const username = this.$route.params.username
 			// loads user info
 			try {
+				this.loading = true
 				const response = await this.$http.get(
-					`/users/?username=${username}`
+					`/users/profile/${username}`
 				)
 				if (response.status === 200) {
-					this.$store.commit("ADD_USER", response.data)
-					this.user = response.data
-				}
-			} catch (err) {
-				console.log("user")
-				//this.$router.push({ name: "home" })
-			}
+					this.user = response.data.content.user
 
-			// loads user enrollments
-			try {
-				const response = await this.$http.get(
-					`/events/enrollments/${this.user._id}`
-				)
-				if (response.status === 200) {
-					this.$store.commit("ADD_EVENTS", response.data)
+					// enrolled events
+					this.events.enrolled = response.data.content.events.enrolled
+					// created events
+					if (
+						this.user.profileId !== 1 &&
+						response.data.content.events.created
+					) {
+						this.events.created =
+							response.data.content.events.created
+					}
 				}
-			} catch(err) {
-				console.log("enrolled events")
-				console.log(err)
+				this.loading = false
+			} catch (err) {
+				console.log(err.response)
 				//this.$router.push({ name: "home" })
 			}
-			
-			// loads user created events
-			if(this.user.profileId !== 1) {
-				this.$store.commit("REMOVE_EVENTS_BY_AUTHOR_ID", this.user._id)
-				try {
-					const response = await this.$http.get(
-						`/events/authors/${this.user._id}`
-					)
-					if (response.status === 200) {
-						this.$store.commit("ADD_EVENTS", response.data)
-					}
-				} catch(err) {
-					console.log("created events")
-					//this.$router.push({ name: "home" })
-				}
-			}
-			this.loading = false
 		},
 		handleResize() {
 			this.windowWidth = window.innerWidth
@@ -296,31 +286,33 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters([
-			"getLoggedUser",
-			"getEventsByAuthorId",
-			"getUserEnrollmentsByUserId"
-		]),
-		totalPages() {
-			return this.getUserEnrollmentsByUserId(this.user._id).length <=
-				this.eventsPerPage
-				? 1
-				: Math.floor(
-						this.getUserEnrollmentsByUserId(this.user._id).length /
-							this.eventsPerPage
-				  ) + 1
+		...mapGetters(["getLoggedUser"]),
+		totalPagesCreated() {
+			return Math.ceil(this.events.created.length / this.eventsPerPage)
 		},
-		getEventsBySelectedPage() {
-			if (
-				this.getUserEnrollmentsByUserId(this.user._id).length >
-				this.eventsPerPage
-			) {
-				return this.getUserEnrollmentsByUserId(this.user._id).slice(
-					(this.currentPage - 1) * this.eventsPerPage,
-					this.eventsPerPage * this.currentPage
+		getCreatedEventsBySelectedPage() {
+			if (this.events.created.length > this.eventsPerPage) {
+				return this.events.created.slice(
+					(this.currentPageCreated - 1) * this.eventsPerPage,
+					(this.currentPageCreated - 1) * this.eventsPerPage +
+						this.eventsPerPage
 				)
 			} else {
-				return this.getUserEnrollmentsByUserId(this.user._id)
+				return this.events.created
+			}
+		},
+		totalPagesEnrolled() {
+			return Math.ceil(this.events.enrolled.length / this.eventsPerPage)
+		},
+		getEnrolledEventsBySelectedPage() {
+			if (this.events.enrolled.length > this.eventsPerPage) {
+				return this.events.enrolled.slice(
+					(this.currentPage - 1) * this.eventsPerPage,
+					(this.currentPage - 1) * this.eventsPerPage +
+						this.eventsPerPage
+				)
+			} else {
+				return this.events.enrolled
 			}
 		}
 	}

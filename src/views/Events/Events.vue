@@ -317,7 +317,7 @@ export default {
 			currentPage: 1,
 			endedEventsPerPage: 5,
 			totalPagesFilteredEvents: 1,
-			filteredEventsPerPage: 5
+			filteredEventsPerPage: 10
 		}
 	},
 	computed: {
@@ -629,21 +629,9 @@ export default {
 		},
 		getTotalPages() {
 			if (!this.filtering) {
-				this.totalPages =
-					this.events.previous.length <= this.endedEventsPerPage
-						? 1
-						: Math.floor(
-								this.events.previous.length /
-									this.endedEventsPerPage
-						  )
+				this.totalPages = Math.ceil(this.events.previous.length / this.endedEventsPerPage)
 			} else {
-				this.totalPages =
-					this.getFilteredEvents.length <= this.filteredEventsPerPage
-						? 1
-						: Math.floor(
-								this.getFilteredEvents.length /
-									this.filteredEventsPerPage
-						  )
+				this.totalPages = Math.ceil(this.getFilteredEvents.length / this.filteredEventsPerPage)
 			}
 		},
 		classroomFloorCondition(floor) {
