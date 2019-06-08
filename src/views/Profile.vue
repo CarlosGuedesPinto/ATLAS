@@ -62,7 +62,7 @@
 					<vs-list-item
 						icon="school"
 						title="Cursos"
-						:subtitle="user.interests.courses.map(course => course.name).join(', ')"
+						:subtitle="user.interests.courses.map(course => `${course.name} (${course.abbreviation})`).join(', ')"
 						v-if="user.interests.courses.length"
 					></vs-list-item>
 					<vs-list-item

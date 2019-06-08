@@ -40,6 +40,7 @@
 					:valid-feedback="usernameValidFeedback"
 					:state="usernameState"
 					class="mt-4"
+					v-if="!editProfile"
 				>
 					<b-form-input
 						id="username"
@@ -56,6 +57,7 @@
 					:invalid-feedback="passwordInvalidFeedback"
 					:state="passwordState"
 					class="mt-4"
+					v-if="!editProfile"
 				>
 					<b-form-input
 						id="password"
@@ -71,7 +73,7 @@
 					:invalid-feedback="confirmPasswordInvalidFeedback"
 					:state="confirmPasswordState"
 					class="mt-4"
-					v-if="!backoffice"
+					v-if="!backoffice && !editProfile"
 				>
 					<b-form-input
 						id="confirmPassword"
@@ -106,7 +108,7 @@
 						name="genders"
 					/>
 				</b-form-group>
-				<template v-if="backoffice || (editProfile && getLoggedUserId !== -1)">
+				<template v-if="backoffice || (editProfile && getLoggedUser.profileId !== -1)">
 					<b-form-group label="Tipo de utilizador" class="mt-4" v-if="getLoggedUser.profileId === 3">
 						<b-form-radio-group
 							buttons
@@ -250,9 +252,8 @@ export default {
 
 		if (this.editProfile) {
 			this.firstName = this.editProfile.firstName
+			this.lastName = this.editProfile.lastName
 			this.username = this.editProfile.username
-			this.password = this.editProfile.password
-			this.confirmPassword = this.editProfile.password
 			this.email = this.editProfile.email
 			this.picture = this.editProfile.picture
 			this.selectedGender = this.editProfile.gender
@@ -261,8 +262,12 @@ export default {
 
 		if (this.editInterests) {
 			this.filterTags = ""
-			this.selectedTags = this.editInterests.interests.tags
-			this.selectedCourses = this.editInterests.interests.courses
+			this.selectedTags = this.editInterests.interests.tags.map(
+				tag => tag.name
+			)
+			this.selectedCourses = this.editInterests.interests.courses.map(
+				course => `${course.name} (${course.abbreviation})`
+			)
 		}
 	},
 	methods: {
@@ -270,12 +275,7 @@ export default {
 			try {
 				this.loading.tags = true
 				const response = await this.$http.get("/tags")
-				this.tags = response.data.map(tag => {
-					return {
-						value: tag._id,
-						text: tag.name
-					}
-				})
+				this.tags = response.data.content.tags.map(tag => tag.name)
 				this.loading.tags = false
 			} catch (err) {}
 		},
@@ -283,12 +283,9 @@ export default {
 			try {
 				this.loading.courses = true
 				const response = await this.$http.get("/courses")
-				this.courses = response.data.map(course => {
-					return {
-						value: course._id,
-						text: course.name
-					}
-				})
+				this.courses = response.data.content.courses.map(
+					course => `${course.name} (${course.abbreviation})`
+				)
 				this.loading.courses = false
 			} catch (err) {}
 		},
@@ -347,7 +344,8 @@ export default {
 							if (error.type === "email") {
 								this.errors.email.error = true
 								this.errors.email.value = error.value
-								if (!this.errors.username) this.$refs.email.$el.focus()
+								if (!this.errors.username)
+									this.$refs.email.$el.focus()
 							}
 						})
 						this.$snotify.error(err.response.data.message.pt, "", {
@@ -540,9 +538,14 @@ export default {
 					return null
 				} else if (!this.username && this.attemptSubmit) {
 					return false
-				} else if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
+				} else if (
+					this.username !== this.username.replace(/[^a-z0-9]/gi, "")
+				) {
 					return false
-				} else if (this.errors.username.error && this.username === this.errors.username.value) {
+				} else if (
+					this.errors.username.error &&
+					this.username === this.errors.username.value
+				) {
 					return false
 				} else {
 					return true
@@ -552,12 +555,13 @@ export default {
 					return null
 				} else if (!this.username && this.attemptSubmit) {
 					return false
-				} else if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
+				} else if (
+					this.username !== this.username.replace(/[^a-z0-9]/gi, "")
+				) {
 					return false
 				} else if (
-					this.getUserByUsername(this.username) !==
-						this.getUserById(this.editProfile.id) &&
-					this.getUserByUsername(this.username)
+					this.errors.username.error &&
+					this.username === this.errors.username.value
 				) {
 					return false
 				} else {
@@ -568,7 +572,10 @@ export default {
 		usernameInvalidFeedback() {
 			if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
 				return "Introduza apenas letras e/ou números"
-			} else if (this.errors.username && this.username === this.errors.username.value) {
+			} else if (
+				this.errors.username &&
+				this.username === this.errors.username.value
+			) {
 				return "Nome de utilizador em uso"
 			} else {
 				return "Introduza o nome de utilizador"
@@ -627,7 +634,10 @@ export default {
 					return null
 				} else if (!this.email && this.attemptSubmit) {
 					return false
-				} else if (this.errors.email.error && this.email === this.errors.email.value) {
+				} else if (
+					this.errors.email.error &&
+					this.email === this.errors.email.value
+				) {
 					return false
 				} else {
 					return true
@@ -638,9 +648,8 @@ export default {
 				} else if (!this.email && this.attemptSubmit) {
 					return false
 				} else if (
-					this.getUserByEmail(this.email) !==
-						this.getUserById(this.editProfile.id) &&
-					this.getUserByEmail(this.email)
+					this.errors.email.error &&
+					this.email === this.errors.email.value
 				) {
 					return false
 				} else {
@@ -651,7 +660,10 @@ export default {
 		emailInvalidFeedback() {
 			if (!this.email && this.attemptSubmit) {
 				return "Introduza o email"
-			} else if (this.errors.email && this.email === this.errors.email.value) {
+			} else if (
+				this.errors.email &&
+				this.email === this.errors.email.value
+			) {
 				return "Email em uso"
 			} else {
 				return null
@@ -669,7 +681,7 @@ export default {
 				return this.tags
 			} else {
 				return this.tags.filter(tag =>
-					tag.text.toLowerCase().includes(this.filterTags.toLowerCase())
+					tag.toLowerCase().includes(this.filterTags.toLowerCase())
 				)
 			}
 		}
