@@ -207,9 +207,9 @@ router.beforeEach(async (to, from, next) => {
         next()
       }
     }
-  } else if (to.matched.some(m => m.meta.requiresNotAuth) && loggedUser !== undefined) {
+  } /*else if (to.matched.some(m => m.meta.requiresNotAuth) && loggedUser !== undefined) {
     next({ name: "home" })
-  }
+  }*/
   next()
 })
 

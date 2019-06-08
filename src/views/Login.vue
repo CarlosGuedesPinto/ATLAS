@@ -78,7 +78,7 @@ export default {
 		}
 	},
 	beforeRouteLeave(to, from, next) {
-		if(this.getRedirectionAfterLogin) {
+		if (this.getRedirectionAfterLogin) {
 			this.$store.commit("REDIRECT_AFTER_LOGIN", "")
 		}
 		next()
@@ -95,13 +95,12 @@ export default {
 				})
 			} else {
 				this.loading = true
+				try {
+					const response = await this.$http.post("/auth/sign-in", {
+						username: this.username,
+						password: this.password
+					})
 
-				const response = await this.$http.post("/auth/sign-in", {
-					username: this.username,
-					password: this.password
-				})
-
-				if (response.data.success) {
 					this.$store.commit("SET_JWT_COOKIE", response.data.content.jwt)
 					this.$store.dispatch("userLoggedIn", response.data.content.user)
 					this.$http.defaults.headers.common["Authorization"] = `Bearer ${
@@ -113,19 +112,19 @@ export default {
 					} else {
 						this.$router.push({ name: "home" })
 					}
-				} else {
-					if (response.data.description === "invalidUsername") {
+				} catch (err) {
+					if (err.response.data.name === "invalidUsername") {
 						this.credentialsError.username.error = true
 						this.credentialsError.username.value = this.username
 						this.$refs.username.$el.focus()
 					}
-					if (response.data.description === "invalidPassword") {
+					if (err.response.data.name === "invalidPassword") {
 						this.credentialsError.password.error = true
 						this.credentialsError.password.value = this.password
 						this.$refs.password.$el.focus()
 					}
 
-					this.$snotify.error(response.data.message.pt, "", {
+					this.$snotify.error(err.response.data.message.pt, "", {
 						timeout: 2000,
 						showProgressBar: false,
 						closeOnClick: true,
@@ -137,7 +136,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(["getRedirectionAfterLogin"]),
+		...mapGetters(["getRedirectionAfterLogin", "getLoggedUser", "getJwt"]),
 		usernameState() {
 			if (
 				(!this.username && this.attemptSubmit) ||

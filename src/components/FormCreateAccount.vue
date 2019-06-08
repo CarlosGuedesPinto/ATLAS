@@ -4,22 +4,34 @@
 			<template v-if="!editInterests">
 				<b-form-group
 					label="Nome próprio"
-					label-for="name"
+					label-for="firstName"
 					:invalid-feedback="firstNameInvalidFeedback"
 					:valid-feedback="firstNameValidFeedback"
 					:state="firstNameState"
 					:class="!editProfile ? 'mt-4' : ''"
 				>
-					<b-form-input id="firstName" :state="firstNameState" v-model="firstName" type="text" maxlength="50"></b-form-input>
+					<b-form-input
+						id="firstName"
+						:state="firstNameState"
+						v-model="firstName"
+						type="text"
+						maxlength="20"
+					></b-form-input>
 				</b-form-group>
 				<b-form-group
 					label="Apelido"
-					label-for="surname"
-					:invalid-feedback="surnameInvalidFeedback"
-					:valid-feedback="surnameValidFeedback"
-					:state="surnameState"
+					label-for="lastName"
+					:invalid-feedback="lastNameInvalidFeedback"
+					:valid-feedback="lastNameValidFeedback"
+					:state="lastNameState"
 				>
-					<b-form-input id="surname" :state="surnameState" v-model="surname" type="text" maxlength="50"></b-form-input>
+					<b-form-input
+						id="lastName"
+						:state="lastNameState"
+						v-model="lastName"
+						type="text"
+						maxlength="20"
+					></b-form-input>
 				</b-form-group>
 				<b-form-group
 					label="Utilizador"
@@ -35,6 +47,7 @@
 						v-model="username"
 						type="text"
 						maxlength="15"
+						ref="username"
 					></b-form-input>
 				</b-form-group>
 				<b-form-group
@@ -75,7 +88,7 @@
 					:state="emailState"
 					class="mt-4"
 				>
-					<b-form-input id="email" :state="emailState" v-model="email" type="email"></b-form-input>
+					<b-form-input id="email" :state="emailState" v-model="email" type="email" ref="password"></b-form-input>
 				</b-form-group>
 				<b-form-group label-for="picture" :state="pictureState" class="mt-4">
 					<template slot="label">
@@ -94,22 +107,19 @@
 					/>
 				</b-form-group>
 				<template v-if="backoffice || (editProfile && getLoggedUserId !== -1)">
-					<b-form-group
-						label="Tipo de utilizador"
-						class="mt-4"
-						v-if="getLoggedUser.profileId === 3"
-					>
+					<b-form-group label="Tipo de utilizador" class="mt-4" v-if="getLoggedUser.profileId === 3">
 						<b-form-radio-group
 							buttons
 							:stacked="windowWidth < 595 ? true : false"
 							button-variant="outline-atlas2"
-							v-model="selectedUserType"
+							v-model="profileId"
 							:options="userTypes"
 							name="userTypes"
 						/>
 					</b-form-group>
 				</template>
 			</template>
+
 			<template v-if="!editProfile">
 				<template v-if="!editProfile && !editInterests">
 					<hr>
@@ -118,32 +128,39 @@
 						<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
 					</h5>
 				</template>
-				<b-form-group label="Tags" label-for="filterTag">
-					<b-form-input
-						id="filterTag"
-						v-model="filterTags"
-						type="text"
-						maxlength="50"
-						placeholder="Filtrar tags..."
-					></b-form-input>
-					<b-form-checkbox-group
-						v-model="selectedTags"
-						name="tags"
-						:options="getFilteredTags"
-						:stacked="true"
-						style="overflow-y: scroll; max-height: 200px;"
-						class="mt-2 px-1"
-					></b-form-checkbox-group>
-				</b-form-group>
-				<b-form-group label="Cursos" class="mt-4">
-					<b-form-checkbox-group
-						v-model="selectedCourses"
-						name="courses"
-						:options="courses"
-						:stacked="true"
-						class="px-1"
-					></b-form-checkbox-group>
-				</b-form-group>
+				<template v-if="loading.tags && loading.courses" class="row">
+					<div class="text-center">
+						<b-spinner variant="atlas" label="A carregar..."></b-spinner>
+					</div>
+				</template>
+				<template v-else>
+					<b-form-group label="Tags" label-for="filterTag">
+						<b-form-input
+							id="filterTag"
+							v-model="filterTags"
+							type="text"
+							maxlength="50"
+							placeholder="Filtrar tags..."
+						></b-form-input>
+						<b-form-checkbox-group
+							v-model="selectedTags"
+							name="tags"
+							:options="getFilteredTags"
+							:stacked="true"
+							style="overflow-y: scroll; max-height: 200px;"
+							class="mt-2 px-1"
+						></b-form-checkbox-group>
+					</b-form-group>
+					<b-form-group label="Cursos" class="mt-4">
+						<b-form-checkbox-group
+							v-model="selectedCourses"
+							name="courses"
+							:options="courses"
+							:stacked="true"
+							class="px-1"
+						></b-form-checkbox-group>
+					</b-form-group>
+				</template>
 			</template>
 			<button
 				class="btn btn-atlas1 col-12 mt-2"
@@ -156,7 +173,6 @@
 
 <script>
 import { mapGetters } from "vuex"
-import axios from "axios"
 
 export default {
 	name: "FormCreateAccount",
@@ -164,14 +180,14 @@ export default {
 	watch: {
 		editProfile: function(newVal, oldVal) {
 			this.firstName = newVal.name
-			this.surname = newVal.surname
+			this.lastName = newVal.lastName
 			this.username = newVal.username
 			this.password = newVal.password
 			this.confirmPassword = newVal.password
 			this.email = newVal.email
 			this.picture = newVal.picture
 			this.selectedGender = newVal.gender
-			this.selectedUserType = newVal.profileId
+			this.profileId = newVal.profileId
 		},
 		editInterests: function(newVal, oldVal) {
 			this.filterTags = ""
@@ -181,14 +197,28 @@ export default {
 	},
 	data() {
 		return {
+			errors: {
+				username: {
+					value: "",
+					error: false
+				},
+				email: {
+					value: "",
+					error: false
+				}
+			},
+			loading: {
+				tags: false,
+				courses: false,
+				submit: false
+			},
 			firstName: "",
 			username: "",
-			surname: "",
+			lastName: "",
 			password: "",
 			confirmPassword: "",
 			email: "",
 			picture: "",
-			pictureLoaded: false,
 			genders: [
 				{ text: "Masculino", value: 1 },
 				{ text: "Feminino", value: 2 }
@@ -199,7 +229,8 @@ export default {
 				{ text: "Proponente de evento", value: 2 },
 				{ text: "Administrador", value: 3 }
 			],
-			selectedUserType: 1,
+			profileId: 1,
+			tags: [],
 			filterTags: "",
 			selectedTags: [],
 			selectedCourses: [],
@@ -214,12 +245,8 @@ export default {
 			this.handleResize()
 		}
 
-		this.getCourses.forEach(course => {
-			this.courses.push({
-				text: course.name,
-				value: course.id
-			})
-		})
+		this.loadTags()
+		this.loadCourses()
 
 		if (this.editProfile) {
 			this.firstName = this.editProfile.firstName
@@ -229,7 +256,7 @@ export default {
 			this.email = this.editProfile.email
 			this.picture = this.editProfile.picture
 			this.selectedGender = this.editProfile.gender
-			this.selectedUserType = this.editProfile.profileId
+			this.profileId = this.editProfile.profileId
 		}
 
 		if (this.editInterests) {
@@ -239,6 +266,32 @@ export default {
 		}
 	},
 	methods: {
+		async loadTags() {
+			try {
+				this.loading.tags = true
+				const response = await this.$http.get("/tags")
+				this.tags = response.data.map(tag => {
+					return {
+						value: tag._id,
+						text: tag.name
+					}
+				})
+				this.loading.tags = false
+			} catch (err) {}
+		},
+		async loadCourses() {
+			try {
+				this.loading.courses = true
+				const response = await this.$http.get("/courses")
+				this.courses = response.data.map(course => {
+					return {
+						value: course._id,
+						text: course.name
+					}
+				})
+				this.loading.courses = false
+			} catch (err) {}
+		},
 		submitForm() {
 			this.attemptSubmit = true
 			if (!this.backoffice && !this.editProfile && !this.editInterests) {
@@ -251,37 +304,62 @@ export default {
 				this.methodEditInterests()
 			}
 		},
-		signUp() {
+		async signUp() {
 			if (
-				this.nameState &&
+				this.firstNameState &&
+				this.lastNameState &&
 				this.usernameState &&
 				this.passwordState &&
 				this.confirmPasswordState &&
 				this.emailState
 			) {
-				this.$store.dispatch("signUp", {
-					id: this.getLastUserId + 1,
-					profileId: 1,
-					username: this.username,
-					password: this.password,
-					email: this.email,
-					firstName: this.firstName,
-					picture: !this.picture
-						? this.selectedGender === 1
-							? "https://i.imgur.com/uUbH9go.png"
-							: "https://i.imgur.com/moL2juW.png"
-						: this.picture,
-					gender: this.selectedGender,
-					accountCreation: {
-						date: this.$moment().format("YYYY-MM-DD"),
-						hour: this.$moment().format("HH:mm")
-					},
-					interests: {
-						tags: this.selectedTags,
-						courses: this.selectedCourses
+				try {
+					const response = await this.$http.post("/auth/sign-up", {
+						username: this.username,
+						password: this.password,
+						email: this.email,
+						firstName: this.firstName,
+						lastName: this.lastName,
+						picture: this.picture,
+						gender: this.selectedGender,
+						interests: {
+							tags: this.selectedTags,
+							courses: this.selectedCourses,
+							proponents: []
+						}
+					})
+					this.$snotify.success(response.data.message.pt, "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+					this.$router.push({ name: "login" })
+				} catch (err) {
+					const errors = err.response.data.content.error
+					if (errors.length) {
+						errors.forEach(error => {
+							if (error.type === "username") {
+								this.errors.username.error = true
+								this.errors.username.value = error.value
+								this.$refs.username.$el.focus()
+							}
+							if (error.type === "email") {
+								this.errors.email.error = true
+								this.errors.email.value = error.value
+								if (!this.errors.username) this.$refs.email.$el.focus()
+							}
+						})
+						this.$snotify.error(err.response.data.message.pt, "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+					} else {
+						this.$router.push({ name: "home" })
 					}
-				})
-				this.$router.push({ name: "login" })
+				}
 			} else {
 				this.notifyError()
 			}
@@ -295,7 +373,7 @@ export default {
 			) {
 				this.$store.dispatch("createAccount", {
 					id: this.getLastUserId + 1,
-					profileId: this.selectedUserType,
+					profileId: this.profileId,
 					username: this.username,
 					password: this.password,
 					email: this.email,
@@ -341,7 +419,7 @@ export default {
 				})
 				this.$store.dispatch("editUserById", {
 					id: this.editProfile.id,
-					profileId: this.selectedUserType,
+					profileId: this.profileId,
 					username: this.username,
 					password: this.password,
 					email: this.email,
@@ -398,7 +476,7 @@ export default {
 			this.email = ""
 			this.picture = ""
 			this.selectedGender = 1
-			this.selectedUserType = 1
+			this.profileId = 1
 			this.attemptSubmit = false
 			this.filterTags = ""
 			this.selectedTags = []
@@ -409,15 +487,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters([
-			"getApiUrl",
-			"getUserByUsername",
-			"getUserByEmail",
-			"getLastUserId",
-			"getTags",
-			"getCourses",
-			"getLoggedUser"
-		]),
+		...mapGetters(["getApiUrl", "getLastUserId", "getLoggedUser"]),
 		firstNameState() {
 			if (!this.firstName && !this.attemptSubmit) {
 				return null
@@ -429,37 +499,37 @@ export default {
 		},
 		firstNameInvalidFeedback() {
 			if (!this.firstName && this.attemptSubmit) {
-				return "Introduza o nome"
+				return "Introduza o nome próprio"
 			} else {
 				return null
 			}
 		},
 		firstNameValidFeedback() {
-			if (this.firstName.length === 50) {
-				return "Máximo 50 caracteres"
+			if (this.firstName.length === 20) {
+				return "Máximo 20 caracteres"
 			} else {
 				return null
 			}
 		},
-		surnameState() {
-			if (!this.surname && !this.attemptSubmit) {
+		lastNameState() {
+			if (!this.lastName && !this.attemptSubmit) {
 				return null
-			} else if (!this.surname && this.attemptSubmit) {
+			} else if (!this.lastName && this.attemptSubmit) {
 				return false
 			} else {
 				return true
 			}
 		},
-		surnameInvalidFeedback() {
-			if (!this.surname && this.attemptSubmit) {
-				return "Introduza o nome"
+		lastNameInvalidFeedback() {
+			if (!this.lastName && this.attemptSubmit) {
+				return "Introduza o apelido"
 			} else {
 				return null
 			}
 		},
-		surnameValidFeedback() {
-			if (this.surname.length === 50) {
-				return "Máximo 50 caracteres"
+		lastNameValidFeedback() {
+			if (this.lastName.length === 20) {
+				return "Máximo 20 caracteres"
 			} else {
 				return null
 			}
@@ -470,11 +540,9 @@ export default {
 					return null
 				} else if (!this.username && this.attemptSubmit) {
 					return false
-				} else if (
-					this.username !== this.username.replace(/[^a-z0-9]/gi, "")
-				) {
+				} else if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
 					return false
-				} else if (this.getUserByUsername(this.username)) {
+				} else if (this.errors.username.error && this.username === this.errors.username.value) {
 					return false
 				} else {
 					return true
@@ -484,9 +552,7 @@ export default {
 					return null
 				} else if (!this.username && this.attemptSubmit) {
 					return false
-				} else if (
-					this.username !== this.username.replace(/[^a-z0-9]/gi, "")
-				) {
+				} else if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
 					return false
 				} else if (
 					this.getUserByUsername(this.username) !==
@@ -502,7 +568,7 @@ export default {
 		usernameInvalidFeedback() {
 			if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
 				return "Introduza apenas letras e/ou números"
-			} else if (this.getUserByUsername(this.username)) {
+			} else if (this.errors.username && this.username === this.errors.username.value) {
 				return "Nome de utilizador em uso"
 			} else {
 				return "Introduza o nome de utilizador"
@@ -561,7 +627,7 @@ export default {
 					return null
 				} else if (!this.email && this.attemptSubmit) {
 					return false
-				} else if (this.getUserByEmail(this.email)) {
+				} else if (this.errors.email.error && this.email === this.errors.email.value) {
 					return false
 				} else {
 					return true
@@ -585,7 +651,7 @@ export default {
 		emailInvalidFeedback() {
 			if (!this.email && this.attemptSubmit) {
 				return "Introduza o email"
-			} else if (this.getUserByEmail(this.email)) {
+			} else if (this.errors.email && this.email === this.errors.email.value) {
 				return "Email em uso"
 			} else {
 				return null
@@ -599,31 +665,11 @@ export default {
 			}
 		},
 		getFilteredTags() {
-			let tags = []
-			this.getTags.forEach(tag => {
-				tags.push({
-					text: tag.name,
-					value: tag.id
-				})
-			})
-
-			// alphabetical order
-			tags.sort((a, b) => {
-				if (a.name > b.name) {
-					return 1
-				} else if (a.name < b.name) {
-					return -1
-				}
-				return 0
-			})
-
 			if (!this.filterTags) {
-				return tags
+				return this.tags
 			} else {
-				return tags.filter(tag =>
-					tag.text
-						.toLowerCase()
-						.includes(this.filterTags.toLowerCase())
+				return this.tags.filter(tag =>
+					tag.text.toLowerCase().includes(this.filterTags.toLowerCase())
 				)
 			}
 		}

@@ -15,11 +15,11 @@
 					>
 						<i class="fa fa-cog" aria-hidden="true"></i>
 					</button>
-					<template v-if="getLoggedUserId !== -1">
+					<template v-if="getLoggedUser.username">
 						<button
 							class="btn btn-danger ml-2"
 							@click="btnRemoveClicked()"
-							v-if="getUserById(getLoggedUserId).profileId === 3 && user._id !== getLoggedUserId"
+							v-if="getLoggedUser.profileId === 3 && user._id !== getLoggedUser._id"
 						>
 							<i class="fa fa-times" aria-hidden="true"></i>
 						</button>
@@ -51,7 +51,7 @@
 						<i class="fa fa-edit" aria-hidden="true"></i>
 					</button>
 				</TitleAtlas>
-				<vs-list v-if="user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length">
+				<vs-list v-if="user.interests.tags.length || user.interests.courses.length || user.interests.proponents.length || getLoggedUser.username">
 					<vs-list-item
 						icon="local_offer"
 						title="Tags"
@@ -248,8 +248,8 @@ export default {
 		btnConditions() {
 			if (this.getLoggedUserId !== -1) {
 				if (
-					this.getUserById(this.getLoggedUserId).profileId === 3 ||
-					this.getLoggedUserId === this.user._id
+					this.getLoggedUser.profileId === 3 ||
+					this.getLoggedUser._id === this.user._id
 				) {
 					return true
 				}
@@ -297,11 +297,7 @@ export default {
 	},
 	computed: {
 		...mapGetters([
-			"getUserByUsername",
-			"getTagById",
-			"getCourseById",
-			"getLoggedUserId",
-			"getUserById",
+			"getLoggedUser",
 			"getEventsByAuthorId",
 			"getUserEnrollmentsByUserId"
 		]),
