@@ -148,11 +148,11 @@
 				</div>
 				<div v-else>
 					<template v-if="windowWidth >= 768">
-						<EventListItem v-for="event in getNextEvents" :key="event.id" :event="event" class="mb-1"/>
+						<EventListItem v-for="event in events.next" :key="event._id" :event="event" class="mb-1"/>
 					</template>
 					<template v-else>
 						<Carousel :margin="30" :nav="false" :responsive="carouselResponsivity">
-							<EventCard v-for="event in getNextEvents" :key="event.id" :event="event"/>
+							<EventCard v-for="event in events.next" :key="event._id" :event="event"/>
 						</Carousel>
 					</template>
 				</div>
@@ -166,7 +166,7 @@
 					<template v-if="windowWidth >= 768">
 						<EventListItem
 							v-for="event in getEndedEventsSelectedPage"
-							:key="event.id"
+							:key="event._id"
 							:event="event"
 							class="mb-1"
 						/>
@@ -175,7 +175,7 @@
 						v-else
 						v-for="event in getEndedEventsSelectedPage"
 						:ended="true"
-						:key="event.id"
+						:key="event._id"
 						:event="event"
 						class="mb-1"
 					/>
@@ -183,7 +183,7 @@
 						:total="totalPages"
 						v-model="currentPage"
 						class="mt-3"
-						v-if="getEndedEvents.length > endedEventsPerPage"
+						v-if="events.previous.length > endedEventsPerPage"
 					/>
 				</div>
 			</div>
@@ -194,7 +194,7 @@
 				<template v-if="windowWidth >= 768">
 					<EventListItem
 						v-for="event in getFilteredEventsSelectedPage"
-						:key="event.id"
+						:key="event._id"
 						:event="event"
 						class="mb-1"
 					/>
@@ -202,7 +202,7 @@
 				<template v-else>
 					<EventCard
 						v-for="event in getFilteredEventsSelectedPage"
-						:key="event.id"
+						:key="event._id"
 						:event="event"
 						class="mb-1"
 					/>
@@ -237,12 +237,8 @@ export default {
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()
 
-		this.$store.commit("RESET_STATE")
-		this.$store.dispatch("loadTags")
 		this.loadNext()
 		this.loadPrevious()
-
-		this.getTotalPages()
 
 		let query = this.$route.query
 		if (query) {
@@ -250,9 +246,7 @@ export default {
 			if (query.depois_de) this.dateStart = query.depois_de
 			if (query.tags) {
 				let tags = query.tags.split("_")
-				let tagIds = []
-				tags.forEach(tag => tagIds.push(this.getTagByName(tag).id))
-				this.selectedTags = tagIds
+				this.selectedTags = tags
 				this.searchCollapse = true
 			}
 			if (query.curso) {
@@ -264,21 +258,24 @@ export default {
 				this.searchCollapse = true
 			}
 		}
-  },
-  watch: {
-    loadingDone() {
-      if(!this.loading.next && !this.loading.previous) {
-		    this.classrooms = this.getEventClassrooms        
-      }
-    }
-  },
+	},
+	watch: {
+		loadingDone() {
+			if (!this.loading.next && !this.loading.previous) {
+				this.getTotalPages()
+				this.loadClassrooms()
+				this.loadTags()
+			}
+		},
+		getFilteredEvents() {
+			this.getTotalPages()
+		}
+	},
 	beforeRouteUpdate(to, from, next) {
 		if (to.name === "events" && to.query) {
 			if (to.query.tags) {
 				let tags = to.query.tags.split("_")
-				let tagIds = []
-				tags.forEach(tag => tagIds.push(this.getTagByName(tag)._id))
-				this.selectedTags = tagIds
+				this.selectedTags = tags
 				this.searchCollapse = true
 			}
 			if (to.query.sala) {
@@ -290,7 +287,13 @@ export default {
 	},
 	data() {
 		return {
+			events: {
+				next: [],
+				previous: []
+			},
+			eventTags: [],
 			loading: {
+				tags: false,
 				next: false,
 				previous: false
 			},
@@ -314,32 +317,22 @@ export default {
 			currentPage: 1,
 			endedEventsPerPage: 5,
 			totalPagesFilteredEvents: 1,
-			filteredEventsPerPage: 10
+			filteredEventsPerPage: 5
 		}
 	},
 	computed: {
-		...mapGetters([
-			"getEvents",
-			"getEndedEvents",
-			"getUserById",
-			"getTags",
-			"getTagById",
-			"getTagByName",
-			"getCourseById",
-			"getEventClassrooms",
-			"getNextEvents"
-    ]),
-    loadingDone() {
-      return !this.loading.next && !this.loading.previous
-    },
+		loadingDone() {
+			return !this.loading.next && !this.loading.previous
+		},
 		getEndedEventsSelectedPage() {
-			if (this.getEndedEvents.length > this.endedEventsPerPage) {
-				return this.getEndedEvents.slice(
+			if (this.events.previous.length > this.endedEventsPerPage) {
+				return this.events.previous.slice(
 					(this.currentPage - 1) * this.endedEventsPerPage,
-					this.endedEventsPerPage * this.currentPage
+					(this.currentPage - 1) * this.endedEventsPerPage +
+						this.endedEventsPerPage
 				)
 			} else {
-				return this.getEndedEvents
+				return this.events.previous
 			}
 		},
 		filtering() {
@@ -393,12 +386,11 @@ export default {
 				delete queryResult.sala
 			}
 
-			this.getTotalPages()
 			this.$router.replace({ name: "events", query: queryResult })
 			return true
 		},
 		getFilteredEvents() {
-			return this.getEvents.filter(event => {
+			const next = this.events.next.filter(event => {
 				let result = true
 
 				if (this.name) {
@@ -428,17 +420,21 @@ export default {
 					result =
 						this.selectedTags.every(selectedTag =>
 							event.tags.some(
-								eventTag => selectedTag === eventTag
+								eventTag => selectedTag === eventTag.name
 							)
 						) && result
 				}
 
 				if (this.course) {
 					result =
-						event.courses.some(course =>
-							course.name
-								.toLowerCase()
-								.includes(this.course.toLowerCase())
+						event.courses.some(
+							course =>
+								course.name
+									.toLowerCase()
+									.includes(this.course.toLowerCase()) ||
+								course.abbreviation
+									.toLowerCase()
+									.includes(this.course.toLowerCase())
 						) && result
 				}
 
@@ -451,40 +447,83 @@ export default {
 
 				return result
 			})
+
+			const previous = this.events.previous.filter(event => {
+				let result = true
+
+				if (this.name) {
+					result =
+						(event.name
+							.toLowerCase()
+							.includes(this.name.toLowerCase()) ||
+							event.author.username
+								.toLowerCase()
+								.includes(this.name.toLowerCase())) &&
+						result
+				}
+
+				if (this.dateStart) {
+					result =
+						this.$moment(this.dateStart) <=
+							this.$moment(event.dateStart) && result
+				}
+
+				if (this.dateEnd) {
+					result =
+						this.$moment(this.dateEnd) >=
+							this.$moment(event.dateStart) && result
+				}
+
+				if (this.selectedTags.length) {
+					result =
+						this.selectedTags.every(selectedTag =>
+							event.tags.some(
+								eventTag => selectedTag === eventTag.name
+							)
+						) && result
+				}
+
+				if (this.course) {
+					result =
+						event.courses.some(
+							course =>
+								course.name
+									.toLowerCase()
+									.includes(this.course.toLowerCase()) ||
+								course.abbreviation
+									.toLowerCase()
+									.includes(this.course.toLowerCase())
+						) && result
+				}
+
+				if (this.classroom) {
+					result =
+						event.classroom
+							.toLowerCase()
+							.includes(this.classroom.toLowerCase()) && result
+				}
+
+				return result
+			})
+
+			return next.concat(previous)
 		},
 		getFilteredEventsSelectedPage() {
 			if (this.getFilteredEvents.length > this.filteredEventsPerPage) {
 				return this.getFilteredEvents.slice(
 					(this.currentPage - 1) * this.filteredEventsPerPage,
-					this.filteredEventsPerPage * this.currentPage
+					(this.currentPage - 1) * this.filteredEventsPerPage +
+						this.filteredEventsPerPage
 				)
 			} else {
 				return this.getFilteredEvents
 			}
 		},
 		getFilteredTags() {
-			let tags = []
-			this.getTags.forEach(tag => {
-				tags.push({
-					text: tag.name,
-					value: tag.id
-				})
-			})
-
-			// alphabetical order
-			tags.sort((a, b) => {
-				if (a.name > b.name) {
-					return 1
-				} else if (a.name < b.name) {
-					return -1
-				}
-				return 0
-			})
-
 			if (!this.filterTags) {
-				return tags
+				return this.eventTags
 			} else {
-				return tags.filter(tag =>
+				return this.eventTags.filter(tag =>
 					tag.text
 						.toLowerCase()
 						.includes(this.filterTags.toLowerCase())
@@ -501,7 +540,7 @@ export default {
 					"/events/dates?occasion=after"
 				)
 				if (response.status === 200) {
-					this.$store.commit("ADD_EVENTS", response.data)
+					this.events.next = response.data.content.events
 					this.loading.next = false
 				}
 			} catch (err) {
@@ -516,12 +555,65 @@ export default {
 					"/events/dates?occasion=before"
 				)
 				if (response.status === 200) {
-					this.$store.commit("ADD_EVENTS", response.data)
+					this.events.previous = response.data.content.events
 					this.loading.previous = false
 				}
 			} catch (err) {
 				console.log(err)
 			}
+		},
+		loadClassrooms() {
+			let classrooms = []
+			this.events.next.forEach(nextEvent => {
+				if (classrooms.indexOf(nextEvent.classroom) === -1) {
+					classrooms.push(nextEvent.classroom)
+				}
+			})
+
+			this.events.previous.forEach(previousEvent => {
+				if (classrooms.indexOf(previousEvent.classroom) === -1) {
+					classrooms.push(previousEvent.classroom)
+				}
+			})
+
+			classrooms.sort((a, b) => {
+				if (a > b) {
+					return 1
+				} else if (a < b) {
+					return -1
+				}
+				return 0
+			})
+
+			this.classrooms = classrooms
+		},
+		loadTags() {
+			let tags = []
+			this.events.next.forEach(nextEvent => {
+				nextEvent.tags.forEach(tag => {
+					if (tags.indexOf(tag.name) === -1) {
+						tags.push(tag.name)
+					}
+				})
+			})
+
+			this.events.previous.forEach(previousEvent => {
+				previousEvent.tags.forEach(tag => {
+					if (tags.indexOf(tag.name) === -1) {
+						tags.push(tag.name)
+					}
+				})
+			})
+
+			tags.sort((a, b) => {
+				if (a > b) {
+					return 1
+				} else if (a < b) {
+					return -1
+				}
+				return 0
+			})
+			this.eventTags = tags
 		},
 		handleResize() {
 			this.windowWidth = window.innerWidth
@@ -538,12 +630,12 @@ export default {
 		getTotalPages() {
 			if (!this.filtering) {
 				this.totalPages =
-					this.getEndedEvents.length <= this.endedEventsPerPage
+					this.events.previous.length <= this.endedEventsPerPage
 						? 1
 						: Math.floor(
-								this.getEndedEvents.length /
+								this.events.previous.length /
 									this.endedEventsPerPage
-						  ) + 1
+						  )
 			} else {
 				this.totalPages =
 					this.getFilteredEvents.length <= this.filteredEventsPerPage
@@ -551,7 +643,7 @@ export default {
 						: Math.floor(
 								this.getFilteredEvents.length /
 									this.filteredEventsPerPage
-						  ) + 1
+						  )
 			}
 		},
 		classroomFloorCondition(floor) {

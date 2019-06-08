@@ -37,7 +37,7 @@
             </div>
             <div class="col-6">
               <i class="fa fa-calendar-alt text-atlas1" aria-hidden="true"></i>
-              {{ ($moment(event.dateStart).format("YYYY-MM-DD") + " " + event.hourStart) | moment("from", "now") }}
+              {{ ($moment(event.dateStart).format("YYYY-MM-DD") + "T" + event.hourStart) | moment("from", "now") }}
             </div>
           </div>
           <div>
@@ -49,7 +49,7 @@
           </div>
           <div>
             <i class="fa fa-users text-atlas1" aria-hidden="true"></i>
-            {{ event.enrollments.length }} {{ $moment(event.dateEnd + ' ' + event.hourEnd).isBefore($moment()) ? 'foram' : (event.enrollments.length === 1 ? 'vai' : 'vão')}}
+            {{ event.enrollments.length }} {{ $moment(event.dateEnd + 'T' + event.hourEnd).isBefore($moment()) ? 'foram' : (event.enrollments.length === 1 ? 'vai' : 'vão')}}
           </div>
         </div>
       </div>
