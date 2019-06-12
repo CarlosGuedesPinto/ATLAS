@@ -157,7 +157,9 @@ export default {
 	created() {
 		this.$store.subscribe(mutation => {
 			switch (mutation.type) {
-				case "EDIT_USER_BY_ID":
+				case "EDIT_USER":
+					this.user = mutation.payload
+					this.$router.replace({ name: "profile", params: { username: mutation.payload.username } })
 					this.modalProfile = false
 					break
 				case "EDIT_USER_INTERESTS_BY_ID":
@@ -199,9 +201,7 @@ export default {
 			// loads user info
 			try {
 				this.loading = true
-				const response = await this.$http.get(
-					`/users/profile/${username}`
-				)
+				const response = await this.$http.get(`/users/profile/${username}`)
 				if (response.status === 200) {
 					this.user = response.data.content.user
 
@@ -212,8 +212,7 @@ export default {
 						this.user.profileId !== 1 &&
 						response.data.content.events.created
 					) {
-						this.events.created =
-							response.data.content.events.created
+						this.events.created = response.data.content.events.created
 					}
 				}
 				this.loading = false
@@ -236,7 +235,7 @@ export default {
 			}
 		},
 		btnConditions() {
-			if (this.getLoggedUserId !== -1) {
+			if (this.getLoggedUser.username) {
 				if (
 					this.getLoggedUser.profileId === 3 ||
 					this.getLoggedUser._id === this.user._id
@@ -268,9 +267,7 @@ export default {
 					title: "Remover utilizador?",
 					acceptText: "Remover",
 					cancelText: "Cancelar",
-					text: `O utilizador ${
-						this.user.username
-					} será removido para sempre.`,
+					text: `O utilizador ${this.user.username} será removido para sempre.`,
 					accept: () => {
 						this.$store.dispatch("removeUserById", this.user._id)
 						this.$snotify.success("Utilizador removido", "", {
@@ -308,8 +305,7 @@ export default {
 			if (this.events.enrolled.length > this.eventsPerPage) {
 				return this.events.enrolled.slice(
 					(this.currentPage - 1) * this.eventsPerPage,
-					(this.currentPage - 1) * this.eventsPerPage +
-						this.eventsPerPage
+					(this.currentPage - 1) * this.eventsPerPage + this.eventsPerPage
 				)
 			} else {
 				return this.events.enrolled

@@ -129,7 +129,7 @@ const router = new Router({
           }
         },
         {
-          path: "categorias-tags",
+          path: "tags",
           name: "backofficeTags",
           component: BackofficeTagsView,
           meta: {

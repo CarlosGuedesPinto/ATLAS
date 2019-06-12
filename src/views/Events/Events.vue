@@ -32,7 +32,7 @@
 						:disabled="loading.next || loading.previous"
 					></b-form-input>
 				</b-form-group>
-				<b-form-group :label="windowWidth >= 992 ? '&nbsp;' : ''" class="col-lg-3 col-12">
+				<b-form-group :label="windowWidth >= 992 ? '.' : ''" class="col-lg-3 col-12">
 					<button
 						class="btn btn-atlas1 col-12"
 						@click="searchCollapse = !searchCollapse"

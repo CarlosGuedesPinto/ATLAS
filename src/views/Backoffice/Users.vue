@@ -57,7 +57,7 @@ export default {
 			this.$store.commit("RESET_STATE")
 			this.loading = true
 			try {
-				const response = await this.$http.get("/users/backoffice")
+				const response = await this.$http.get("/users")
 				if (response.status === 200) {
 					this.users = response.data.content.users
 					this.loading = false

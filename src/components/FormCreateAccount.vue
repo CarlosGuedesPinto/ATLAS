@@ -6,7 +6,6 @@
 					label="Nome próprio"
 					label-for="firstName"
 					:invalid-feedback="firstNameInvalidFeedback"
-					:valid-feedback="firstNameValidFeedback"
 					:state="firstNameState"
 					:class="!editProfile ? 'mt-4' : ''"
 				>
@@ -22,7 +21,6 @@
 					label="Apelido"
 					label-for="lastName"
 					:invalid-feedback="lastNameInvalidFeedback"
-					:valid-feedback="lastNameValidFeedback"
 					:state="lastNameState"
 				>
 					<b-form-input
@@ -40,7 +38,7 @@
 					:valid-feedback="usernameValidFeedback"
 					:state="usernameState"
 					class="mt-4"
-					v-if="!editProfile"
+					v-if="!editProfile || getLoggedUser.profileId === 3"
 				>
 					<b-form-input
 						id="username"
@@ -89,12 +87,13 @@
 					:invalid-feedback="emailInvalidFeedback"
 					:state="emailState"
 					class="mt-4"
+					v-if="!editProfile || getLoggedUser.profileId === 3"
 				>
 					<b-form-input id="email" :state="emailState" v-model="email" type="email" ref="password"></b-form-input>
 				</b-form-group>
 				<b-form-group label-for="picture" :state="pictureState" class="mt-4">
 					<template slot="label">
-						<span>URL foto -</span>
+						<span>URL foto -&nbsp;</span>
 						<span style="font-style: italic; color: #eee; color: rgb(80, 80, 80);">opcional</span>
 					</template>
 					<b-form-input id="picture" :state="pictureState" v-model="picture" type="url"></b-form-input>
@@ -108,7 +107,7 @@
 						name="genders"
 					/>
 				</b-form-group>
-				<template v-if="backoffice || (editProfile && getLoggedUser.profileId !== -1)">
+				<template v-if="backoffice || (editProfile && getLoggedUser.profileId === 3)">
 					<b-form-group label="Tipo de utilizador" class="mt-4" v-if="getLoggedUser.profileId === 3">
 						<b-form-radio-group
 							buttons
@@ -164,10 +163,14 @@
 					</b-form-group>
 				</template>
 			</template>
-			<button
-				class="btn btn-atlas1 col-12 mt-2"
-				type="submit"
-			>{{ !editInterests ? (!editProfile ? (backoffice && !editProfile ? "Adicionar utilizador" : "Criar conta") : "Editar perfil") : "Editar interesses" }}</button>
+			<button class="btn btn-atlas1 col-12 mt-2" type="submit">
+				<template v-if="loading.submit">
+					<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+				</template>
+				<template
+					v-else
+				>{{ !editInterests ? (!editProfile ? (backoffice && !editProfile ? "Adicionar utilizador" : "Criar conta") : "Editar perfil") : "Editar interesses" }}</template>
+			</button>
 		</b-form>
 		<vue-snotify></vue-snotify>
 	</div>
@@ -262,9 +265,7 @@ export default {
 
 		if (this.editInterests) {
 			this.filterTags = ""
-			this.selectedTags = this.editInterests.interests.tags.map(
-				tag => tag.name
-			)
+			this.selectedTags = this.editInterests.interests.tags.map(tag => tag.name)
 			this.selectedCourses = this.editInterests.interests.courses.map(
 				course => `${course.name} (${course.abbreviation})`
 			)
@@ -344,8 +345,7 @@ export default {
 							if (error.type === "email") {
 								this.errors.email.error = true
 								this.errors.email.value = error.value
-								if (!this.errors.username)
-									this.$refs.email.$el.focus()
+								if (!this.errors.username) this.$refs.email.$el.focus()
 							}
 						})
 						this.$snotify.error(err.response.data.message.pt, "", {
@@ -403,41 +403,87 @@ export default {
 				this.notifyError()
 			}
 		},
-		editAccount() {
-			if (
-				this.nameState &&
-				this.usernameState &&
-				this.passwordState &&
-				this.confirmPasswordState &&
-				this.emailState
-			) {
-				this.$router.replace({
-					name: "profile",
-					params: { username: this.username }
-				})
-				this.$store.dispatch("editUserById", {
-					id: this.editProfile.id,
-					profileId: this.profileId,
-					username: this.username,
-					password: this.password,
-					email: this.email,
-					firstName: this.firstName,
-					picture: !this.picture
-						? this.selectedGender === 1
-							? "https://i.imgur.com/uUbH9go.png"
-							: "https://i.imgur.com/moL2juW.png"
-						: this.picture,
-					gender: this.selectedGender
-				})
-
-				this.$snotify.success("Perfil editado", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
+		async editAccount() {
+			if (this.getLoggedUser.profileId !== 3) {
+				if (this.firstNameState && this.lastNameState) {
+					try {
+						this.loading.submit = true
+						const response = await this.$http.put(
+							`/users/${this.editProfile._id}`,
+							{
+								firstName: this.firstName,
+								lastName: this.lastName,
+								picture: this.picture,
+								gender: this.gender
+							}
+						)
+						this.$store.commit("EDIT_USER", response.data.content.user)
+						this.$snotify.success("Perfil editado", "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+						this.loading.submit = false
+					} catch (err) {}
+				} else {
+					this.notifyError()
+				}
 			} else {
-				this.notifyError()
+				if (
+					this.firstNameState &&
+					this.lastNameState &&
+					this.usernameState &&
+					this.emailState
+				) {
+					try {
+						this.loading.submit = true
+						const response = await this.$http.put(
+							`/users/${this.editProfile._id}`,
+							{
+								firstName: this.firstName,
+								lastName: this.lastName,
+								username: this.username,
+								email: this.email,
+								picture: this.picture,
+								gender: this.gender,
+								profileId: this.profileId
+							}
+						)
+
+						if (response.data.success) {
+							this.$snotify.success("Perfil editado", "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+							this.$store.commit("EDIT_USER", response.data.content.user)
+						} else {
+							response.data.errors.forEach(error => {
+								if (error.type === "username") {
+									this.errors.username.error = true
+									this.errors.username.value = error.value
+									this.$refs.username.$el.focus()
+								}
+								if (error.type === "email") {
+									this.errors.email.error = true
+									this.errors.email.value = error.value
+									if (!this.errors.username) this.$refs.email.$el.focus()
+								}
+								this.$snotify.error(response.data.message.pt, "", {
+									timeout: 2000,
+									showProgressBar: false,
+									closeOnClick: true,
+									pauseOnHover: true
+								})
+							})
+						}
+						this.loading.submit = false
+					} catch (err) {}
+				} else {
+					this.notifyError()
+				}
 			}
 		},
 		methodEditInterests() {
@@ -502,13 +548,6 @@ export default {
 				return null
 			}
 		},
-		firstNameValidFeedback() {
-			if (this.firstName.length === 20) {
-				return "Máximo 20 caracteres"
-			} else {
-				return null
-			}
-		},
 		lastNameState() {
 			if (!this.lastName && !this.attemptSubmit) {
 				return null
@@ -525,48 +564,20 @@ export default {
 				return null
 			}
 		},
-		lastNameValidFeedback() {
-			if (this.lastName.length === 20) {
-				return "Máximo 20 caracteres"
-			} else {
-				return null
-			}
-		},
 		usernameState() {
-			if (!this.editProfile) {
-				if (!this.username && !this.attemptSubmit) {
-					return null
-				} else if (!this.username && this.attemptSubmit) {
-					return false
-				} else if (
-					this.username !== this.username.replace(/[^a-z0-9]/gi, "")
-				) {
-					return false
-				} else if (
-					this.errors.username.error &&
-					this.username === this.errors.username.value
-				) {
-					return false
-				} else {
-					return true
-				}
+			if (!this.username && !this.attemptSubmit) {
+				return null
+			} else if (!this.username && this.attemptSubmit) {
+				return false
+			} else if (this.username !== this.username.replace(/[^a-z0-9]/gi, "")) {
+				return false
+			} else if (
+				this.errors.username.error &&
+				this.username === this.errors.username.value
+			) {
+				return false
 			} else {
-				if (!this.username && !this.attemptSubmit) {
-					return null
-				} else if (!this.username && this.attemptSubmit) {
-					return false
-				} else if (
-					this.username !== this.username.replace(/[^a-z0-9]/gi, "")
-				) {
-					return false
-				} else if (
-					this.errors.username.error &&
-					this.username === this.errors.username.value
-				) {
-					return false
-				} else {
-					return true
-				}
+				return true
 			}
 		},
 		usernameInvalidFeedback() {
@@ -660,10 +671,7 @@ export default {
 		emailInvalidFeedback() {
 			if (!this.email && this.attemptSubmit) {
 				return "Introduza o email"
-			} else if (
-				this.errors.email &&
-				this.email === this.errors.email.value
-			) {
+			} else if (this.errors.email && this.email === this.errors.email.value) {
 				return "Email em uso"
 			} else {
 				return null

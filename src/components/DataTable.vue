@@ -174,7 +174,6 @@ export default {
 			this.currentPage = 1
 		},
 		rowClicked(event) {
-			console.log(event)
 			switch (this.name) {
 				case "users":
 					this.$router.push({

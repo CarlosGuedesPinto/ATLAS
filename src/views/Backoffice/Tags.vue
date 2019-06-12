@@ -51,7 +51,7 @@ export default {
 			try {
 				const response = await this.$http.get("/tags")
 				if (response.status === 200) {
-					this.tags = response.data
+					this.tags = response.data.content.tags
 					this.loading = false
 				}
 			} catch (err) {

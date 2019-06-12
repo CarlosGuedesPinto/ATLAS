@@ -363,18 +363,8 @@ export default new Vuex.Store({
         CREATED_ACCOUNT(state, payload) {
             state.users.push(payload)
         },
-        EDIT_USER_BY_ID(state, payload) {
-            state.users.forEach(user => {
-                if (user._id === payload._id) {
-                    user.name = payload.name
-                    user.profileId = payload.profileId
-                    user.username = payload.username
-                    user.password = payload.password
-                    user.email = payload.email
-                    user.name = payload.name
-                    user.picture = payload.picture
-                }
-            })
+        EDIT_USER(state) {
+            
         },
         EDIT_USER_INTERESTS_BY_ID(state, payload) {
             state.users.forEach(user => {

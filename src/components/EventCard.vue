@@ -25,7 +25,7 @@
               >{{ "#" + eventTag.name + " " }}</router-link>
               <span v-else-if="index === 3" :key="index">e mais {{ event.tags.length - 3 }} [...]</span>
             </template>
-            <div v-if="ended">{{ getEventShortDescription(event._id) }}</div>
+            <div v-if="ended">{{ getShortDescription() }}</div>
           </div>
           <div class="row">
             <div class="col-6">
@@ -74,10 +74,15 @@ export default {
   methods: {
     handleResize() {
       this.windowWidth = window.innerWidth;
-    }
-  },
-  computed: {
-    ...mapGetters(["getUserById", "getTagById", "getEventShortDescription"])
+    },
+    getShortDescription() {
+			return this.event.description.length <= 100
+				? this.event.description
+				: this.event.description.substr(
+						0,
+						this.event.description.indexOf(" ", 250)
+				  ) + "..."
+		}
   }
 };
 </script>

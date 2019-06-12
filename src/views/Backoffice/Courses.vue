@@ -56,7 +56,7 @@ export default {
 			try {
 				const response = await this.$http.get("/courses")
 				if (response.status === 200) {
-					this.courses = response.data
+					this.courses = response.data.content.courses
 					this.loading = false
 				}
 			} catch (err) {
