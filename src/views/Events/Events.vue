@@ -537,7 +537,7 @@ export default {
 			try {
 				this.loading.next = true
 				const response = await this.$http.get(
-					"/events/dates?occasion=after"
+					"/events/occasions/after"
 				)
 				if (response.status === 200) {
 					this.events.next = response.data.content.events
@@ -552,7 +552,7 @@ export default {
 			try {
 				this.loading.previous = true
 				const response = await this.$http.get(
-					"/events/dates?occasion=before"
+					"/events/occasions/before"
 				)
 				if (response.status === 200) {
 					this.events.previous = response.data.content.events

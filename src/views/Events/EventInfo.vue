@@ -86,7 +86,7 @@
 									:key="'tag_' + tag._id"
 									:to="{name: 'events', query: { tags: tag.name } }"
 									class="text-atlas2"
-								> #{{ tag.name }}</router-link>
+								>#{{ tag.name }}</router-link>
 							</div>
 							<div>
 								<i class="fa fa-graduation-cap text-atlas1 mr-1" aria-hidden="true"></i>
@@ -103,7 +103,9 @@
 								Preço de inscrição {{ event.paymentPrice }} €
 							</div>
 						</div>
-						<template v-if="$moment(event.dateEnd).isSameOrAfter($moment().format('YYYY-MM-DD'))">
+						<template
+							v-if="$moment(event.dateEnd).isSameOrAfter($moment().format('YYYY-MM-DD')) && getLoggedUser.profileId !== 3"
+						>
 							<hr class="bg-atlas1">
 							<button
 								class="btn btn-atlas2 px-5 col-12 mr-auto ml-auto mt-2"
@@ -408,12 +410,10 @@ export default {
 			const id = this.$route.params.id
 			this.loading = true
 			try {
-				const response = await this.$http.get(`/events/ids/${id}/related`)
+				const response = await this.$http.get(`/events/ids/${id}`)
 				if (response.status === 200) {
-					this.$store.commit("ADD_EVENTS", [response.data.event])
-					this.$store.commit("ADD_EVENTS", response.data.related)
-					this.event = response.data.event
-					this.related = response.data.related
+					this.event = response.data.content.event
+					this.related = response.data.content.related
 					this.loading = false
 				}
 			} catch (err) {
@@ -428,7 +428,7 @@ export default {
 			if (this.getLoggedUser.username) {
 				this.modal = true
 			} else {
-        this.$store.commit("REDIRECT_AFTER_LOGIN", this.$route.path)
+				this.$store.commit("REDIRECT_AFTER_LOGIN", this.$route.path)
 				this.$router.push({ name: "login" })
 			}
 		},
@@ -464,95 +464,89 @@ export default {
 				}
 			})
 		},
-		btnEnrollmentClicked() {
+		async btnEnrollmentClicked() {
 			if (!this.getLoggedUser.username) {
-        this.$store.commit("REDIRECT_AFTER_LOGIN", this.$route.path)
+				this.$store.commit("REDIRECT_AFTER_LOGIN", this.$route.path)
 				this.$router.push({ name: "login" })
 			} else {
-				if (this.getLoggedUser.profileId === 3) {
-					this.$vs.dialog({
-						type: "confirm",
-						color: "danger",
-						title: "Erro",
-						acceptText: "Entendido",
-						cancelText: "",
-						text: "Administradores não se podem inscrever em eventos."
-					})
-				} else {
-					if (
-						!this.event.enrollments.some(
-							enrollment => enrollment.user._id === this.getLoggedUser._id
-						)
-					) {
-						this.$store.dispatch("addEventEnrollmentByEventId", {
-							eventId: this.event.id,
-							enrollment: {
-								userId: this.getLoggedUserId,
-								moment: this.$moment(),
-								paid: false
-							}
-						})
+				if (
+					!this.event.enrollments.some(
+						enrollment => enrollment.user._id === this.getLoggedUser._id
+					)
+				) {
+					try {
+						const response = await this.$http.post()
+					} catch (err) {
 
-						this.assignMedals()
-						this.historyUpdate("ADD")
-						//Verify if it is the first time that he applies to an event
-
-						if (this.event.paid) {
-							this.$vs.dialog({
-								type: "confirm",
-								color: "primary",
-								title: "Efetuar pagamento",
-								acceptText: "Entendido",
-								cancelText: "",
-								text: `Dirija-se junto ao proponente de evento para efetuar o pagamento da inscrição (${
-									this.event.paymentPrice
-								} €).`,
-								accept: () => {
-									this.$snotify.success("Inscrição efetuada", "", {
-										timeout: 2000,
-										showProgressBar: false,
-										closeOnClick: true,
-										pauseOnHover: true
-									})
-								},
-								cancel: () => {
-									this.$snotify.success("Inscrição efetuada", "", {
-										timeout: 2000,
-										showProgressBar: false,
-										closeOnClick: true,
-										pauseOnHover: true
-									})
-								}
-							})
-						} else {
-							this.$vs.dialog({
-								type: "confirm",
-								color: "primary",
-								title: "Inscrição efetuada",
-								acceptText: "Entendido",
-								cancelText: "",
-								text: `A sua inscrição no evento ${
-									this.event.name
-								} foi efetuada com sucesso.`
-							})
+					}
+					this.$store.dispatch("addEventEnrollmentByEventId", {
+						eventId: this.event.id,
+						enrollment: {
+							userId: this.getLoggedUserId,
+							moment: this.$moment(),
+							paid: false
 						}
-					} else {
-						this.$store.dispatch("removeEventEnrollmentByEventIdUserId", {
-							eventId: this.event.id,
-							userId: this.getLoggedUserId
-						})
-						this.historyUpdate("REMOVE")
+					})
+
+					this.assignMedals()
+					this.historyUpdate("ADD")
+					//Verify if it is the first time that he applies to an event
+
+					if (this.event.paid) {
 						this.$vs.dialog({
 							type: "confirm",
 							color: "primary",
-							title: "Inscrição removida",
+							title: "Efetuar pagamento",
+							acceptText: "Entendido",
+							cancelText: "",
+							text: `Dirija-se junto ao proponente de evento para efetuar o pagamento da inscrição (${
+								this.event.paymentPrice
+							} €).`,
+							accept: () => {
+								this.$snotify.success("Inscrição efetuada", "", {
+									timeout: 2000,
+									showProgressBar: false,
+									closeOnClick: true,
+									pauseOnHover: true
+								})
+							},
+							cancel: () => {
+								this.$snotify.success("Inscrição efetuada", "", {
+									timeout: 2000,
+									showProgressBar: false,
+									closeOnClick: true,
+									pauseOnHover: true
+								})
+							}
+						})
+					} else {
+						this.$vs.dialog({
+							type: "confirm",
+							color: "primary",
+							title: "Inscrição efetuada",
 							acceptText: "Entendido",
 							cancelText: "",
 							text: `A sua inscrição no evento ${
 								this.event.name
-							} foi removida com sucesso.`
+							} foi efetuada com sucesso.`
 						})
 					}
+				} else {
+					this.$store.dispatch("removeEventEnrollmentByEventIdUserId", {
+						eventId: this.event.id,
+						userId: this.getLoggedUserId
+					})
+					this.historyUpdate("REMOVE")
+					this.$vs.dialog({
+						type: "confirm",
+						color: "primary",
+						title: "Inscrição removida",
+						acceptText: "Entendido",
+						cancelText: "",
+						text: `A sua inscrição no evento ${
+							this.event.name
+						} foi removida com sucesso.`
+					})
 				}
 			}
 		},
@@ -574,19 +568,19 @@ export default {
 			//Fazer aviso de que ganhou uma nova medalha
 
 			/*
-      if (this.getUserById(this.getLoggedUserId).history.events.length === 0) {
-        this.$store.dispatch("insertNewMedalUser", {
-          userId: this.getLoggedUserId,
-          medalId: 1
-        });
-      }
+			if (this.getUserById(this.getLoggedUserId).history.events.length === 0) {
+				this.$store.dispatch("insertNewMedalUser", {
+				userId: this.getLoggedUserId,
+				medalId: 1
+				});
+			}
 
-      if (this.getUserById(this.getLoggedUserId).history.events.length === 9) {
-        this.$store.dispatch("insertNewMedalUser", {
-          userId: this.getLoggedUserId,
-          medalId: 2
-        });
-      }*/
+			if (this.getUserById(this.getLoggedUserId).history.events.length === 9) {
+				this.$store.dispatch("insertNewMedalUser", {
+				userId: this.getLoggedUserId,
+				medalId: 2
+				});
+			}*/
 		},
 		historyUpdate(type) {
 			if (type === "ADD") {

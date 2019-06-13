@@ -143,8 +143,8 @@ export default {
 						this.$route.params.discussionId
 					}`
 				)
-				this.event = response.data.event
-				this.discussion = response.data.discussion
+				this.event = response.data.content.event
+				this.discussion = response.data.content.discussion
 			} catch (err) {}
 			this.loading = false
 		},

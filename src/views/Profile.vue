@@ -159,7 +159,10 @@ export default {
 			switch (mutation.type) {
 				case "EDIT_USER":
 					this.user = mutation.payload
-					this.$router.replace({ name: "profile", params: { username: mutation.payload.username } })
+					this.$router.replace({
+						name: "profile",
+						params: { username: mutation.payload.username }
+					})
 					this.modalProfile = false
 					break
 				case "EDIT_USER_INTERESTS_BY_ID":
@@ -245,9 +248,11 @@ export default {
 			}
 			return false
 		},
-		btnRemoveClicked() {
-			let events = this.getEventsByAuthorId(this.user._id)
-			if (events.length) {
+		async btnRemoveClicked() {
+			try {
+				const response = await this.$http.get(
+					`/events/authors/${this.user._id}`
+				)
 				this.$vs.dialog({
 					type: "confirm",
 					color: "danger",
@@ -257,28 +262,44 @@ export default {
 					text: `O utilizador ${
 						this.user.username
 					} não pode ser removido, uma vez que tem ${
-						events.length
-					} eventos criados.`
+						response.data.content.events.length
+					} ${
+						response.data.content.events.length === 1
+							? "evento criado"
+							: "eventos criados"
+					}: ${response.data.content.events
+						.map(event => event.name)
+						.join(", ")}. Deve primeiro remover ${
+						response.data.content.events.length === 1
+							? "o evento"
+							: "os eventos"
+					} em questão.`
 				})
-			} else {
-				this.$vs.dialog({
-					type: "confirm",
-					color: "danger",
-					title: "Remover utilizador?",
-					acceptText: "Remover",
-					cancelText: "Cancelar",
-					text: `O utilizador ${this.user.username} será removido para sempre.`,
-					accept: () => {
-						this.$store.dispatch("removeUserById", this.user._id)
-						this.$snotify.success("Utilizador removido", "", {
-							timeout: 2000,
-							showProgressBar: false,
-							closeOnClick: true,
-							pauseOnHover: true
-						})
-						this.$router.push({ name: "home" })
-					}
-				})
+			} catch (err) {
+				if (err.response.data.name === "eventNotFound") {
+					this.$vs.dialog({
+						type: "confirm",
+						color: "danger",
+						title: "Remover utilizador?",
+						acceptText: "Remover",
+						cancelText: "Cancelar",
+						text: `O utilizador ${
+							this.user.username
+						} será removido para sempre, assim como todos os dados associados a este (discussões em eventos, respostas em discussões e participações em eventos).`,
+						accept: () => {
+							
+							this.$snotify.success("Utilizador removido", "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+							this.$router.push({ name: "home" })
+						}
+					})
+				} else {
+					this.$router.push({ name: "home" })
+				}
 			}
 		}
 	},
