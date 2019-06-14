@@ -106,7 +106,9 @@ export default {
 				try {
 					this.loading = true
 					const response = await this.$http.put(
-						`/events/ids/${this.$route.params.id}/discussions`,
+						`/events/ids/${this.$route.params.id}/discussions/${
+							this.edit._id
+						}`,
 						{
 							category: this.selectedCategory,
 							title: this.title,
@@ -125,6 +127,7 @@ export default {
 						pauseOnHover: true
 					})
 				} catch (err) {
+					console.log(err)
 				}
 			} else {
 				this.$snotify.error("Preencha todos os campos corretamente", "", {

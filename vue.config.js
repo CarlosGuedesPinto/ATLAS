@@ -1,7 +1,5 @@
 const config = {
-    devServer: {
-        //public: "atlas-carlosguedespinto.c9users.io" // e.g. ‘workspace-username.c9users.io 9’
-    }
+    productionSourceMap: false
 }
 
 module.exports = config;

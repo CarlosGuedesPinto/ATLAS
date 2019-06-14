@@ -85,7 +85,7 @@ export default {
 							this.discussion.usersVoted.push(this.getLoggedUser._id)
 						}
 					} catch (err) {
-						if (err.response.message.pt) {
+						if (err.response.message.pt !== undefined) {
 							this.$snotify.error(err.response.message.pt, "", {
 								timeout: 2000,
 								showProgressBar: false,
@@ -124,7 +124,7 @@ export default {
 							this.discussion.usersVoted.push(this.getLoggedUser._id)
 						}
 					} catch (err) {
-						if (err.response.message.pt) {
+						if (err.response.message.pt !== undefined) {
 							this.$snotify.error(err.response.message.pt, "", {
 								timeout: 2000,
 								showProgressBar: false,

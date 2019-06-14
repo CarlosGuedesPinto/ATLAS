@@ -109,6 +109,7 @@ export default {
 				const { title, category, content } = mutation.payload
 				this.discussion.title = title
 				this.discussion.category = category
+				this.discussion.content = content
 			}
 		})
 	},
@@ -143,10 +144,7 @@ export default {
 		},
 		async addAnswer() {
 			try {
-				
-			} catch(err) {
-
-			}
+			} catch (err) {}
 			this.answer = ""
 			this.$snotify.success("Resposta adicionada", "", {
 				timeout: 2000,
@@ -175,21 +173,34 @@ export default {
 				acceptText: "Remover",
 				cancelText: "Cancelar",
 				text: "Esta discussão será removida para sempre.",
-				accept: () => {
-					this.$store.dispatch("removeDiscussionByEventIdDiscussionId", {
-						eventId: this.event.id,
-						discussionId: this.discussion.id
-					})
-					this.$snotify.success("Discussão removida", "", {
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					})
-					this.$router.replace({
-						name: "eventsInfo",
-						params: { id: this.event.id }
-					})
+				accept: async () => {
+					try {
+						this.loading = true
+						const response = await this.$http.delete(
+							`/events/ids/${this.event._id}/discussions/${this.discussion._id}`
+						)
+						if (response.data.success) {
+							this.$router.replace({
+								name: "eventsInfo",
+								params: { id: this.event._id }
+							})
+							this.$snotify.success("Discussão removida", "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+						}
+						this.loading = false
+					} catch (err) {
+						this.$snotify.error("Erro ao remover discussão", "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+						this.loading = false
+					}
 				}
 			})
 		}
