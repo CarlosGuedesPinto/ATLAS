@@ -25,10 +25,12 @@
 		>
 			<b-form-textarea id="text" v-model="text" :rows="3" :max-rows="6" :state="textState"></b-form-textarea>
 		</b-form-group>
-		<button
-			type="submit"
-			class="btn btn-atlas1 col-12"
-		>{{ !edit ? "Criar discussão" : "Editar discussão" }}</button>
+		<button type="submit" class="btn btn-atlas1 col-12">
+			<template v-if="loading">
+				<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+			</template>
+			<template v-else>{{ !edit ? "Criar discussão" : "Editar discussão" }}</template>
+		</button>
 	</b-form>
 </template>
 
@@ -45,8 +47,7 @@ export default {
 		}
 		if (this.getLoggedUserId !== -1) {
 			if (
-				this.getLoggedUserId ===
-					this.getEventById(this.eventId).authorId ||
+				this.getLoggedUserId === this.getEventById(this.eventId).authorId ||
 				this.getUserById(this.getLoggedUserId).profileId === 3
 			) {
 				this.categories.push("Anúncio")
@@ -59,82 +60,79 @@ export default {
 			title: "",
 			categories: ["Dúvida", "Sugestão"],
 			selectedCategory: "Dúvida",
-			text: ""
+			text: "",
+			loading: false
 		}
 	},
 	methods: {
-		createDiscussion() {
+		async createDiscussion() {
 			this.attemptSubmit = true
 			if (this.titleState && this.textState) {
-				this.$store.dispatch("createEventDiscussion", {
-					eventId: this.eventId,
-					discussion: {
-						id: this.getLastDiscussionIdByEventId(this.eventId) + 1,
-						authorId: this.getLoggedUserId,
-						title: this.title,
-						category: this.selectedCategory,
-						content: this.text,
-						upvotes: 0,
-						downvotes: 0,
-						usersVoted: [],
-						moment: this.$moment(),
-						answers: []
-					}
-				})
-
-				this.$snotify.success("Discussão criada", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
-				this.resetFormCreateDiscussion()
-			} else {
-				this.$snotify.error(
-					"Preencha todos os campos corretamente",
-					"",
-					{
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					}
-				)
-			}
-		},
-		editDiscussion() {
-			this.attemptSubmit = true
-			if (this.titleState && this.textState) {
-				this.$store.dispatch(
-					"editEventDiscussionByEventIdDiscussionId",
-					{
-						eventId: this.eventId,
-						discussionId: this.edit.id,
-						discussion: {
-							title: this.title,
+				try {
+					this.loading = true
+					const response = await this.$http.post(
+						`/events/ids/${this.$route.params.id}/discussions`,
+						{
 							category: this.selectedCategory,
+							title: this.title,
 							content: this.text
 						}
-					}
-				)
-
-				this.$snotify.success("Discussão editada", "", {
+					)
+					this.$store.commit(
+						"ADDED_DISCUSSION",
+						response.data.content.discussion
+					)
+					this.loading = false
+					this.$snotify.success("Discussão criada", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+					this.resetFormCreateDiscussion()
+				} catch (err) {}
+			} else {
+				this.$snotify.error("Preencha todos os campos corretamente", "", {
 					timeout: 2000,
 					showProgressBar: false,
 					closeOnClick: true,
 					pauseOnHover: true
 				})
-			} else {
-				this.$snotify.error(
-					"Preencha todos os campos corretamente",
-					"",
-					{
+			}
+		},
+		async editDiscussion() {
+			this.attemptSubmit = true
+			if (this.titleState && this.textState) {
+				try {
+					this.loading = true
+					const response = await this.$http.put(
+						`/events/ids/${this.$route.params.id}/discussions`,
+						{
+							category: this.selectedCategory,
+							title: this.title,
+							content: this.text
+						}
+					)
+					this.$store.commit(
+						"EDITED_DISCUSSION",
+						response.data.content.discussion
+					)
+					this.loading = false
+					this.$snotify.success("Discussão editada", "", {
 						timeout: 2000,
 						showProgressBar: false,
 						closeOnClick: true,
 						pauseOnHover: true
-					}
-				)
+					})
+				} catch (err) {
+				}
+			} else {
+				this.$snotify.error("Preencha todos os campos corretamente", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
 			}
 		},
 		resetFormCreateDiscussion() {

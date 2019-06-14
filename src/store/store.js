@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios';
 
 const axiosConfig = {
-  baseURL: "https://atlas-server-gustavovasconcelos.c9users.io",
+    baseURL: "https://atlas-server-gustavovasconcelos.c9users.io",
 }
 
 const HTTP = axios.create(axiosConfig)
@@ -338,10 +338,12 @@ export default new Vuex.Store({
         REFRESHED_PAGE(state, payload) {
             state.loggedUser = payload
         },
+        ADDED_DISCUSSION(state, payload) { },
+        EDITED_DISCUSSION(state, payload) { },
         RESET_STATE(state) {
             const initial = initialState()
             Object.keys(initial).forEach(key => {
-                state[key] = initial[key] 
+                state[key] = initial[key]
             })
         },
         LOAD_USERS(state, users) {
@@ -364,7 +366,7 @@ export default new Vuex.Store({
             state.users.push(payload)
         },
         EDIT_USER(state) {
-            
+
         },
         EDIT_USER_INTERESTS_BY_ID(state, payload) {
             state.users.forEach(user => {

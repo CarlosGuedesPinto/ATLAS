@@ -36,7 +36,7 @@
 							class="text-white"
 						>
 							<i class="fa fa-user text-atlas1" aria-hidden="true"></i>
-							<small> @{{ discussion.author.username }}</small>
+							<small>@{{ discussion.author.username }}</small>
 						</router-link>
 					</div>
 					<div class="ml-3">
@@ -68,19 +68,34 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions([
-			"upvoteEventDiscussionByEventIdDiscussionId",
-			"downvoteEventDiscussionByEventIdDiscussionId"
-		]),
-		buttonUpvoteClicked() {
-			if (this.getLoggedUserId !== -1) {
+		async buttonUpvoteClicked() {
+			if (this.getLoggedUser.username) {
 				if (!this.userAlreadyVoted) {
-					this.upvoteEventDiscussionByEventIdDiscussionId({
-						eventId: parseInt(this.$route.params.id),
-						discussionId: this.discussion.id
-					})
+					try {
+						const response = await this.$http.post(
+							`/events/ids/${this.$route.params.id}/discussions/${
+								this.discussion._id
+							}/votes`,
+							{
+								type: "upvote"
+							}
+						)
+						if (response.status === 200) {
+							this.discussion.upvotes++
+							this.discussion.usersVoted.push(this.getLoggedUser._id)
+						}
+					} catch (err) {
+						if (err.response.message.pt) {
+							this.$snotify.error(err.response.message.pt, "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+						}
+					}
 				} else {
-					this.$snotify.error("Já votou nessa discussão", "", {
+					this.$snotify.error("Já votou nesta discussão", "", {
 						timeout: 2000,
 						showProgressBar: false,
 						closeOnClick: true,
@@ -88,21 +103,36 @@ export default {
 					})
 				}
 			} else {
-				this.$snotify.error("Faça login para votar", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
+				this.$store.commit("REDIRECT_AFTER_LOGIN", this.$route.path)
+				this.$router.push({ name: "login" })
 			}
 		},
-		buttonDownvoteClicked() {
-			if (this.getLoggedUserId !== -1) {
+		async buttonDownvoteClicked() {
+			if (this.getLoggedUser.username) {
 				if (!this.userAlreadyVoted) {
-					this.downvoteEventDiscussionByEventIdDiscussionId({
-						eventId: parseInt(this.$route.params.id),
-						discussionId: this.discussion.id
-					})
+					try {
+						const response = await this.$http.post(
+							`/events/ids/${this.$route.params.id}/discussions/${
+								this.discussion._id
+							}/votes`,
+							{
+								type: "downvote"
+							}
+						)
+						if (response.status === 200) {
+							this.discussion.downvotes++
+							this.discussion.usersVoted.push(this.getLoggedUser._id)
+						}
+					} catch (err) {
+						if (err.response.message.pt) {
+							this.$snotify.error(err.response.message.pt, "", {
+								timeout: 2000,
+								showProgressBar: false,
+								closeOnClick: true,
+								pauseOnHover: true
+							})
+						}
+					}
 				} else {
 					this.$snotify.error("Já votou nessa discussão", "", {
 						timeout: 2000,
@@ -112,25 +142,16 @@ export default {
 					})
 				}
 			} else {
-				this.$snotify.error("Faça login para votar", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
+				this.$store.commit("REDIRECT_AFTER_LOGIN", this.$route.path)
+				this.$router.push({ name: "login" })
 			}
 		}
 	},
 	computed: {
-		...mapGetters([
-			"getEventDiscussionsById",
-			"getLoggedUserId",
-			"getUserById",
-			"getEventUrlByName"
-		]),
+		...mapGetters(["getLoggedUser"]),
 		userAlreadyVoted() {
 			return this.discussion.usersVoted.some(
-				userId => userId === this.getLoggedUserId
+				userId => userId === this.getLoggedUser._id
 			)
 		}
 	}

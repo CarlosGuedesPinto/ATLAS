@@ -286,8 +286,10 @@ export default {
 						text: `O utilizador ${
 							this.user.username
 						} será removido para sempre, assim como todos os dados associados a este (discussões em eventos, respostas em discussões e participações em eventos).`,
-						accept: () => {
-							
+						accept: async () => {
+							try {
+								const response = this.$http.delete()
+							} catch (err) {}
 							this.$snotify.success("Utilizador removido", "", {
 								timeout: 2000,
 								showProgressBar: false,

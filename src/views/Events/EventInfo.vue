@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="loading" class="text-center">
+		<div v-if="loading.page" class="text-center">
 			<p class="mb-5">&nbsp;</p>
 			<b-spinner variant="atlas" label="A carregar..." style="width: 8rem; height: 8rem;" class="mt-5"></b-spinner>
 		</div>
@@ -112,11 +112,16 @@
 								style="border-radius: 2em;"
 								@click="btnEnrollmentClicked()"
 							>
-								<i
-									class="fa text-teca4"
-									:class="!event.enrollments.some(enrollment => enrollment.user._id === getLoggedUser._id) ? 'fa-sign-in-alt' : 'fa-sign-out-alt'"
-								></i>
-								{{ !event.enrollments.some(enrollment => enrollment.user._id === getLoggedUser._id) ? 'Inscrever-me' : 'Desinscrever-me' }}
+								<template v-if="loading.enrollment">
+									<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+								</template>
+								<template v-else>
+									<i
+										class="fa text-teca4"
+										:class="!event.enrollments.some(enrollment => enrollment.user._id === getLoggedUser._id) ? 'fa-sign-in-alt' : 'fa-sign-out-alt'"
+									></i>
+									{{ !event.enrollments.some(enrollment => enrollment.user._id === getLoggedUser._id) ? 'Inscrever-me' : 'Desinscrever-me' }}
+								</template>
 							</button>
 						</template>
 					</div>
@@ -294,6 +299,27 @@ export default {
 	},
 	created() {
 		this.loadPage()
+		this.$store.subscribe(mutation => {
+			if (mutation.type === "ADDED_DISCUSSION") {
+				this.modal = false
+				const { createdAt, usersVoted, _id, category, title } = mutation.payload
+				this.event.discussions.push({
+					createdAt,
+					usersVoted,
+					_id,
+					category,
+					title,
+					upvotes: 0,
+					downvotes: 0,
+					answers: 0,
+					author: {
+						_id: this.getLoggedUser._id,
+						username: this.getLoggedUser.username,
+						picture: this.getLoggedUser.picture
+					}
+				})
+			}
+		})
 		if (
 			this.$route.name === "eventsInfo" &&
 			this.$route.query.inscrever === "sim"
@@ -330,14 +356,6 @@ export default {
 				})
 			}
 		}
-		this.$store.subscribe(mutation => {
-			if (mutation.type === "EDIT_EVENT_BY_ID") {
-				this.modalEdit = false
-			}
-			if (mutation.type === "CREATE_EVENT_DISCUSSION") {
-				this.modal = false
-			}
-		})
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()
 	},
@@ -353,7 +371,10 @@ export default {
 			currentPage: 1,
 			discussionsPerPage: 5,
 			windowWidth: 0,
-			loading: false
+			loading: {
+				page: false,
+				enrollment: false
+			}
 		}
 	},
 	computed: {
@@ -408,13 +429,13 @@ export default {
 	methods: {
 		async loadPage() {
 			const id = this.$route.params.id
-			this.loading = true
+			this.loading.page = true
 			try {
 				const response = await this.$http.get(`/events/ids/${id}`)
 				if (response.status === 200) {
 					this.event = response.data.content.event
 					this.related = response.data.content.related
-					this.loading = false
+					this.loading.page = false
 				}
 			} catch (err) {
 				console.log(err)
@@ -475,78 +496,60 @@ export default {
 					)
 				) {
 					try {
-						const response = await this.$http.post()
-					} catch (err) {
-
-					}
-					this.$store.dispatch("addEventEnrollmentByEventId", {
-						eventId: this.event.id,
-						enrollment: {
-							userId: this.getLoggedUserId,
-							moment: this.$moment(),
-							paid: false
-						}
-					})
-
-					this.assignMedals()
-					this.historyUpdate("ADD")
-					//Verify if it is the first time that he applies to an event
-
-					if (this.event.paid) {
-						this.$vs.dialog({
-							type: "confirm",
-							color: "primary",
-							title: "Efetuar pagamento",
-							acceptText: "Entendido",
-							cancelText: "",
-							text: `Dirija-se junto ao proponente de evento para efetuar o pagamento da inscrição (${
-								this.event.paymentPrice
-							} €).`,
-							accept: () => {
-								this.$snotify.success("Inscrição efetuada", "", {
-									timeout: 2000,
-									showProgressBar: false,
-									closeOnClick: true,
-									pauseOnHover: true
-								})
-							},
-							cancel: () => {
-								this.$snotify.success("Inscrição efetuada", "", {
-									timeout: 2000,
-									showProgressBar: false,
-									closeOnClick: true,
-									pauseOnHover: true
-								})
+						this.loading.enrollment = true
+						const response = await this.$http.post(
+							`/events/ids/${this.event._id}/enrollments`
+						)
+						const enrollment = response.data.content.enrollment
+						const { _id, createdAt, paid } = enrollment
+						this.event.enrollments.push({
+							_id,
+							createdAt,
+							paid,
+							user: {
+								_id: this.getLoggedUser._id,
+								picture: this.getLoggedUser.picture,
+								username: this.getLoggedUser.username
 							}
 						})
-					} else {
 						this.$vs.dialog({
 							type: "confirm",
 							color: "primary",
-							title: "Inscrição efetuada",
+							title: `Inscrição em ${this.event.name}`,
+							acceptText: "Entendido",
+							cancelText: "",
+							text: response.data.message.pt
+						})
+						this.loading.enrollment = false
+					} catch (err) {}
+				} else {
+					//this.historyUpdate("REMOVE")
+					try {
+						this.loading.enrollment = true
+						const response = await this.$http.delete(
+							`/events/ids/${this.event._id}/enrollments`
+						)
+						this.loading.enrollment = false
+
+						const index = this.event.enrollments.findIndex(
+							enrollment =>
+								enrollment.user.username === this.getLoggedUser.username
+						)
+						this.event.enrollments.splice(index, 1)
+
+						this.$vs.dialog({
+							type: "confirm",
+							color: "primary",
+							title: "Inscrição removida",
 							acceptText: "Entendido",
 							cancelText: "",
 							text: `A sua inscrição no evento ${
 								this.event.name
-							} foi efetuada com sucesso.`
+							} foi removida com sucesso.`
 						})
+					} catch (err) {
+						console.log(err)
 					}
-				} else {
-					this.$store.dispatch("removeEventEnrollmentByEventIdUserId", {
-						eventId: this.event.id,
-						userId: this.getLoggedUserId
-					})
-					this.historyUpdate("REMOVE")
-					this.$vs.dialog({
-						type: "confirm",
-						color: "primary",
-						title: "Inscrição removida",
-						acceptText: "Entendido",
-						cancelText: "",
-						text: `A sua inscrição no evento ${
-							this.event.name
-						} foi removida com sucesso.`
-					})
 				}
 			}
 		},

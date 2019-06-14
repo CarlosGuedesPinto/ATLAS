@@ -343,7 +343,8 @@ export default {
 				this.dateEnd ||
 				this.selectedTags.length ||
 				this.course ||
-				this.classroom
+				this.classroom ||
+				this.filterTags
 			)
 		},
 		getUrlQuery() {
@@ -524,7 +525,7 @@ export default {
 				return this.eventTags
 			} else {
 				return this.eventTags.filter(tag =>
-					tag.text
+					tag
 						.toLowerCase()
 						.includes(this.filterTags.toLowerCase())
 				)
@@ -623,6 +624,7 @@ export default {
 			this.dateStart = ""
 			this.dateEnd = ""
 			this.selectedTags = []
+			this.filterTags = ""
 			this.course = ""
 			this.classroom = ""
 			this.searchCollapse = false

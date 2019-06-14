@@ -60,9 +60,8 @@
 					<b-form-textarea
 						id="description"
 						v-model="answer"
-						:placeholder="getLoggedUserId === -1 ? 'Inicie sessão para poder responder.' : 'Escreva aqui a sua resposta...'"
+						placeholder="Escreva aqui a sua resposta..."
 						:rows="3"
-						:disabled="getLoggedUserId === -1"
 					/>
 				</b-form-group>
 				<transition name="fade" mode="out-in">
@@ -104,11 +103,12 @@ export default {
 	components: { TitleAtlas, EventDiscussionAnswer, FormDiscussion },
 	created() {
 		this.loadPage()
-		this.author = this.getUserById(this.discussion.authorId)
-
 		this.$store.subscribe(mutation => {
-			if (mutation.type === "EDIT_EVENT_DISCUSSION_BY_EVENT_ID_DISCUSSION_ID") {
+			if (mutation.type === "EDITED_DISCUSSION") {
 				this.modal = false
+				const { title, category, content } = mutation.payload
+				this.discussion.title = title
+				this.discussion.category = category
 			}
 		})
 	},
@@ -117,7 +117,6 @@ export default {
 			loading: false,
 			event: {},
 			discussion: {},
-			author: {},
 			answer: "",
 			modal: false,
 			totalPages: 1,
@@ -126,13 +125,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters([
-			"getEventById",
-			"getEventDiscussionByEventIdDiscussionId",
-			"getUserById",
-			"getLoggedUserId",
-			"getLastAnswerIdByEventIdDiscussionId"
-		])
+		...mapGetters(["getLoggedUser"])
 	},
 	methods: {
 		async loadPage() {
@@ -148,21 +141,12 @@ export default {
 			} catch (err) {}
 			this.loading = false
 		},
-		addAnswer() {
-			this.$store.dispatch("addDiscussionAnswerByEventIdDiscussionId", {
-				eventId: this.event.id,
-				discussionId: this.discussion.id,
-				answer: {
-					id:
-						this.getLastAnswerIdByEventIdDiscussionId(
-							this.event.id,
-							this.discussion.id
-						) + 1,
-					authorId: this.getLoggedUserId,
-					content: this.answer,
-					moment: this.$moment()
-				}
-			})
+		async addAnswer() {
+			try {
+				
+			} catch(err) {
+
+			}
 			this.answer = ""
 			this.$snotify.success("Resposta adicionada", "", {
 				timeout: 2000,
@@ -172,11 +156,11 @@ export default {
 			})
 		},
 		btnConditions() {
-			if (this.getLoggedUserId !== -1) {
+			if (this.getLoggedUser.username) {
 				if (
-					this.getUserById(this.getLoggedUserId).profileId === 3 ||
-					this.getLoggedUserId === this.author.id ||
-					this.getLoggedUserId === this.event.authorId
+					this.getLoggedUser.profileId === 3 ||
+					this.getLoggedUser._id === this.event.author._id ||
+					this.getLoggedUser._id === this.discussion.author._id
 				) {
 					return true
 				}
