@@ -7,7 +7,7 @@
 				:invalid-feedback="nameInvalidFeedback"
 				:valid-feedback="nameValidFeedback"
 				:state="nameState"
-				:class="!editId ? 'mt-4' : ''"
+				:class="!edit ? 'mt-4' : ''"
 			>
 				<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="15"></b-form-input>
 			</b-form-group>
@@ -15,7 +15,7 @@
 				<template v-if="loadingSubmit">
 					<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
 				</template>
-				<template v-else>{{ !editId ? "Adicionar tag" : "Editar tag"}}</template>
+				<template v-else>{{ !edit ? "Adicionar tag" : "Editar tag"}}</template>
 			</button>
 		</b-form>
 		<vue-snotify></vue-snotify>
@@ -42,13 +42,15 @@ export default {
 	},
 	created() {
 		if (this.edit) {
-			this.name = this.getTagById(this.editId).name
+			this.name = this.edit.name
 		}
 	},
 	methods: {
 		async addTag() {
 			this.attemptSubmit = true
 			if (this.nameState) {
+				this.loadingSubmit = true
+
 				try {
 					const response = await this.$http.post("/tags", {
 						name: this.name
@@ -57,10 +59,10 @@ export default {
 					// clears form
 					this.name = ""
 					this.attemptSubmit = false
+					this.$store.commit("ADDED_TAG", response.data.content.tag)
 				} catch (err) {
 					const response = err.response.data
 					if (response.error.type === "name") {
-						console.log(true)
 						this.errors.name.error = true
 						this.errors.name.value = response.error.value
 
@@ -72,6 +74,7 @@ export default {
 						})
 					}
 				}
+				this.loadingSubmit = false
 			} else {
 				this.$snotify.error("Preencha todos os campos corretamente", "", {
 					timeout: 2000,
@@ -85,7 +88,7 @@ export default {
 			this.attemptSubmit = true
 			if (this.nameState) {
 				this.$store.dispatch("editTag", {
-					id: this.editId,
+					id: this.edit._id,
 					name: this.name
 				})
 
@@ -110,7 +113,6 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(["getTags", "getTagById", "getLastTagId", "getTagByName"]),
 		nameState() {
 			if (!this.name && !this.attemptSubmit) {
 				return null

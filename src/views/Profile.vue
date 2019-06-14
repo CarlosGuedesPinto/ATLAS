@@ -299,20 +299,38 @@ export default {
 							this.user.username
 						} será removido para sempre, assim como todos os dados associados a este (discussões em eventos, respostas em discussões e participações em eventos).`,
 						accept: async () => {
+							this.loading = true
 							try {
-								const response = this.$http.delete()
-							} catch (err) {}
-							this.$snotify.success("Utilizador removido", "", {
-								timeout: 2000,
-								showProgressBar: false,
-								closeOnClick: true,
-								pauseOnHover: true
-							})
-							this.$router.push({ name: "home" })
+								const response = await this.$http.delete(
+									`/users/${this.user._id}`
+								)
+								if (response.data.success) {
+									this.$router.replace({ name: "home" })
+									this.$snotify.success("Utilizador removido", "", {
+										timeout: 2000,
+										showProgressBar: false,
+										closeOnClick: true,
+										pauseOnHover: true
+									})
+								}
+							} catch (err) {
+								this.$snotify.error("Erro ao remover utilizador", "", {
+									timeout: 2000,
+									showProgressBar: false,
+									closeOnClick: true,
+									pauseOnHover: true
+								})
+								this.loading = false
+							}
 						}
 					})
 				} else {
-					this.$router.push({ name: "home" })
+					this.$snotify.error("Erro ao remover utilizador", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
 				}
 			}
 		}

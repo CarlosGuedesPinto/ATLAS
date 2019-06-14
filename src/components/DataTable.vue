@@ -76,13 +76,13 @@
 			<template slot="actions" slot-scope="row" v-if="name === 'courses' || name === 'tags'">
 				<button
 					class="btn btn-danger float-right"
-					@click.prevent="btnRemoveClicked(parseInt(row.item.id))"
+					@click.prevent="btnRemoveClicked(row.item)"
 				>
 					<i class="fa fa-times" aria-hidden="true"></i>
 				</button>
 				<button
 					class="btn btn-warning text-white mx-2 float-right"
-					@click.prevent="btnEditClicked(parseInt(row.item.id))"
+					@click.prevent="btnEditClicked(row.item)"
 				>
 					<i class="fa fa-edit" aria-hidden="true"></i>
 				</button>
@@ -209,7 +209,7 @@ export default {
 				this.activePrompt = true
 			}
 		},
-		btnRemoveClicked(id) {
+		btnRemoveClicked(obj) {
 			switch (this.name) {
 				case "courses":
 					this.$vs.dialog({
@@ -219,9 +219,9 @@ export default {
 						acceptText: "Remover",
 						cancelText: "Cancelar",
 						text: `O curso ${
-							this.getCourseById(id).name
+							this.obj.name
 						} será removido para sempre.`,
-						accept: () => {
+						accept: async () => {
 							this.removeCourseById(id)
 							this.$snotify.success("Curso removido", "", {
 								timeout: 2000,
