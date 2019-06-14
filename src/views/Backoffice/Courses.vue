@@ -3,7 +3,7 @@
 		<Panel title="Adicionar curso">
 			<FormCourse></FormCourse>
 		</Panel>
-		<Panel v-if="loading" title="CURSOS - a carregar..." class="mt-5">
+		<Panel v-if="loading" title="Cursos - a carregar..." class="mt-5">
 			<b-spinner variant="atlas" label="A carregar..."></b-spinner>
 		</Panel>
 		<Panel v-else :title="`Cursos - ${courses.length}`" class="mt-5">

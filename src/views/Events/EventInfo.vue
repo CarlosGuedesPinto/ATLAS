@@ -80,7 +80,7 @@
 									:key="'tag_' + tag._id"
 									:to="{name: 'events', query: { tags: tag.name } }"
 									class="text-atlas2"
-								>#{{ tag.name }}</router-link>
+								> #{{ tag.name }}</router-link>
 							</div>
 							<div>
 								<i class="fa fa-graduation-cap text-atlas1 mr-1" aria-hidden="true"></i>
