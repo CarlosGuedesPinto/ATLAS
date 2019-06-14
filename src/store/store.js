@@ -340,6 +340,7 @@ export default new Vuex.Store({
         },
         ADDED_DISCUSSION(state, payload) { },
         EDITED_DISCUSSION(state, payload) { },
+        REMOVED_ANSWER(state, payload) { },
         RESET_STATE(state) {
             const initial = initialState()
             Object.keys(initial).forEach(key => {

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="loading" class="text-center">
+		<div v-if="loading.page" class="text-center">
 			<p class="mb-5">&nbsp;</p>
 			<b-spinner variant="atlas" label="A carregar..." style="width: 8rem; height: 8rem;" class="mt-5"></b-spinner>
 		</div>
@@ -71,11 +71,18 @@
 							class="btn float-right col-lg-2 col-md-3 col-5"
 							value="Cancelar"
 							@click="answer = ''"
+							:disabled="btnsAnswerDisabled"
 						>
 						<button
 							type="submit"
 							class="btn btn-atlas1 float-right mr-2 col-lg-2 col-md-3 col-5"
-						>Responder</button>
+							:disabled="btnsAnswerDisabled"
+						>
+							<template v-if="loading.answer">
+								<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+							</template>
+							<template v-else>Responder</template>
+						</button>
 					</div>
 				</transition>
 			</b-form>
@@ -111,11 +118,19 @@ export default {
 				this.discussion.category = category
 				this.discussion.content = content
 			}
+			if (mutation.type === "REMOVED_ANSWER") {
+				const answerIndex = this.discussion.answers.findIndex(answer => answer._id === mutation.payload)
+				this.discussion.answers.splice(answerIndex, 1)
+			}
 		})
 	},
 	data() {
 		return {
-			loading: false,
+			loading: {
+				page: false,
+				answer: false
+			},
+			btnsAnswerDisabled: false,
 			event: {},
 			discussion: {},
 			answer: "",
@@ -131,7 +146,7 @@ export default {
 	methods: {
 		async loadPage() {
 			try {
-				this.loading = true
+				this.loading.page = true
 				const response = await this.$http.get(
 					`/events/ids/${this.$route.params.id}/discussions/${
 						this.$route.params.discussionId
@@ -140,18 +155,38 @@ export default {
 				this.event = response.data.content.event
 				this.discussion = response.data.content.discussion
 			} catch (err) {}
-			this.loading = false
+			this.loading.page = false
 		},
 		async addAnswer() {
+			this.btnsAnswerDisabled = true
+			this.loading.answer = true
 			try {
-			} catch (err) {}
-			this.answer = ""
-			this.$snotify.success("Resposta adicionada", "", {
-				timeout: 2000,
-				showProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true
-			})
+				const response = await this.$http.post(
+					`/events/ids/${this.$route.params.id}/discussions/${
+						this.$route.params.discussionId
+					}/answers`,
+					{
+						content: this.answer
+					}
+				)
+				this.$snotify.success("Resposta adicionada", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
+				this.discussion.answers.push(response.data.content.answer)
+				this.answer = ""
+			} catch (err) {
+				this.$snotify.error("Não foi possível adicionar a resposta", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
+			}
+			this.loading.answer = false
+			this.btnsAnswerDisabled = false
 		},
 		btnConditions() {
 			if (this.getLoggedUser.username) {
@@ -175,7 +210,7 @@ export default {
 				text: "Esta discussão será removida para sempre.",
 				accept: async () => {
 					try {
-						this.loading = true
+						this.loading.page = true
 						const response = await this.$http.delete(
 							`/events/ids/${this.event._id}/discussions/${this.discussion._id}`
 						)
@@ -191,7 +226,6 @@ export default {
 								pauseOnHover: true
 							})
 						}
-						this.loading = false
 					} catch (err) {
 						this.$snotify.error("Erro ao remover discussão", "", {
 							timeout: 2000,
@@ -199,7 +233,7 @@ export default {
 							closeOnClick: true,
 							pauseOnHover: true
 						})
-						this.loading = false
+						this.loading.page = false
 					}
 				}
 			})

@@ -26,7 +26,12 @@
 									v-if="btnRemoveConditions()"
 									@click="btnRemoveClicked()"
 								>
-									<i class="fa fa-times" aria-hidden="true"></i>
+									<template v-if="btnRemoveLoading">
+										<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+									</template>
+									<template v-else>
+										<i class="fa fa-times" aria-hidden="true"></i>
+									</template>
 								</button>
 							</small>
 							<hr class="my-1">
@@ -66,7 +71,12 @@
 							v-if="btnRemoveConditions()"
 							@click="btnRemoveClicked()"
 						>
-							<i class="fa fa-times" aria-hidden="true"></i>
+							<template v-if="btnRemoveLoading">
+								<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+							</template>
+							<template v-else>
+								<i class="fa fa-times" aria-hidden="true"></i>
+							</template>
 						</button>
 					</small>
 				</div>
@@ -90,7 +100,8 @@ export default {
 	},
 	data() {
 		return {
-			windowWidth: 0
+			windowWidth: 0,
+			btnRemoveLoading: false
 		}
 	},
 	methods: {
@@ -108,10 +119,10 @@ export default {
 			}
 		},
 		btnRemoveConditions() {
-			if (this.getLoggedUserId !== -1 && this.answer.id !== 0) {
+			if (this.getLoggedUser.username && this.answer.id !== 0) {
 				if (
-					this.getLoggedUserId === this.answer.authorId ||
-					this.getUserById(this.getLoggedUserId).profileId === 3
+					this.getLoggedUser._id === this.answer.author._id ||
+					this.getLoggedUser.profileId !== 1
 				) {
 					return true
 				}
@@ -126,27 +137,37 @@ export default {
 				acceptText: "Apagar",
 				cancelText: "Cancelar",
 				text: "Esta reposta será apagada.",
-				accept: () => {
-					this.$store.dispatch(
-						"removeEventDiscussionAnswerByEventIdDiscussionIdAnswerId",
-						{
-							eventId: parseInt(this.$route.params.id),
-							discussionId: parseInt(this.$route.params.discussionId),
-							answerId: this.answer.id
-						}
-					)
-					this.$snotify.success("Resposta apagada", "", {
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					})
+				accept: async () => {
+					this.btnRemoveLoading = true
+					try {
+						const response = await this.$http.delete(
+							`/events/ids/${this.$route.params.id}/discussions/${
+								this.$route.params.discussionId
+							}/answers/${this.answer._id}`
+						)
+						this.$store.commit("REMOVED_ANSWER", response.data.content.answerId)
+						this.$snotify.success("Resposta apagada", "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+					} catch (err) {
+						console.log(err.response)
+						this.$snotify.error("Erro ao apagar resposta", "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+					}
+					this.btnRemoveLoading = false
 				}
 			})
 		}
 	},
 	computed: {
-		...mapGetters(["getUserById", "getLoggedUserId"])
+		...mapGetters(["getLoggedUser"])
 	}
 }
 </script>
