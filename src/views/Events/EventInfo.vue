@@ -24,12 +24,6 @@
 						:class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-4 col-md-5 col-6' : 'col-lg-6 col-12'"
 					>
 						<img :src="event.picture.poster.url" class="img-fluid img-thumbnail">
-						<img
-							:src="`https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=http://localhost:8080/evento/${event.id}?inscrever=sim`"
-							alt
-							style="position: absolute; top: 5px;"
-							:style="windowWidth >= 1200 ? 'right: 310px;' : (windowWidth >= 992 ? 'right: 250px;' : (windowWidth >= 768 ? 'right: 230px;' : 'right: 200px;'))"
-						>
 					</div>
 					<div :class="event.picture.poster.orientation === 'Vertical' ? 'col-lg-8 col-12' : 'col-12'">
 						<div>
@@ -49,10 +43,10 @@
 								<i class="fa fa-calendar-alt text-atlas1 mr-1" aria-hidden="true"></i>
 								<span
 									v-if="event.dateStart === event.dateEnd"
-								>{{ $moment(event.dateStart).format("dddd[,] LL") }}</span>
+								>{{ $moment(event.dateStart.substr(0, 10)).format("dddd[,] LL") }}</span>
 								<span
 									v-else
-								>{{ $moment(event.dateStart).format("dddd[,] LL") }} - {{ $moment(event.dateEnd).format("dddd[,] LL") }}</span>
+								>{{ $moment(event.dateStart.substr(0, 10)).format("dddd[,] LL") }} - {{ $moment(event.dateEnd.substr(0, 10)).format("dddd[,] LL") }}</span>
 							</div>
 							<div>
 								<i class="fa fa-clock text-atlas1" aria-hidden="true"></i>
@@ -71,13 +65,13 @@
 								<i class="fa fa-users text-atlas1 mr-1" aria-hidden="true"></i>
 								<template
 									v-if="!event.enrollments.length"
-								>{{ event.enrollments.length }} {{ $moment(event.dateEnd + ' ' + event.hourEnd).isBefore($moment()) ? 'foram' : (event.enrollments.length === 1 ? 'vai' : 'vão')}}</template>
+								>{{ $moment(event.dateEnd.substr(0, 10) + ' ' + event.hourEnd).isBefore($moment()) ? 'Sem inscrições' : 'Ainda sem inscrições'}}</template>
 								<a
 									href
 									class="text-atlas2"
 									@click.prevent="modalEnrollments = true"
 									v-else
-								>{{ event.enrollments.length }} {{ $moment(event.dateEnd + ' ' + event.hourEnd).isBefore($moment()) ? 'foram' : (event.enrollments.length === 1 ? 'vai' : 'vão')}}</a>
+								>{{ event.enrollments.length }} {{ $moment(event.dateEnd.substr(0, 10) + ' ' + event.hourEnd).isBefore($moment()) ? (event.enrollments.length === 1 ? 'foi' : 'foram') : (event.enrollments.length === 1 ? 'vai' : 'vão')}}</a>
 							</div>
 							<div>
 								<i class="fa fa-tags text-atlas1" aria-hidden="true"></i>
@@ -104,7 +98,7 @@
 							</div>
 						</div>
 						<template
-							v-if="$moment(event.dateEnd).isSameOrAfter($moment().format('YYYY-MM-DD')) && getLoggedUser.profileId !== 3"
+							v-if="$moment(event.dateEnd.substr(0, 10)).isSameOrAfter($moment().format('YYYY-MM-DD')) && getLoggedUser.profileId !== 3"
 						>
 							<hr class="bg-atlas1">
 							<button
@@ -222,15 +216,20 @@
 							<button
 								class="btn btn-atlas2 col-12 col-sm-6 ml-auto"
 								v-if="event.paid"
-								@click="!enrollment.paid ? enrollment.paid = true : enrollment.paid = false"
+								@click="btnPaymentClicked(enrollment)"
 							>
-								<i class="fa" :class="!enrollment.paid ? 'fa-check' : 'fa-times'" aria-hidden="true"></i>
-								{{ !enrollment.paid ? 'Validar pagamento' : 'Remover pagamento' }}
+								<template v-if="enrollment.loading">
+									<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+								</template>
+								<template v-else>
+									<i class="fa" :class="!enrollment.paid ? 'fa-check' : 'fa-times'" aria-hidden="true"></i>
+									{{ !enrollment.paid ? 'Validar pagamento' : 'Devolver pagamento' }}
+								</template>
 							</button>
 							<button
 								class="btn btn-danger"
-								:class="event.paid ? 'col-12 col-sm-6 mr-auto' : 'col-6 ml-auto mr-3'"
-								@click="btnRemoveEnrollmentClicked(enrollment.userId)"
+								:class="event.paid ? 'col-12 col-sm-6 mr-auto' : 'col-12'"
+								@click="btnRemoveEnrollmentClicked(enrollment, index)"
 								:disabled="enrollment.paid"
 							>
 								<i class="fa fa-trash" aria-hidden="true"></i> Remover inscrição
@@ -326,7 +325,7 @@ export default {
 		) {
 			if (
 				this.$moment(
-					this.event.dateEnd + " " + this.event.hourEnd
+					this.event.dateEnd.substr(0, 10) + " " + this.event.hourEnd
 				).isSameOrAfter(this.$moment().format("YYYY-MM-DD HH:mm"))
 			) {
 				if (
@@ -553,7 +552,6 @@ export default {
 				}
 			}
 		},
-
 		assignMedals() {
 			//console.log(this.getUserById(this.getLoggedUserId).leveling.medals)
 
@@ -603,18 +601,56 @@ export default {
 
 			//reduzir codigo aqui
 		},
-		btnValidatePaymentClicked(userId) {},
-		btnRemoveEnrollmentClicked(userId) {
-			this.$store.dispatch("removeEventEnrollmentByEventIdUserId", {
-				eventId: this.event.id,
-				userId: userId
-			})
-			this.$snotify.success("Inscrição removida", "", {
-				timeout: 2000,
-				showProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true
-			})
+		async btnPaymentClicked(enrollment) {
+			enrollment.loading = true
+			try {
+				const response = await this.$http.post(
+					`/events/ids/${this.event._id}/enrollments/${
+						enrollment.user._id
+					}/payments`
+				)
+				if (response.data.success) {
+					enrollment.paid = response.data.content.enrollment.paid
+					this.$snotify.success("Pagamento alterado com sucesso", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				}
+			} catch (err) {
+				console.log(err)
+				this.$snotify.error("Erro ao alterar pagamento", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
+			}
+			enrollment.loading = false
+		},
+		async btnRemoveEnrollmentClicked(enrollment, index) {
+			try {
+				const response = await this.$http.delete(
+					`/events/ids/${this.event._id}/enrollments/${enrollment.user._id}`
+				)
+				if (response.data.success) {
+					this.event.enrollments.splice(index, 1)
+					this.$snotify.success("Inscrição removida", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				}
+			} catch (err) {
+				this.$snotify.error("Erro ao remover inscrição", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
+			}
 		}
 	}
 }

@@ -121,6 +121,11 @@ export default {
 @import "@/assets/styles/scss/custom-bootstrap.scss";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "~vue-snotify/styles/material";
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 #app {
 	font-family: Exo, sans-serif;
 	background: #f1f1f1;

@@ -8,7 +8,11 @@
 						<br>
 						<span class="mt-2 text-atlas2">@{{ answer.author.username }}</span>
 					</router-link>
-					<button class="btn btn-atlas1 col-12" id="profile-name">{{ getProfileName() }}</button>
+					<button
+						class="btn col-12"
+						:class="answer.author.profileId === 1 ? 'btn-atlas3' : (answer.author.profileId === 2 ? 'btn-atlas2' : 'btn-atlas1')"
+						id="profile-name"
+					>{{ getProfileName() }}</button>
 				</div>
 				<div class="col-xl-9 col-md-9 col-12">
 					<div class="bg-white border rounded pl-3 pr-1 py-2" style="height: 100%;">
@@ -122,7 +126,9 @@ export default {
 			if (this.getLoggedUser.username && this.answer.id !== 0) {
 				if (
 					this.getLoggedUser._id === this.answer.author._id ||
-					this.getLoggedUser.profileId !== 1
+					(this.getLoggedUser.profileId === 2 &&
+						this.answer.author._id === this.getLoggedUser._id) ||
+					this.getLoggedUser.profileId === 3
 				) {
 					return true
 				}

@@ -44,8 +44,13 @@
 							>&nbsp;@{{ event.author.username }}</router-link>
 						</div>
 						<div class="mx-3">
-							<i class="fa fa-users text-atlas1" aria-hidden="true"></i>
-							{{ event.enrollments.length }} {{ $moment(event.dateEnd + 'T' + event.hourEnd).isBefore($moment()) ? 'foram' : (event.enrollments.length === 1 ? 'vai' : 'vão')}}
+							<i class="fa fa-users text-atlas1" aria-hidden="true"></i>&nbsp;
+							<template
+								v-if="!event.enrollments.length"
+							>{{ $moment(event.dateEnd.substr(0, 10) + ' ' + event.hourEnd).isBefore($moment()) ? 'Sem inscrições' : 'Ainda sem inscrições'}}</template>
+							<template
+								v-else
+							>{{ event.enrollments.length }} {{ $moment(event.dateEnd.substr(0, 10) + ' ' + event.hourEnd).isBefore($moment()) ? (event.enrollments.length === 1 ? 'foi' : 'foram') : (event.enrollments.length === 1 ? 'vai' : 'vão')}}</template>
 						</div>
 					</div>
 				</div>

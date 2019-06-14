@@ -24,7 +24,11 @@
 				<div class="row">
 					<div class="ml-auto mr-auto mb-2 col-lg-3 col-md-4 col-6 text-center">
 						<img :src="user.picture" class="img-fluid img-thumbnail rounded-circle">
-						<button class="btn btn-atlas1 mt-2 col-12" id="profile-name">{{ getProfileName() }}</button>
+						<button
+							class="btn btn-atlas1 mt-2 col-12"
+							id="profile-name"
+							:class="user.profileId === 1 ? 'btn-atlas3' : (user.profileId === 2 ? 'btn-atlas2' : 'btn-atlas1')"
+						>{{ getProfileName() }}</button>
 					</div>
 					<div class="col-lg-9 col-md-8 col-12">
 						<vs-list>
@@ -159,6 +163,14 @@ export default {
 			switch (mutation.type) {
 				case "EDIT_USER":
 					this.user = mutation.payload
+					if (this.getLoggedUser._id === this.user._id) {
+						this.$store.commit("UPDATE_LOGGED_USER", {
+							_id: this.user._id,
+							picture: this.user.picture,
+							profileId: this.user.profileId,
+							username: this.user.username
+						})
+					}
 					this.$router.replace({
 						name: "profile",
 						params: { username: mutation.payload.username }
