@@ -1,17 +1,21 @@
 <template>
 	<div class="pb-5">
 		<Panel title="Adicionar evento">
-			<FormEvent></FormEvent>
+			<FormEvent/>
 		</Panel>
 		<Panel
-			:title="getUserById(getLoggedUserId).profileId === 3 ? `Eventos - ${getEvents.length}` : `Meus eventos - ${getEventsByAuthorId(getLoggedUserId).length}`"
+			v-if="loading"
+			:title="getLoggedUser.profileId === 3 ? 'Eventos - a carregar...' : 'Meus eventos - a carregar...'"
 			class="mt-5"
 		>
-			<DataTable
-				name="events"
-				:items="getUserById(getLoggedUserId).profileId === 3 ? getEvents : getEventsByAuthorId(getLoggedUserId)"
-				:fields="eventsFields"
-			></DataTable>
+			<b-spinner variant="atlas" label="A carregar..."></b-spinner>
+		</Panel>
+		<Panel
+			:title="getLoggedUser.profileId === 3 ? `Eventos - ${events.length}` : `Meus eventos - ${events.length}`"
+			class="mt-5"
+			v-else
+		>
+			<DataTable name="events" :items="events" :fields="eventsFields"></DataTable>
 		</Panel>
 	</div>
 </template>
@@ -39,51 +43,29 @@ export default {
 				{
 					key: "name",
 					label: "Nome",
-					sortable: true,
-					sortDirection: "desc"
-				},
-				{
-					key: "category",
-					label: "Categoria",
 					sortable: true
 				},
 				{
-					key: "tags",
-					label: "Tags",
+					key: "author",
+					label: "Autor",
 					sortable: true
 				},
 				{
-					key: "dateStart",
-					label: "Data de início",
-					sortable: true
-				},
-				{
-					key: "dateEnd",
-					label: "Data de fim",
-					sortable: true
-				},
-				{
-					key: "actions",
-					label: ""
+					key: "qr",
+					label: "Código QR",
+					sortable: false
 				}
 			]
 		}
 	},
 	methods: {
 		async loadPage() {
-			this.$store.commit("RESET_STATE")
 			this.loading = true
 			try {
-				let response
-				if(this.getLoggedUser.profileId === 2) {
-					response = await this.$http.get(`/events/authors/${this.getLoggedUser._id}`)
-				}
-				if(this.getLoggedUser.profileId === 3) {
-					response = await this.$http.get("/events")
-				}
-				
+				const response = await this.$http.get("/events")
+
 				if (response.status === 200) {
-					this.events = response.data
+					this.events = response.data.content.events
 					this.loading = false
 				}
 			} catch (err) {

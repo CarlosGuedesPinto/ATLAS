@@ -104,13 +104,7 @@ export default {
 	computed: {
 		...mapGetters([
 			"getJwt",
-			"getUsers",
-			"getLoggedUser",
-			"getUserById",
-			"getCourses",
-			"getTags",
-			"getEvents",
-			"getMedals"
+			"getLoggedUser"
 		])
 	}
 }
@@ -130,7 +124,6 @@ html, body {
 	font-family: Exo, sans-serif;
 	background: #f1f1f1;
 }
-
 .form-control:focus {
 	border-color: #008fc1;
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),

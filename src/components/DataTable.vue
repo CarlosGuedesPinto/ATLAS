@@ -45,11 +45,10 @@
 			empty-filtered-text="Não há resultados para a sua pesquisa"
 			@row-clicked="rowClicked($event)"
 		>
-			<template
-				slot="name"
-				slot-scope="row"
-				v-if="name === 'users'"
-			>{{ row.item.firstName + " " + row.item.lastName }}</template>
+			<template slot="name" slot-scope="row">
+				<template v-if="name === 'users'">{{ row.item.firstName + " " + row.item.lastName }}</template>
+				<template v-if="name === 'events'">{{ row.item.name }}</template>
+			</template>
 
 			<template slot="username" slot-scope="row" v-if="name === 'users'">{{ "@" + row.item.username }}</template>
 
@@ -57,27 +56,30 @@
 
 			<template slot="courseName" slot-scope="row" v-if="name === 'courses'">{{row.item.name }}</template>
 
-			<template slot="courseAbbreviation" slot-scope="row" v-if="name === 'courses'">{{row.item.abbreviation }}</template>
+			<template
+				slot="courseAbbreviation"
+				slot-scope="row"
+				v-if="name === 'courses'"
+			>{{row.item.abbreviation }}</template>
 
 			<template
 				slot="author"
 				slot-scope="row"
-				v-if="name === 'events' && getUserById(getLoggedUserId).profileId === 3"
-			>{{ `${getUserById(row.item.authorId).username} (${row.item.authorId})` }}</template>
-
-			<template
-				slot="tags"
-				slot-scope="row"
-				v-if="name === 'events' && getUserById(getLoggedUserId).profileId === 3"
+				v-if="name === 'events' && getLoggedUser.profileId === 3"
 			>
-				<template v-for="tag in row.item.tags">{{ "#" + getTagNameById(tag) }}</template>
+				<router-link
+					style="text-decoration: none"
+					class="text-atlas2"
+					:to="{ name: 'profile', params: {username: row.item.author.username} }"
+				>@{{row.item.author.username}}</router-link>
+			</template>
+
+			<template slot="qr" slot-scope="row" v-if="name === 'events'">
+				<img :src="row.item.qr" width="40">
 			</template>
 
 			<template slot="actions" slot-scope="row" v-if="name === 'courses' || name === 'tags'">
-				<button
-					class="btn btn-danger float-right"
-					@click.prevent="btnRemoveClicked(row.item)"
-				>
+				<button class="btn btn-danger float-right" @click.prevent="btnRemoveClicked(row.item)">
 					<i class="fa fa-times" aria-hidden="true"></i>
 				</button>
 				<button
@@ -93,19 +95,6 @@
 				<b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0"/>
 			</div>
 		</div>
-		<!--
-		<b-modal
-			:title="name === 'courses' ? 'Editar curso' : 'Editar tag'"
-			header-bg-variant="atlas1"
-			header-text-variant="white"
-			:centered="true"
-			v-model="activePrompt"
-			:hide-footer="true"
-		>
-			<FormCourse :editId="editId" v-if="name === 'courses'"></FormCourse>
-			<FormTag :editId="editId" v-if="name === 'tags'"></FormTag>
-		</b-modal>
-		-->
 		<vs-prompt vs-title="Editar curso" :vs-active.sync="activePrompt" :vs-buttons-hidden="true">
 			<FormCourse :editId="editId" v-if="name === 'courses'"></FormCourse>
 			<FormTag :editId="editId" v-if="name === 'tags'"></FormTag>
@@ -142,13 +131,7 @@ export default {
 		})
 	},
 	computed: {
-		...mapGetters([
-			"getCourseById",
-			"getTagById",
-			"getUserById",
-			"getLoggedUserId",
-			"getTagNameById"
-		]),
+		...mapGetters(["getLoggedUser"]),
 		sortOptions() {
 			return this.fields
 				.filter(f => f.sortable)
@@ -158,7 +141,6 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(["removeCourseById", "removeTagById"]),
 		getNameUserType(profileId) {
 			switch (profileId) {
 				case 1:
@@ -196,7 +178,7 @@ export default {
 				case "events":
 					this.$router.push({
 						name: "eventsInfo",
-						params: { id: event.id }
+						params: { id: event._id }
 					})
 					break
 				default:
@@ -218,9 +200,7 @@ export default {
 						title: "Remover curso?",
 						acceptText: "Remover",
 						cancelText: "Cancelar",
-						text: `O curso ${
-							this.obj.name
-						} será removido para sempre.`,
+						text: `O curso ${this.obj.name} será removido para sempre.`,
 						accept: async () => {
 							this.removeCourseById(id)
 							this.$snotify.success("Curso removido", "", {

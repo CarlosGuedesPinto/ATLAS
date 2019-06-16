@@ -1,271 +1,267 @@
 <template>
-  <div>
-    <b-form @submit.prevent="!edit ? addEvent() : editEvent()">
-      <b-form-group
-        label="Nome"
-        label-for="name"
-        :invalid-feedback="nameInvalidFeedback"
-        :valid-feedback="nameValidFeedback"
-        :state="nameState"
-        :class="!edit ? 'mt-4' : ''"
-      >
-        <b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
-      </b-form-group>
-      <b-form-group label="Categoria" class="mt-4">
-        <b-form-radio-group
-          buttons
-          button-variant="outline-atlas2"
-          v-model="selectedCategory"
-          :options="categories"
-          name="categories"
-          :stacked="windowWidth < 1000 ? true : false"
-        />
-      </b-form-group>
-      <b-form-group label="Tags" :state="tagsState" :invalid-feedback="tagsInvalidFeedback">
-        <b-form-input
-          id="filterTag"
-          v-model="filterTag"
-          type="text"
-          maxlength="50"
-          placeholder="Filtrar tags..."
-        ></b-form-input>
-        <b-form-checkbox-group
-          v-model="selectedTags"
-          name="tags"
-          :options="filteredTags"
-          :stacked="true"
-          style="overflow-y: scroll; max-height: 200px;"
-          class="mt-2 px-1"
-          :state="tagsState"
-        ></b-form-checkbox-group>
-      </b-form-group>
-      <b-form-group label="Descrição" class="mt-4">
-        <b-form-textarea
-          id="description"
-          :state="descriptionState"
-          v-model="description"
-          :rows="3"
-          maxlength="500"
-        />
-        <small>Máximo 500 caracteres</small>
-      </b-form-group>
-      <b-form-group
-        label="Hora de início"
-        label-for="hourStart"
-        :state="hourStartState"
-        :invalid-feedback="hourStartInvalidFeedback"
-      >
-        <b-form-input id="hourStart" :state="hourStartState" type="time" v-model="hourStart"></b-form-input>
-      </b-form-group>
-      <b-form-group
-        label="Hora de fim"
-        label-for="hourEnd"
-        :state="hourEndState"
-        :invalid-feedback="hourEndInvalidFeedback"
-      >
-        <b-form-input id="hourEnd" :state="hourEndState" type="time" v-model="hourEnd"></b-form-input>
-      </b-form-group>
-      <b-form-group
-        label="Data de início"
-        label-for="dateStart"
-        :invalid-feedback="dateStartInvalidFeedback"
-        :state="dateStartState"
-      >
-        <b-form-input
-          id="dateStart"
-          :state="dateStartState"
-          v-model="dateStart"
-          type="date"
-          :min="getTodays()"
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group label="Duração (dias)" v-if="dateStart">
-        <button class="btn btn-atlas2" @click.prevent="duration--" :disabled="duration === 1">-</button>
-        <span class="mx-3">{{ duration }}</span>
-        <button class="btn btn-atlas2" @click.prevent="duration++" :disabled="duration === 11">+</button>
-      </b-form-group>
-      <transition name="fade">
-        <b-form-group
-          label="Data de fim"
-          label-for="dateEnd"
-          :state="dateStartState"
-          v-if="duration > 1"
-        >
-          <b-form-input
-            id="dateEnd"
-            :state="dateStartState"
-            type="date"
-            :disabled="true"
-            :value="dateEnd"
-          ></b-form-input>
-        </b-form-group>
-      </transition>
-      <b-form-group label="Evento pago?" class="mt-4">
-        <b-form-radio-group
-          buttons
-          button-variant="outline-atlas2"
-          v-model="selectedPayment"
-          :options="optionsPayment"
-          name="payment"
-        />
-      </b-form-group>
-      <transition name="fade">
-        <b-form-group
-          label="Preço de inscrição (€)"
-          label-for="price"
-          :state="priceState"
-          v-if="selectedPayment"
-          :invalid-feedback="priceInvalidFeedback"
-        >
-          <b-form-input id="price" :state="priceState" type="number" v-model="price"></b-form-input>
-        </b-form-group>
-      </transition>
-      <b-form-group
-        label="Sala"
-        :state="classroomState"
-        :invalid-feedback="classroomInvalidFeedback"
-        class="mt-4"
-      >
-        <b-form-select v-model="classroom" :state="classroomState">
-          <option :value="null">Selecione uma sala</option>
-          <option value="Associação de Estudantes">Associação de Estudantes</option>
-          <option value="Auditório">Auditório</option>
-          <optgroup label="Piso 0">
-            <option value="Anfiteatro Joaquim Ribeiro">Anfiteatro Joaquim Ribeiro</option>
-            <option value="B102">B102</option>
-            <option value="B103A">B103A</option>
-            <option value="B103B">B103B</option>
-            <option value="B104">B104</option>
-            <option value="B105">B105</option>
-            <option value="B106">B106</option>
-            <option value="B107">B107</option>
-            <option value="B108">B108</option>
-            <option value="B109">B109</option>
-            <option value="B110">B110</option>
-            <option value="B111">B111</option>
-            <option value="B112">B112</option>
-          </optgroup>
-          <optgroup label="Piso 1">
-            <option value="B201">B201</option>
-            <option value="B202">B202</option>
-            <option value="B203">B203</option>
-            <option value="B204">B204</option>
-            <option value="B205">B205</option>
-            <option value="B206">B206</option>
-            <option value="B207">B207</option>
-            <option value="B208">B208</option>
-            <option value="B209">B209</option>
-            <option value="B210">B210</option>
-            <option value="B211">B211</option>
-            <option value="B212">B212</option>
-          </optgroup>
-          <optgroup label="Piso 2">
-            <option value="B301">B301</option>
-            <option value="B302">B302</option>
-            <option value="B303">B303</option>
-            <option value="B304">B304</option>
-            <option value="B305">B305</option>
-            <option value="B306">B306</option>
-            <option value="B307">B307</option>
-            <option value="B308">B308</option>
-            <option value="B309">B309</option>
-            <option value="B310">B310</option>
-            <option value="B311">B311</option>
-            <option value="B312">B312</option>
-          </optgroup>
-        </b-form-select>
-      </b-form-group>
-      <b-form-group
-        label="Cursos"
-        :state="coursesState"
-        :invalid-feedback="coursesInvalidFeedback"
-        class="mt-4"
-      >
-        <b-form-checkbox-group
-          v-model="selectedCourses"
-          name="courses"
-          :options="courses"
-          :stacked="true"
-          class="mt-2 px-1"
-          :state="coursesState"
-        ></b-form-checkbox-group>
-      </b-form-group>
-      <hr class="mt-4">
-      <b-form-group
-        label="URL miniatura (proporção 16:9)"
-        label-for="thumbnail"
-        :invalid-feedback="thumbnailInvalidFeedback"
-        :state="thumbnailState"
-        class="mt-4"
-      >
-        <b-form-input id="thumbnail" :state="thumbnailState" v-model="thumbnail" type="url"></b-form-input>
-        <small>Imagem que aparecerá no card do evento. É mandatório que a proporção seja 16:9.</small>
-      </b-form-group>
-      <b-form-group
-        label="URL poster"
-        label-for="poster"
-        :invalid-feedback="posterInvalidFeedback"
-        :state="posterState"
-        class="mt-4"
-      >
-        <b-form-input id="poster" :state="posterState" v-model="poster" type="url"></b-form-input>
-      </b-form-group>
-      <transition name="fade" mode="in-out">
-        <b-form-group label="Orientação do poster" class="mt-4" v-if="poster">
-          <b-form-radio-group
-            buttons
-            button-variant="outline-atlas2"
-            v-model="posterOrientation"
-            :options="['Vertical', 'Horizontal']"
-            name="posterOrientation"
-          />
-        </b-form-group>
-      </transition>
-      <b-form-group label="Galeria de fotos?" class="mt-4">
-        <b-form-radio-group
-          buttons
-          button-variant="outline-atlas2"
-          v-model="selectedGallery"
-          :options="optionsGallery"
-          name="gallery"
-        />
-      </b-form-group>
-      <transition-group name="fade" mode="in-out">
-        <b-form-group label="Quantidade de fotos" v-if="selectedGallery" key="transition1">
-          <button
-            class="btn btn-atlas2"
-            @click.prevent="decreasePhotoQuantity()"
-            :disabled="photoQuantity === 2"
-          >-</button>
-          <span class="mx-3">{{ photoQuantity }}</span>
-          <button class="btn btn-atlas2" @click.prevent="increasePhotoQuantity()">+</button>
-        </b-form-group>
-        <b-card v-if="selectedGallery" key="transition2">
-          <b-form-group
-            :label="'URL foto ' + photoInput "
-            label-for="name"
-            v-for="photoInput in photoQuantity"
-            :key="photoInput"
-            :state="galleryState"
-            :invalid-feedback="galleryInvalidFeedback"
-          >
-            <b-form-input
-              id="name"
-              v-model="photos[photoInput - 1]"
-              type="url"
-              :state="galleryState"
-            ></b-form-input>
-          </b-form-group>
-        </b-card>
-      </transition-group>
+	<div>
+		<b-form @submit.prevent="!edit ? addEvent() : editEvent()">
+			<b-form-group
+				label="Nome"
+				label-for="name"
+				:invalid-feedback="nameInvalidFeedback"
+				:valid-feedback="nameValidFeedback"
+				:state="nameState"
+				:class="!edit ? 'mt-4' : ''"
+			>
+				<b-form-input id="name" :state="nameState" v-model="name" type="text" maxlength="50"></b-form-input>
+			</b-form-group>
+			<b-form-group label="Categoria" class="mt-4">
+				<b-form-radio-group
+					buttons
+					button-variant="outline-atlas2"
+					v-model="selectedCategory"
+					:options="categories"
+					name="categories"
+					:stacked="windowWidth < 1000 ? true : false"
+				/>
+			</b-form-group>
+			<b-form-group label="Tags" :state="tagsState" :invalid-feedback="tagsInvalidFeedback">
+				<b-spinner variant="atlas" label="A carregar..." v-if="loading.tags"></b-spinner>
+				<template v-else>
+					<b-form-input
+						id="filterTag"
+						v-model="filterTag"
+						type="text"
+						maxlength="50"
+						placeholder="Filtrar tags..."
+					></b-form-input>
+					<b-form-checkbox-group
+						v-model="selectedTags"
+						name="tags"
+						:options="filteredTags"
+						:stacked="true"
+						style="overflow-y: scroll; max-height: 200px;"
+						class="mt-2 px-1"
+						:state="tagsState"
+					></b-form-checkbox-group>
+				</template>
+			</b-form-group>
+			<b-form-group label="Descrição" class="mt-4">
+				<b-form-textarea
+					id="description"
+					:state="descriptionState"
+					v-model="description"
+					:rows="3"
+					maxlength="500"
+				/>
+				<small>Máximo 500 caracteres</small>
+			</b-form-group>
+			<b-form-group
+				label="Hora de início"
+				label-for="hourStart"
+				:state="hourStartState"
+				:invalid-feedback="hourStartInvalidFeedback"
+			>
+				<b-form-input id="hourStart" :state="hourStartState" type="time" v-model="hourStart"></b-form-input>
+			</b-form-group>
+			<b-form-group
+				label="Hora de fim"
+				label-for="hourEnd"
+				:state="hourEndState"
+				:invalid-feedback="hourEndInvalidFeedback"
+			>
+				<b-form-input id="hourEnd" :state="hourEndState" type="time" v-model="hourEnd"></b-form-input>
+			</b-form-group>
+			<b-form-group
+				label="Data de início"
+				label-for="dateStart"
+				:invalid-feedback="dateStartInvalidFeedback"
+				:state="dateStartState"
+			>
+				<b-form-input id="dateStart" :state="dateStartState" v-model="dateStart" type="date"></b-form-input>
+			</b-form-group>
+			<b-form-group label="Duração (dias)" v-if="dateStart">
+				<button class="btn btn-atlas2" @click.prevent="duration--" :disabled="duration === 1">-</button>
+				<span class="mx-3">{{ duration }}</span>
+				<button class="btn btn-atlas2" @click.prevent="duration++" :disabled="duration === 11">+</button>
+			</b-form-group>
+			<transition name="fade">
+				<b-form-group
+					label="Data de fim"
+					label-for="dateEnd"
+					:state="dateStartState"
+					v-if="duration > 1"
+				>
+					<b-form-input
+						id="dateEnd"
+						:state="dateStartState"
+						type="date"
+						:disabled="true"
+						:value="dateEnd"
+					></b-form-input>
+				</b-form-group>
+			</transition>
+			<b-form-group label="Evento pago?" class="mt-4">
+				<b-form-radio-group
+					buttons
+					button-variant="outline-atlas2"
+					v-model="selectedPayment"
+					:options="optionsPayment"
+					name="payment"
+				/>
+			</b-form-group>
+			<transition name="fade">
+				<b-form-group
+					label="Preço de inscrição (€)"
+					label-for="price"
+					:state="priceState"
+					v-if="selectedPayment"
+					:invalid-feedback="priceInvalidFeedback"
+				>
+					<b-form-input id="price" :state="priceState" type="number" v-model="price"></b-form-input>
+				</b-form-group>
+			</transition>
+			<b-form-group
+				label="Sala"
+				:state="classroomState"
+				:invalid-feedback="classroomInvalidFeedback"
+				class="mt-4"
+			>
+				<b-form-select v-model="classroom" :state="classroomState">
+					<option :value="null">Selecione uma sala</option>
+					<option value="Associação de Estudantes">Associação de Estudantes</option>
+					<option value="Auditório">Auditório</option>
+					<optgroup label="Piso 0">
+						<option value="Anfiteatro Joaquim Ribeiro">Anfiteatro Joaquim Ribeiro</option>
+						<option value="B102">B102</option>
+						<option value="B103A">B103A</option>
+						<option value="B103B">B103B</option>
+						<option value="B104">B104</option>
+						<option value="B105">B105</option>
+						<option value="B106">B106</option>
+						<option value="B107">B107</option>
+						<option value="B108">B108</option>
+						<option value="B109">B109</option>
+						<option value="B110">B110</option>
+						<option value="B111">B111</option>
+						<option value="B112">B112</option>
+					</optgroup>
+					<optgroup label="Piso 1">
+						<option value="B201">B201</option>
+						<option value="B202">B202</option>
+						<option value="B203">B203</option>
+						<option value="B204">B204</option>
+						<option value="B205">B205</option>
+						<option value="B206">B206</option>
+						<option value="B207">B207</option>
+						<option value="B208">B208</option>
+						<option value="B209">B209</option>
+						<option value="B210">B210</option>
+						<option value="B211">B211</option>
+						<option value="B212">B212</option>
+					</optgroup>
+					<optgroup label="Piso 2">
+						<option value="B301">B301</option>
+						<option value="B302">B302</option>
+						<option value="B303">B303</option>
+						<option value="B304">B304</option>
+						<option value="B305">B305</option>
+						<option value="B306">B306</option>
+						<option value="B307">B307</option>
+						<option value="B308">B308</option>
+						<option value="B309">B309</option>
+						<option value="B310">B310</option>
+						<option value="B311">B311</option>
+						<option value="B312">B312</option>
+					</optgroup>
+				</b-form-select>
+			</b-form-group>
+			<b-form-group
+				label="Cursos"
+				:state="coursesState"
+				:invalid-feedback="coursesInvalidFeedback"
+				class="mt-4"
+			>
+				<b-spinner variant="atlas" label="A carregar..." v-if="loading.courses"></b-spinner>
+				<b-form-checkbox-group
+					v-else
+					v-model="selectedCourses"
+					name="courses"
+					:options="courses"
+					:stacked="true"
+					class="mt-2 px-1"
+					:state="coursesState"
+				></b-form-checkbox-group>
+			</b-form-group>
+			<hr class="mt-4">
+			<b-form-group
+				label="URL miniatura (proporção 16:9)"
+				label-for="thumbnail"
+				:invalid-feedback="thumbnailInvalidFeedback"
+				:state="thumbnailState"
+				class="mt-4"
+			>
+				<b-form-input id="thumbnail" :state="thumbnailState" v-model="thumbnail" type="url"></b-form-input>
+				<small>Imagem que aparecerá no card do evento. É mandatório que a proporção seja 16:9.</small>
+			</b-form-group>
+			<b-form-group
+				label="URL poster"
+				label-for="poster"
+				:invalid-feedback="posterInvalidFeedback"
+				:state="posterState"
+				class="mt-4"
+			>
+				<b-form-input id="poster" :state="posterState" v-model="poster" type="url"></b-form-input>
+			</b-form-group>
+			<transition name="fade" mode="in-out">
+				<b-form-group label="Orientação do poster" class="mt-4" v-if="poster">
+					<b-form-radio-group
+						buttons
+						button-variant="outline-atlas2"
+						v-model="posterOrientation"
+						:options="['Vertical', 'Horizontal']"
+						name="posterOrientation"
+					/>
+				</b-form-group>
+			</transition>
+			<b-form-group label="Galeria de fotos?" class="mt-4">
+				<b-form-radio-group
+					buttons
+					button-variant="outline-atlas2"
+					v-model="selectedGallery"
+					:options="optionsGallery"
+					name="gallery"
+				/>
+			</b-form-group>
+			<transition-group name="fade" mode="in-out">
+				<b-form-group label="Quantidade de fotos" v-if="selectedGallery" key="transition1">
+					<button
+						class="btn btn-atlas2"
+						@click.prevent="decreasePhotoQuantity()"
+						:disabled="photoQuantity === 2"
+					>-</button>
+					<span class="mx-3">{{ photoQuantity }}</span>
+					<button class="btn btn-atlas2" @click.prevent="increasePhotoQuantity()">+</button>
+				</b-form-group>
+				<b-card v-if="selectedGallery" key="transition2">
+					<b-form-group
+						:label="'URL foto ' + photoInput "
+						label-for="name"
+						v-for="photoInput in photoQuantity"
+						:key="photoInput"
+						:state="galleryState"
+						:invalid-feedback="galleryInvalidFeedback"
+					>
+						<b-form-input id="name" v-model="photos[photoInput - 1]" type="url" :state="galleryState"></b-form-input>
+					</b-form-group>
+				</b-card>
+			</transition-group>
 
-      <button
-        class="btn btn-atlas1 col-12 mt-2"
-        type="submit"
-      >{{ !edit ? "Adicionar evento" : "Editar evento" }}</button>
-    </b-form>
-    <vue-snotify></vue-snotify>
-  </div>
+			<button class="btn btn-atlas1 col-12 mt-2" type="submit">
+				<template v-if="loading.submit">
+					<b-spinner variant="atlas" small label="A carregar..."></b-spinner>
+				</template>
+				<template v-else>{{ !edit ? "Adicionar evento" : "Editar evento" }}</template>
+			</button>
+		</b-form>
+		<vue-snotify></vue-snotify>
+	</div>
 </template>
 
 <script>
@@ -290,8 +286,7 @@ export default {
 			this.thumbnail = newVal.picture.thumbnail
 			this.poster = newVal.picture.poster.url
 			this.posterOrientation = newVal.picture.poster.orientation
-			this.selectedGallery =
-				newVal.picture.gallery.length > 0 ? true : false
+			this.selectedGallery = newVal.picture.gallery.length > 0 ? true : false
 			this.photoQuantity = newVal.picture.gallery.length
 			this.photos = newVal.picture.gallery.length
 				? newVal.picture.gallery
@@ -300,6 +295,11 @@ export default {
 	},
 	data() {
 		return {
+			loading: {
+				tags: false,
+				courses: false,
+				submit: false
+			},
 			name: "",
 			selectedCategory: "Evento",
 			categories: [
@@ -342,23 +342,12 @@ export default {
 		}
 	},
 	created() {
-		console.log(this.edit)
 		window.addEventListener("resize", this.handleResize)
 		this.handleResize()
 
-		this.getTags.forEach(tag => {
-			this.tags.push({
-				text: tag.name,
-				value: tag.id
-			})
-		})
+		this.loadTags()
+		this.loadCourses()
 
-		this.getCourses.forEach(course => {
-			this.courses.push({
-				text: course.name,
-				value: course.id
-			})
-		})
 		if (this.edit) {
 			this.name = this.edit.name
 			this.selectedCategory = this.edit.category
@@ -375,8 +364,7 @@ export default {
 			this.thumbnail = this.edit.picture.thumbnail
 			this.poster = this.edit.picture.poster.url
 			this.posterOrientation = this.edit.picture.poster.orientation
-			this.selectedGallery =
-				this.edit.picture.gallery.length > 0 ? true : false
+			this.selectedGallery = this.edit.picture.gallery.length > 0 ? true : false
 			this.photoQuantity = this.edit.picture.gallery.length
 			this.photos = this.edit.picture.gallery.length
 				? this.edit.picture.gallery
@@ -386,6 +374,24 @@ export default {
 	methods: {
 		handleResize() {
 			this.windowWidth = window.innerWidth
+		},
+		async loadTags() {
+			try {
+				this.loading.tags = true
+				const response = await this.$http.get("/tags")
+				this.tags = response.data.content.tags.map(tag => tag.name)
+				this.loading.tags = false
+			} catch (err) {}
+		},
+		async loadCourses() {
+			try {
+				this.loading.courses = true
+				const response = await this.$http.get("/courses")
+				this.courses = response.data.content.courses.map(
+					course => `${course.name} (${course.abbreviation})`
+				)
+				this.loading.courses = false
+			} catch (err) {}
 		},
 		getTodays() {
 			return new Date()
@@ -399,8 +405,7 @@ export default {
 				this.dateStartState &&
 				this.hourStartState &&
 				this.hourEndState &&
-				(!this.selectedPayment ||
-					(this.selectedPayment && this.priceState)) &&
+				(!this.selectedPayment || (this.selectedPayment && this.priceState)) &&
 				this.classroomState &&
 				this.coursesState &&
 				this.thumbnailState &&
@@ -462,16 +467,12 @@ export default {
 					pauseOnHover: true
 				})
 			} else {
-				this.$snotify.error(
-					"Preencha todos os campos corretamente",
-					"",
-					{
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					}
-				)
+				this.$snotify.error("Preencha todos os campos corretamente", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
 			}
 		},
 		editEvent() {
@@ -483,8 +484,7 @@ export default {
 				this.dateStartState &&
 				this.hourStartState &&
 				this.hourEndState &&
-				(!this.selectedPayment ||
-					(this.selectedPayment && this.priceState)) &&
+				(!this.selectedPayment || (this.selectedPayment && this.priceState)) &&
 				this.classroomState &&
 				this.coursesState &&
 				this.thumbnailState &&
@@ -527,16 +527,12 @@ export default {
 					pauseOnHover: true
 				})
 			} else {
-				this.$snotify.error(
-					"Preencha todos os campos corretamente",
-					"",
-					{
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					}
-				)
+				this.$snotify.error("Preencha todos os campos corretamente", "", {
+					timeout: 2000,
+					showProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true
+				})
 			}
 		},
 		decreasePhotoQuantity() {
@@ -571,13 +567,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters([
-			"getLoggedUserId",
-			"getLastEventId",
-			"getTags",
-			"getCourses",
-			"getEventById"
-		]),
+		...mapGetters(["getLoggedUser"]),
 		nameState() {
 			if (!this.name && !this.attemptSubmit) {
 				return null
@@ -604,9 +594,7 @@ export default {
 		filteredTags() {
 			return this.filterTag
 				? this.tags.filter(tag =>
-						tag.text
-							.toLowerCase()
-							.includes(this.filterTag.toLowerCase())
+						tag.text.toLowerCase().includes(this.filterTag.toLowerCase())
 				  )
 				: this.tags
 		},

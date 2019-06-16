@@ -311,6 +311,7 @@ export default {
 				this.confirmPasswordState &&
 				this.emailState
 			) {
+				this.loading.submit = true
 				try {
 					const response = await this.$http.post("/auth/sign-up", {
 						username: this.username,
@@ -358,47 +359,71 @@ export default {
 						this.$router.push({ name: "home" })
 					}
 				}
+				this.loading.submit = false
 			} else {
 				this.notifyError()
 			}
 		},
-		createAccount() {
+		async createAccount() {
 			if (
-				this.nameState &&
+				this.firstNameState &&
+				this.lastNameState &&
 				this.usernameState &&
 				this.passwordState &&
 				this.emailState
 			) {
-				this.$store.dispatch("createAccount", {
-					id: this.getLastUserId + 1,
-					profileId: this.profileId,
-					username: this.username,
-					password: this.password,
-					email: this.email,
-					firstName: this.firstName,
-					picture: !this.picture
-						? this.selectedGender === 1
-							? "https://i.imgur.com/uUbH9go.png"
-							: "https://i.imgur.com/moL2juW.png"
-						: this.picture,
-					gender: this.selectedGender,
-					accountCreation: {
-						date: this.$moment().format("YYYY-MM-DD"),
-						hour: this.$moment().format("HH:mm")
-					},
-					interests: {
-						tags: this.selectedTags,
-						courses: this.selectedCourses
-					}
-				})
+				this.loading.submit = true
+				try {
+					const response = await this.$http.post("/users", {
+						username: this.username,
+						password: this.password,
+						email: this.email,
+						firstName: this.firstName,
+						lastName: this.lastName,
+						picture: this.picture,
+						gender: this.selectedGender,
+						profileId: this.profileId,
+						interests: {
+							tags: this.selectedTags,
+							courses: this.selectedCourses,
+							proponents: []
+						}
+					})
 
-				this.$snotify.success("Utilizador adicionado", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
-				this.clearForm()
+					this.$store.commit("CREATED_USER", response.data.content.user)
+					this.$snotify.success("Conta criada com sucesso", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+					this.clearForm()
+				} catch (err) {
+					const errors = err.response.data.content.error
+					if (errors.length) {
+						errors.forEach(error => {
+							if (error.type === "username") {
+								this.errors.username.error = true
+								this.errors.username.value = error.value
+								this.$refs.username.$el.focus()
+							}
+							if (error.type === "email") {
+								this.errors.email.error = true
+								this.errors.email.value = error.value
+								if (!this.errors.username) this.$refs.email.$el.focus()
+							}
+						})
+						this.$snotify.error(err.response.data.message.pt, "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+					} else {
+						this.$router.push({ name: "home" })
+					}
+				}
+				this.loading.submit = false
 			} else {
 				this.notifyError()
 			}
@@ -514,6 +539,7 @@ export default {
 		clearForm() {
 			this.attemptSubmit = false
 			this.firstName = ""
+			this.lastName = ""
 			this.username = ""
 			this.password = ""
 			this.confirmPassword = ""

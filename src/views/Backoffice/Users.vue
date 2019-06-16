@@ -24,6 +24,11 @@ export default {
 	components: { Panel, FormCreateAccount, DataTable },
 	created() {
 		this.loadPage()
+		this.$store.subscribe(mutation => {
+			if(mutation.type === "CREATED_USER") {
+				this.users.push(mutation.payload)
+			}
+		})
 	},
 	data() {
 		return {
