@@ -80,7 +80,7 @@
 									:key="'tag_' + tag._id"
 									:to="{name: 'events', query: { tags: tag.name } }"
 									class="text-atlas2"
-								> #{{ tag.name }}</router-link>
+								>#{{ tag.name }}</router-link>
 							</div>
 							<div>
 								<i class="fa fa-graduation-cap text-atlas1 mr-1" aria-hidden="true"></i>
@@ -472,15 +472,24 @@ export default {
 				cancelText: "Cancelar",
 				text:
 					"Este evento e todos os dados a este associado serão removidos para sempre.",
-				accept: () => {
-					this.$store.dispatch("removeEventById", this.event.id)
-					this.$snotify.success("Evento removido", "", {
-						timeout: 2000,
-						showProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true
-					})
-					this.$router.replace({ name: "events" })
+				accept: async () => {
+					try {
+						const response = await this.$http.delete(`/events/${this.event._id}`)
+						this.$snotify.success("Evento removido", "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+						this.$router.replace({ name: "events" })
+					} catch (err) {
+						this.$snotify.error("Erro ao remover evento", "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+					}
 				}
 			})
 		},
