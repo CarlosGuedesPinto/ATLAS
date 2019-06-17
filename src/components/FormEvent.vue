@@ -379,7 +379,12 @@ export default {
 			try {
 				this.loading.tags = true
 				const response = await this.$http.get("/tags")
-				this.tags = response.data.content.tags.map(tag => tag.name)
+				this.tags = response.data.content.tags.map(tag => {
+					return {
+						text: tag.name,
+						value: tag._id
+					}
+				})
 				this.loading.tags = false
 			} catch (err) {}
 		},
@@ -387,16 +392,19 @@ export default {
 			try {
 				this.loading.courses = true
 				const response = await this.$http.get("/courses")
-				this.courses = response.data.content.courses.map(
-					course => `${course.name} (${course.abbreviation})`
-				)
+				this.courses = response.data.content.courses.map(course => {
+					return {
+						text: `${course.name} (${course.abbreviation})`,
+						value: course._id
+					}
+				})
 				this.loading.courses = false
 			} catch (err) {}
 		},
 		getTodays() {
 			return new Date()
 		},
-		addEvent() {
+		async addEvent() {
 			this.attemptSubmit = true
 			if (
 				this.nameState &&
@@ -412,38 +420,47 @@ export default {
 				this.posterState &&
 				this.galleryState
 			) {
+				this.loading.submit = true
 				if (!this.selectedGallery) {
 					this.photos = []
 				}
-
-				let event = {
-					id: this.getLastEventId + 1,
-					authorId: this.getLoggedUserId,
-					name: this.name,
-					category: this.selectedCategory,
-					tags: this.selectedTags,
-					description: this.description,
-					classroom: this.classroom,
-					coursesIds: this.selectedCourses,
-					hourStart: this.hourStart,
-					hourEnd: this.hourEnd,
-					dateStart: this.dateStart,
-					durationDays: this.duration,
-					dateEnd: this.dateEnd,
-					paymentPrice: this.price,
-					picture: {
+				try {
+					console.log(this.paid)
+					const response = await this.$http.post("/events", {
+						name: this.name,
+						category: this.selectedCategory,
+						tags: this.selectedTags,
+						description: this.description,
+						hourStart: this.hourStart,
+						hourEnd: this.hourEnd,
+						dateStart: this.dateStart,
+						duration: this.duration,
+						paid: this.selectedPayment,
+						paymentPrice: this.price,
+						classroom: this.classroom,
+						coursesIds: this.selectedCourses,
 						thumbnail: this.thumbnail,
-						poster: {
-							orientation: this.posterOrientation,
-							url: this.poster
-						},
+						poster: this.poster,
+						orientation: this.posterOrientation,
 						gallery: this.photos
-					},
-					discussions: [],
-					enrollments: []
-				}
-				this.$store.dispatch("addEvent", event)
+					})
 
+					// clears form
+					this.clearForm()
+
+					this.$store.commit("ADDED_EVENT")
+
+					this.$snotify.success("Evento adicionado", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				} catch (err) {
+					console.log(err)
+				}
+				this.loading.submit = false
+				/*
 				// insert all the new notifications
 
 				let notificationFields = {
@@ -454,18 +471,9 @@ export default {
 					courses: event.coursesIds,
 					moment: this.$moment()
 				}
-
+				
 				this.$store.dispatch("insertNewNotifications", notificationFields)
-
-				// clears form
-				this.clearForm()
-
-				this.$snotify.success("Evento adicionado", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
+				*/
 			} else {
 				this.$snotify.error("Preencha todos os campos corretamente", "", {
 					timeout: 2000,

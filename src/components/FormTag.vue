@@ -50,7 +50,6 @@ export default {
 			this.attemptSubmit = true
 			if (this.nameState) {
 				this.loadingSubmit = true
-
 				try {
 					const response = await this.$http.post("/tags", {
 						name: this.name
@@ -84,13 +83,34 @@ export default {
 				})
 			}
 		},
-		editTag() {
+		async editTag() {
 			this.attemptSubmit = true
 			if (this.nameState) {
-				this.$store.dispatch("editTag", {
-					id: this.edit._id,
-					name: this.name
-				})
+				this.loadingSubmit = true
+				try {
+					const response = await this.$http.put(`/tags/${this.edit._id}`, {
+						name: this.name
+					})
+
+					// clears form
+					this.name = ""
+					this.attemptSubmit = false
+					this.$store.commit("EDITED_TAG", response.data.content.tag)
+				} catch (err) {
+					const response = err.response.data
+					if (response.error.type === "name") {
+						this.errors.name.error = true
+						this.errors.name.value = response.error.value
+
+						this.$snotify.error(response.message.pt, "", {
+							timeout: 2000,
+							showProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true
+						})
+					}
+				}
+				this.loadingSubmit = false
 
 				// clears form
 				this.name = ""

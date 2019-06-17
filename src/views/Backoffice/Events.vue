@@ -34,6 +34,11 @@ export default {
 	},
 	created() {
 		this.loadPage()
+		this.$store.subscribe(mutation => {
+			if(mutation.type === "ADDED_EVENT") {
+				this.loadPage()
+			}
+		})
 	},
 	data() {
 		return {

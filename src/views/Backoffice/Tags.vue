@@ -35,6 +35,13 @@ export default {
 					return 0
 				})
 			}
+			if(mutation.type === "REMOVED_TAG") {
+				const index = this.tags.findIndex(tag => tag._id === mutation.payload._id)
+				this.tags.splice(index, 1)
+			}
+			if(mutation.type === "REFRESH_TAGS") {
+				this.loadPage()
+			}
 		})
 	},
 	data() {
@@ -43,7 +50,7 @@ export default {
 			tags: [],
 			tagsFields: [
 				{
-					key: "tagName",
+					key: "name",
 					label: "Tag",
 					sortable: true
 				},

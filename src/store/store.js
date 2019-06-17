@@ -342,7 +342,11 @@ export default new Vuex.Store({
         EDITED_DISCUSSION(state, payload) { },
         REMOVED_ANSWER(state, payload) { },
         ADDED_TAG(state, payload) { },
+        ADDED_EVENT(state, payload) { },
         CREATED_USER(state, payload) { },
+        REMOVED_TAG(state, payload) { },
+        EDITED_TAG(state, payload) { },
+        REFRESH_TAGS(state, payload) { },
         UPDATE_LOGGED_USER(state, payload) {
             state.loggedUser = payload
         },

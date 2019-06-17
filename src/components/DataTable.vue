@@ -48,12 +48,10 @@
 			<template slot="name" slot-scope="row">
 				<template v-if="name === 'users'">{{ row.item.firstName + " " + row.item.lastName }}</template>
 				<template v-if="name === 'events'">{{ row.item.name }}</template>
+				<template v-if="name === 'tags'">{{ row.item.name }}</template>
 			</template>
 
 			<template slot="username" slot-scope="row" v-if="name === 'users'">{{ "@" + row.item.username }}</template>
-
-			<template slot="tagName" slot-scope="row" v-if="name === 'tags'">{{ "#" + row.item.name }}</template>
-
 			<template slot="courseName" slot-scope="row" v-if="name === 'courses'">{{row.item.name }}</template>
 
 			<template
@@ -95,9 +93,9 @@
 				<b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0"/>
 			</div>
 		</div>
-		<vs-prompt vs-title="Editar curso" :vs-active.sync="activePrompt" :vs-buttons-hidden="true">
-			<FormCourse :editId="editId" v-if="name === 'courses'"></FormCourse>
-			<FormTag :editId="editId" v-if="name === 'tags'"></FormTag>
+		<vs-prompt :vs-title="name === 'courses' ? 'Editar curso' : 'Editar tag'" :vs-active.sync="activePrompt" :vs-buttons-hidden="true">
+			<FormCourse :edit="edit" v-if="name === 'courses'"></FormCourse>
+			<FormTag :edit="edit" v-if="name === 'tags'"></FormTag>
 		</vs-prompt>
 	</div>
 </template>
@@ -106,6 +104,7 @@
 import { mapGetters, mapActions } from "vuex"
 import FormCourse from "@/components/FormCourse.vue"
 import FormTag from "@/components/FormTag.vue"
+import { setInterval } from 'timers';
 
 export default {
 	components: { FormCourse, FormTag },
@@ -121,13 +120,17 @@ export default {
 			sortDirection: "asc",
 			filter: null,
 			activePrompt: false,
-			editId: 0
+			edit: {}
 		}
 	},
 	created() {
 		this.$store.subscribe(mutation => {
-			if (mutation.type === "EDIT_COURSE" || mutation.type === "EDIT_TAG")
+			if (mutation.type === "EDIT_COURSE") {
 				this.activePrompt = false
+			}
+			if(mutation.type === "EDITED_TAG") {
+				this.activePrompt = false
+			}
 		})
 	},
 	computed: {
@@ -166,13 +169,13 @@ export default {
 				case "tags":
 					this.$router.push({
 						name: "events",
-						query: { tags: this.getTagNameById(event.id) }
+						query: { tags: event.name }
 					})
 					break
 				case "courses":
 					this.$router.push({
 						name: "events",
-						query: { curso: this.getCourseById(event.id).name }
+						query: { curso: event.abbreviation }
 					})
 					break
 				case "events":
@@ -185,9 +188,9 @@ export default {
 					break
 			}
 		},
-		btnEditClicked(id) {
+		btnEditClicked(obj) {
 			if (this.name === "courses" || this.name === "tags") {
-				this.editId = id
+				this.edit = obj
 				this.activePrompt = true
 			}
 		},
@@ -219,17 +222,34 @@ export default {
 						title: "Remover tag?",
 						acceptText: "Remover",
 						cancelText: "Cancelar",
-						text: `A tag ${
-							this.getTagById(id).name
-						} será removida para sempre.`,
-						accept: () => {
-							this.removeTagById(id)
-							this.$snotify.success("Tag removida", "", {
-								timeout: 2000,
-								showProgressBar: false,
-								closeOnClick: true,
-								pauseOnHover: true
-							})
+						text: `A tag ${obj.name} será removida para sempre.`,
+						accept: async () => {
+							try {
+								const response = this.$http.delete(`/tags/${obj._id}`)
+								this.$store.commit("REMOVED_TAG", obj)
+								this.$snotify.success("Tag removida", "", {
+									timeout: 2000,
+									showProgressBar: false,
+									closeOnClick: true,
+									pauseOnHover: true
+								})
+							} catch (err) {
+								if (!err.response.success) {
+									this.$snotify.error(err.response.message.pt, "", {
+										timeout: 2000,
+										showProgressBar: false,
+										closeOnClick: true,
+										pauseOnHover: true
+									})
+								} else {
+									this.$snotify.error("Erro ao remover tag", "", {
+										timeout: 2000,
+										showProgressBar: false,
+										closeOnClick: true,
+										pauseOnHover: true
+									})
+								}
+							}
 						}
 					})
 					break
