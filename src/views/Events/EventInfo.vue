@@ -299,6 +299,10 @@ export default {
 	created() {
 		this.loadPage()
 		this.$store.subscribe(mutation => {
+			if (mutation.type === "EDITED_EVENT") {
+				this.modal = false
+				this.loadPage()
+			}
 			if (mutation.type === "ADDED_DISCUSSION") {
 				this.modal = false
 				const { createdAt, usersVoted, _id, category, title } = mutation.payload

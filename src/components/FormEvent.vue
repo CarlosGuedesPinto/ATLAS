@@ -347,20 +347,20 @@ export default {
 
 		this.loadTags()
 		this.loadCourses()
-
+		console.log(this.edit)
 		if (this.edit) {
 			this.name = this.edit.name
 			this.selectedCategory = this.edit.category
-			this.selectedTags = this.edit.tags
+			this.selectedTags = this.edit.tags.map(tag => tag._id)
 			this.description = this.edit.description
 			this.hourStart = this.edit.hourStart
 			this.hourEnd = this.edit.hourEnd
 			this.duration = this.edit.durationDays
-			this.dateStart = this.edit.dateStart
+			this.dateStart = this.edit.dateStart.substr(0, 10)
 			this.selectedPayment = this.edit.paid
 			this.price = this.edit.paymentPrice
 			this.classroom = this.edit.classroom
-			this.selectedCourses = this.edit.coursesIds
+			this.selectedCourses = this.edit.courses.map(course => course._id)
 			this.thumbnail = this.edit.picture.thumbnail
 			this.poster = this.edit.picture.poster.url
 			this.posterOrientation = this.edit.picture.poster.orientation
@@ -425,7 +425,6 @@ export default {
 					this.photos = []
 				}
 				try {
-					console.log(this.paid)
 					const response = await this.$http.post("/events", {
 						name: this.name,
 						category: this.selectedCategory,
@@ -457,7 +456,12 @@ export default {
 						pauseOnHover: true
 					})
 				} catch (err) {
-					console.log(err)
+					this.$snotify.error("Erro ao adicionar evento", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
 				}
 				this.loading.submit = false
 				/*
@@ -483,7 +487,7 @@ export default {
 				})
 			}
 		},
-		editEvent() {
+		async editEvent() {
 			this.attemptSubmit = true
 			if (
 				this.nameState &&
@@ -499,41 +503,52 @@ export default {
 				this.posterState &&
 				this.galleryState
 			) {
+				this.loading.submit = true
 				if (!this.selectedGallery) {
 					this.photos = []
 				}
 
-				this.$store.dispatch("editEventById", {
-					id: this.edit.id,
-					event: {
+				try {
+					const response = await this.$http.put(`/events/${this.edit._id}`, {
 						name: this.name,
 						category: this.selectedCategory,
 						tags: this.selectedTags,
 						description: this.description,
-						classroom: this.classroom,
-						coursesIds: this.selectedCourses,
 						hourStart: this.hourStart,
 						hourEnd: this.hourEnd,
 						dateStart: this.dateStart,
-						durationDays: this.duration,
-						dateEnd: this.dateEnd,
+						duration: this.duration,
+						paid: this.selectedPayment,
 						paymentPrice: this.price,
-						picture: {
-							thumbnail: this.thumbnail,
-							poster: {
-								orientation: this.posterOrientation,
-								url: this.poster
-							},
-							gallery: this.photos
-						}
-					}
-				})
-				this.$snotify.success("Evento editado", "", {
-					timeout: 2000,
-					showProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true
-				})
+						classroom: this.classroom,
+						coursesIds: this.selectedCourses,
+						thumbnail: this.thumbnail,
+						poster: this.poster,
+						orientation: this.posterOrientation,
+						gallery: this.photos
+					})
+
+					// clears form
+					this.clearForm()
+
+					this.$store.commit("EDITED_EVENT")
+
+					this.$snotify.success("Evento editado", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				} catch (err) {
+					console.log(err)
+					this.$snotify.success("Erro ao editar evento", "", {
+						timeout: 2000,
+						showProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true
+					})
+				}
+				this.loading.submit = false
 			} else {
 				this.$snotify.error("Preencha todos os campos corretamente", "", {
 					timeout: 2000,

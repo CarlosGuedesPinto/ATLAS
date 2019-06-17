@@ -16,15 +16,12 @@
 				<router-view/>
 			</transition>
 			<vue-snotify></vue-snotify>
-			<!--<Chat v-if="getLoggedUserId !== -1"></Chat>-->
 		</div>
 	</div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex"
-//import Chat from "@/components/Chat.vue";
-
 export default {
 	watch: {
 		$route(to, from) {

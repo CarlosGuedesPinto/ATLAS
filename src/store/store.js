@@ -346,6 +346,7 @@ export default new Vuex.Store({
         CREATED_USER(state, payload) { },
         REMOVED_TAG(state, payload) { },
         EDITED_TAG(state, payload) { },
+        EDITED_EVENT(state, payload) { },
         REFRESH_TAGS(state, payload) { },
         UPDATE_LOGGED_USER(state, payload) {
             state.loggedUser = payload

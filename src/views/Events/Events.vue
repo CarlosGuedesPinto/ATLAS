@@ -369,9 +369,7 @@ export default {
 
 			if (this.selectedTags.length) {
 				let tagNames = []
-				this.selectedTags.forEach(selectedTag =>
-					tagNames.push(selectedTag)
-				)
+				this.selectedTags.forEach(selectedTag => tagNames.push(selectedTag))
 				queryResult.tags = tagNames.join("_")
 			}
 
@@ -396,9 +394,7 @@ export default {
 
 				if (this.name) {
 					result =
-						(event.name
-							.toLowerCase()
-							.includes(this.name.toLowerCase()) ||
+						(event.name.toLowerCase().includes(this.name.toLowerCase()) ||
 							event.author.username
 								.toLowerCase()
 								.includes(this.name.toLowerCase())) &&
@@ -407,22 +403,20 @@ export default {
 
 				if (this.dateStart) {
 					result =
-						this.$moment(this.dateStart) <=
-							this.$moment(event.dateStart) && result
+						this.$moment(this.dateStart) <= this.$moment(event.dateStart) &&
+						result
 				}
 
 				if (this.dateEnd) {
 					result =
-						this.$moment(this.dateEnd) >=
-							this.$moment(event.dateStart) && result
+						this.$moment(this.dateEnd) >= this.$moment(event.dateStart) &&
+						result
 				}
 
 				if (this.selectedTags.length) {
 					result =
 						this.selectedTags.every(selectedTag =>
-							event.tags.some(
-								eventTag => selectedTag === eventTag.name
-							)
+							event.tags.some(eventTag => selectedTag === eventTag.name)
 						) && result
 				}
 
@@ -430,9 +424,7 @@ export default {
 					result =
 						event.courses.some(
 							course =>
-								course.name
-									.toLowerCase()
-									.includes(this.course.toLowerCase()) ||
+								course.name.toLowerCase().includes(this.course.toLowerCase()) ||
 								course.abbreviation
 									.toLowerCase()
 									.includes(this.course.toLowerCase())
@@ -454,9 +446,7 @@ export default {
 
 				if (this.name) {
 					result =
-						(event.name
-							.toLowerCase()
-							.includes(this.name.toLowerCase()) ||
+						(event.name.toLowerCase().includes(this.name.toLowerCase()) ||
 							event.author.username
 								.toLowerCase()
 								.includes(this.name.toLowerCase())) &&
@@ -465,22 +455,20 @@ export default {
 
 				if (this.dateStart) {
 					result =
-						this.$moment(this.dateStart) <=
-							this.$moment(event.dateStart) && result
+						this.$moment(this.dateStart) <= this.$moment(event.dateStart) &&
+						result
 				}
 
 				if (this.dateEnd) {
 					result =
-						this.$moment(this.dateEnd) >=
-							this.$moment(event.dateStart) && result
+						this.$moment(this.dateEnd) >= this.$moment(event.dateStart) &&
+						result
 				}
 
 				if (this.selectedTags.length) {
 					result =
 						this.selectedTags.every(selectedTag =>
-							event.tags.some(
-								eventTag => selectedTag === eventTag.name
-							)
+							event.tags.some(eventTag => selectedTag === eventTag.name)
 						) && result
 				}
 
@@ -488,9 +476,7 @@ export default {
 					result =
 						event.courses.some(
 							course =>
-								course.name
-									.toLowerCase()
-									.includes(this.course.toLowerCase()) ||
+								course.name.toLowerCase().includes(this.course.toLowerCase()) ||
 								course.abbreviation
 									.toLowerCase()
 									.includes(this.course.toLowerCase())
@@ -525,9 +511,7 @@ export default {
 				return this.eventTags
 			} else {
 				return this.eventTags.filter(tag =>
-					tag
-						.toLowerCase()
-						.includes(this.filterTags.toLowerCase())
+					tag.toLowerCase().includes(this.filterTags.toLowerCase())
 				)
 			}
 		}
@@ -537,9 +521,7 @@ export default {
 			// loads next events
 			try {
 				this.loading.next = true
-				const response = await this.$http.get(
-					"/events/occasions/after"
-				)
+				const response = await this.$http.get("/events/occasions/next")
 				if (response.status === 200) {
 					this.events.next = response.data.content.events
 					this.loading.next = false
@@ -552,9 +534,7 @@ export default {
 			// loads previous events
 			try {
 				this.loading.previous = true
-				const response = await this.$http.get(
-					"/events/occasions/before"
-				)
+				const response = await this.$http.get("/events/occasions/previous")
 				if (response.status === 200) {
 					this.events.previous = response.data.content.events
 					this.loading.previous = false
@@ -631,9 +611,13 @@ export default {
 		},
 		getTotalPages() {
 			if (!this.filtering) {
-				this.totalPages = Math.ceil(this.events.previous.length / this.endedEventsPerPage)
+				this.totalPages = Math.ceil(
+					this.events.previous.length / this.endedEventsPerPage
+				)
 			} else {
-				this.totalPages = Math.ceil(this.getFilteredEvents.length / this.filteredEventsPerPage)
+				this.totalPages = Math.ceil(
+					this.getFilteredEvents.length / this.filteredEventsPerPage
+				)
 			}
 		},
 		classroomFloorCondition(floor) {
@@ -641,118 +625,51 @@ export default {
 				case "Piso 0":
 					return (
 						this.classrooms.some(
-							classroom =>
-								classroom === "Anfiteatro Joaquim Ribeiro"
+							classroom => classroom === "Anfiteatro Joaquim Ribeiro"
 						) ||
-						this.classrooms.some(
-							classroom => classroom === "B102"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B103A"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B103B"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B104"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B105"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B106"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B107"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B108"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B109"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B110"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B111"
-						) ||
+						this.classrooms.some(classroom => classroom === "B102") ||
+						this.classrooms.some(classroom => classroom === "B103A") ||
+						this.classrooms.some(classroom => classroom === "B103B") ||
+						this.classrooms.some(classroom => classroom === "B104") ||
+						this.classrooms.some(classroom => classroom === "B105") ||
+						this.classrooms.some(classroom => classroom === "B106") ||
+						this.classrooms.some(classroom => classroom === "B107") ||
+						this.classrooms.some(classroom => classroom === "B108") ||
+						this.classrooms.some(classroom => classroom === "B109") ||
+						this.classrooms.some(classroom => classroom === "B110") ||
+						this.classrooms.some(classroom => classroom === "B111") ||
 						this.classrooms.some(classroom => classroom === "B112")
 					)
 					break
 				case "Piso 1":
 					return (
-						this.classrooms.some(
-							classroom => classroom === "B201"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B202"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B203"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B204"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B205"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B206"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B207"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B208"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B209"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B210"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B211"
-						) ||
+						this.classrooms.some(classroom => classroom === "B201") ||
+						this.classrooms.some(classroom => classroom === "B202") ||
+						this.classrooms.some(classroom => classroom === "B203") ||
+						this.classrooms.some(classroom => classroom === "B204") ||
+						this.classrooms.some(classroom => classroom === "B205") ||
+						this.classrooms.some(classroom => classroom === "B206") ||
+						this.classrooms.some(classroom => classroom === "B207") ||
+						this.classrooms.some(classroom => classroom === "B208") ||
+						this.classrooms.some(classroom => classroom === "B209") ||
+						this.classrooms.some(classroom => classroom === "B210") ||
+						this.classrooms.some(classroom => classroom === "B211") ||
 						this.classrooms.some(classroom => classroom === "B212")
 					)
 					break
 				case "Piso 2":
 					return (
-						this.classrooms.some(
-							classroom => classroom === "B301"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B302"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B303"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B304"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B305"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B306"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B307"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B308"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B309"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B310"
-						) ||
-						this.classrooms.some(
-							classroom => classroom === "B311"
-						) ||
+						this.classrooms.some(classroom => classroom === "B301") ||
+						this.classrooms.some(classroom => classroom === "B302") ||
+						this.classrooms.some(classroom => classroom === "B303") ||
+						this.classrooms.some(classroom => classroom === "B304") ||
+						this.classrooms.some(classroom => classroom === "B305") ||
+						this.classrooms.some(classroom => classroom === "B306") ||
+						this.classrooms.some(classroom => classroom === "B307") ||
+						this.classrooms.some(classroom => classroom === "B308") ||
+						this.classrooms.some(classroom => classroom === "B309") ||
+						this.classrooms.some(classroom => classroom === "B310") ||
+						this.classrooms.some(classroom => classroom === "B311") ||
 						this.classrooms.some(classroom => classroom === "B312")
 					)
 					break

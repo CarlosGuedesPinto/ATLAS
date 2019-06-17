@@ -7,7 +7,6 @@ import Snotify from 'vue-snotify'
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css'
 import 'material-icons/iconfont/material-icons.css'
-import Chat from 'vue-beautiful-chat'
 import axios from 'axios'
 
 const http = axios.create({
@@ -37,7 +36,6 @@ Vue.use(Vuesax, {
     }
   }
 })
-Vue.use(Chat)
 
 new Vue({
   router,
