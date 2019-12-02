@@ -64,6 +64,6 @@ npm run serve
 
 #### Authors
 
-* **Carlos Guedes** - [CarlosGuedesPinto](https://github.com/CarlosGuedesPinto)
-
 * **Gustavo Vasconcelos** - [gustavo-vasconcelos](https://github.com/gustavo-vasconcelos)
+
+* **Carlos Guedes** - [CarlosGuedesPinto](https://github.com/CarlosGuedesPinto)
