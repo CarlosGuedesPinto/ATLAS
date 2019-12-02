@@ -28,16 +28,16 @@ The Atlas folder as an padornized organization of an Vue Cli 3 project, were eve
 ```src```.
 ```
 public ———|
-          |———— index.html (principal ficheiro HTML)
-          |———— favicon.ico (favicon do ATLAS)
+          |———— index.html (HTML main file )
+          |———— favicon.ico (ATLAS favicon)
    
    src ———|
           |———— assets
-          |———— components (componentes Vue)
-          |———— views (views que são carregadas em cada rota)
-          |———— main.js (principal ficheiro Vue)
-          |———— router.js (rotas feitas com o Vue Router)
-          |———— store.js (gestão de estado feita com o Vuex)
+          |———— components (Vue components)
+          |———— views (Views that are loaded in each Route)
+          |———— main.js (Vue main file)
+          |———— router.js (Routes made with Vue Router)
+          |———— store.js (State management with VueX)
 ```
 
 ## Project instalation:
