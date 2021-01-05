@@ -10,7 +10,7 @@
     "cloud": "NODE_ENV=development vue-cli-service serve --open --inline --host $IP --port $PORT --public $C9_HOSTNAME --config vue.config.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.19",
     "connect-history-api-fallback": "^1.6.0",
